@@ -35,8 +35,9 @@ class DataTools
      * @param $order   排序
      * @param $columns 列
      * @param $columnVals 列值字段名
+     * @param $checkbox 有值标示 id 旁增加 checkbox 值 等于 checkbox name
      */
-    public static function getJsonData($request, $order, $columns, $columnVals, $object, $searchField)
+    public static function getJsonData($request, $order, $columns, $columnVals, $object, $searchField,$checkbox='')
     {
         $seach = $request->get('search', "");
         $data = $object::find();
@@ -81,7 +82,12 @@ class DataTools
                 if (isset($columnVals[$k]) && trim($columnVals[$k]) != "" && strpos($columnVals[$k], '<') !== 0) {
                     if ($k == "id")      //序号自增长
                     {
-                        $array[$v] = $num;
+                        if($checkbox){
+                            $array[$v] = "<input type='checkbox' value='".$val->id."' name='".$checkbox."' />".$num;
+                        }else{
+                            $array[$v] = $num;
+                        }
+                        
                         $num++;
                     } else
                         $array[$v] = $val->$columnVals[$k];

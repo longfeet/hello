@@ -204,4 +204,23 @@ class CommunityController extends \yii\web\Controller
     {
         $this->redirect("/excel/模版（楼盘信息）.xlsx");
     }
+    
+    /**
+     * 根据经纬度获取范围内楼盘数据
+     */
+    
+    public function actionAjaxdetail(){
+        $post = \Yii::$app->request->post();
+        $lat = $post['lat'];
+        $lng = $post['lng'];
+        $length = $post['length']+0.5;
+        $sql = " SELECT adv.*,com.community_cbd,cpy.company_name from p_adv adv "
+                . "LEFT JOIN p_community com ON adv.adv_community_id = com.id "
+                . "LEFT JOIN p_company cpy ON adv.company_id = cpy.id "
+                . "where adv.adv_community_id IN (select id from p_community where sqrt((((".$lng."-`community_longitudex`)*PI()*12656*cos(((".$lat."+`community_latitudey`)/2)*PI()/180)/180)*((".$lng."-`community_longitudex`)*PI()*12656*cos (((".$lat."+`community_latitudey`)/2)*PI()/180)/180))+(((".$lat."-`community_latitudey`)*PI()*12656/180)*((".$lat."-`community_latitudey`)*PI()*12656/180)))<".$length .")";
+        $connection=\Yii::$app->db;
+        $command=$connection->createCommand($sql);
+        $rows=$command->queryAll();
+        exit(json_encode($rows));
+    }
 }

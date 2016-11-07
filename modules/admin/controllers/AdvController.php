@@ -91,7 +91,7 @@ class AdvController extends \yii\web\Controller
     {
         //请求,排序,展示字段,展示字段的字段名(支持relation字段),主表实例,搜索字段
         DataTools::getJsonData(\Yii::$app->request, "id desc", $this->advColumns, $this->advColumnsVal,
-            new PAdv(), "adv_name");
+            new PAdv(), "adv_name",'adv_id');
     }
 
     public function actionDoadd()
@@ -195,5 +195,25 @@ class AdvController extends \yii\web\Controller
     public function actionDownloadexcel()
     {
         $this->redirect("/excel/模版（广告位信息）.xlsx");
+    }
+    
+    public function actionAjaxeditstatus(){
+        $post = \Yii::$app->request->post();
+        $ids = $post['ids'];
+        $adv_install_status = $post['adv_install_status'];
+        $adv_pic_status = $post['adv_pic_status'];
+        $set = array();
+        if($adv_install_status > -1){
+            $set[] = 'adv_install_status = '.$adv_install_status;
+        }
+        if($adv_pic_status > -1){
+            $set[] = 'adv_pic_status = '.$adv_pic_status;
+        }
+        $sql = "UPDATE p_adv SET ".  implode(",", $set)." where id IN (".  implode(",", $ids).")";
+        
+        $connection=\Yii::$app->db;
+        $command=$connection->createCommand($sql);
+        $result=$command->execute();
+        exit(json_encode($result));
     }
 }

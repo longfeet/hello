@@ -21,6 +21,21 @@
         </div>
         <div class="col-md-12" id="map" style="width:82rem;height:50rem;">
         </div>
+        
+        <div class="table-responsive">
+            <div id="dataTables-example_wrapper" class="dataTables_wrapper form-inline" role="grid"><div class="row"><div class="col-sm-6"><div class="dataTables_length" id="dataTables-example_length"><label>每页显示  <select name="dataTables-example_length" aria-controls="dataTables-example" class="form-control input-sm"><option value="10">10</option><option value="20">20</option><option value="50">50</option><option value="100">100</option></select> 条</label></div></div><div class="col-sm-6"><div id="dataTables-example_filter" class="dataTables_filter"><label>搜索：<input type="search" class="form-control input-sm" aria-controls="dataTables-example"></label></div></div></div><table class="table table-striped table-bordered table-hover dataTable no-footer" id="dataTables-example" aria-describedby="dataTables-example_info" style="width: 1529px;">
+                <thead>
+                <tr role="row">
+                    <th width="10%" rowspan="1" colspan="1" style="width: 152px;">序号</th>
+                    <th width="20%" rowspan="1" colspan="1" style="width: 322px;">广告名称</th>
+                    <th width="35%" rowspan="1" colspan="1" style="width: 577px;">楼盘名称</th>
+                    <th width="10%" rowspan="1" colspan="1" style="width: 152px;">公司名称</th>
+                </tr>
+                </thead>
+                <tbody id="tableCon">
+                </tbody>
+            </table>
+        </div>
     </div>
     <!-- /. ROW  -->
 </div>
@@ -148,7 +163,29 @@
         var mpoint = new BMap.Point(e.point.lng,e.point.lat);
         circle = new BMap.Circle(mpoint,$("input[name=mapfield]").val() * 1000,{fillColor:"blue", strokeWeight: 1 ,fillOpacity: 0.3, strokeOpacity: 0.3});
         map.addOverlay(circle);
+        //ajax 处理 园内 广告机列表
+        getAdvList(e.point.lng,e.point.lat,$("input[name=mapfield]").val());
     });
+    
+    function getAdvList(lng,lat,length){
+        console.log(lng+","+lat);
+        $.ajax({
+            "type": "POST",
+            "contentType": "application/x-www-form-urlencoded",
+            "url": "/admin/community/ajaxdetail",
+            "data" : {'lng' : lng,'lat':lat,'length':length},
+            "dataType": "json",
+            "success": function (data) {
+                console.log(data);
+                var html = '';
+                for(var key in data){
+                    var item = data[key];
+                    html += '<tr><td>'+(parseInt(key)+1)+'</td><td>'+item.adv_name+'</td><td>'+item.community_cbd+'</td><td>'+item.company_name+'</td></tr>'; 
+                }
+                document.getElementById('tableCon').innerHTML = html;
+            }
+        });
+    }
 </script>
 <style type="text/css">
 .mapul li {
