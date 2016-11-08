@@ -31,6 +31,6 @@ class IndexController extends \yii\web\Controller
         $connection=\Yii::$app->db;
         $command=$connection->createCommand($sql);
         $result=$command->execute();
-        echo $sql;
+        
     }
 }
