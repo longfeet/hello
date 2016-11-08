@@ -11,7 +11,8 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     广告位列表
-                    <a href="javascript:;" class="btn btn-info" id="addAdv" style="float:right;margin-top:-0.5rem;">添加广告位</a>
+                    <a href="javascript:;" class="btn btn-info" id="showMap" style="float:right;margin-top:-0.5rem;">楼盘地图</a>
+                    <a href="javascript:;" class="btn btn-info" id="addAdv" style="float:right;margin-top:-0.5rem;margin-right:1rem;">添加广告位</a>
                     <a href="javascript:;" class="btn btn-info" id="addExcel" style="float:right;margin-top:-0.5rem;margin-right:1rem;">EXCEL上传</a>
                 </div>
                 <div class="panel-body">
@@ -78,6 +79,10 @@ $(window).ready(function(){
 
     $("#addAdv").click(function(){
         window.location.href = "/admin/adv/add";
+    });
+    
+    $("#showMap").click(function(){
+        window.location.href = "/admin/adv/map";
     });
     
     $("#checkAll").click(function(){

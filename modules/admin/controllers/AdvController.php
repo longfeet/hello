@@ -216,4 +216,9 @@ class AdvController extends \yii\web\Controller
         $result=$command->execute();
         exit(json_encode($result));
     }
+    
+    public function actionMap(){
+        $community = PCommunity::find()->asArray()->all();
+        return $this->render('advMap', array("data"=>$community,"datajson"=>json_encode($community)));
+    }
 }
