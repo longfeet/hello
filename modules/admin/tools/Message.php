@@ -13,7 +13,13 @@ namespace app\modules\admin\models;
  */
 class Message {
     //put your code here
-    
+    /**
+     * 
+     * @param int $company_id 所属公司id
+     * @param string $message 需求记录的消息
+     * @return boolean
+     * 
+     */
     public static  function sendMessage($company_id,$message){
         $sql = "INSERT INTO p_message (company_id,message_content,create_time) VALUES($company_id,'".$message."',".time()."); ";
         $connection=\Yii::$app->db;
@@ -39,12 +45,26 @@ class Message {
         }
     }
     
+    /**
+     * 用户的消息置为已读
+     * @param int $user_id 
+     * @return boolean
+     */
     public static  function readMessage($user_id){
         $sql = "UPDATE p_message_log SET read_time=".time().",status=1 where user_id = $user_id ;";
         $connection=\Yii::$app->db;
         $command=$connection->createCommand($sql);
         $result=$command->execute();
+        return $result;
     }
+    
+    /**
+     * 提供一个用户的消息列表 
+     * @param type $user_id
+     * @param type $page 当前页数 默认 1
+     * @param type $count 分页数量 默认 20
+     * @return type
+     */
     public static function getMessageList($user_id,$page=1,$count=20){
         $limit_str = (($page-1)*$count ).",".$count;
         //$sql = "select * from p_message where id IN ( select message_id from p_message_log where user_id = $user_id order by status desc ) limit $limit_str ";
