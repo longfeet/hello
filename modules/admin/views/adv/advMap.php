@@ -152,10 +152,12 @@
             this.getElementsByTagName("span")[0].innerHTML = "广告数: {count}";
             arrow.style.backgroundPosition = "0px -20px";
         }
-
-//        div.onclick = function(){
-//            window.location.href = "/admin/community/edit?id=" + $(this).attr("id");
-//        }
+        var pointData = this._point;
+        div.onclick = function(){
+            var infoWindow = new BMap.InfoWindow("<p>便写点东西</p><p>呵呵呵</p>");    // 创建信息窗口对象
+            console.log(pointData);
+            map.openInfoWindow(infoWindow,pointData);
+        }
 
         div.onmouseout = function(){
             this.style.backgroundColor = "#EE5D5B";
@@ -178,6 +180,9 @@
     for(var i in data) {
         var point = new BMap.Point(data[i]['community_longitudex'], data[i]['community_latitudey']);
         var myCompOverlay = new ComplexCustomOverlay(point, data[i]['community_name'], "", data[i]['id']);
+        
+        
+                         //开启信息窗口
         map.addOverlay(myCompOverlay);
     }
 
@@ -193,7 +198,7 @@
     });
     
     function getAdvList(lng,lat,length){
-        console.log(lng+","+lat);
+        //console.log(lng+","+lat);
         $.ajax({
             "type": "POST",
             "contentType": "application/x-www-form-urlencoded",
@@ -201,7 +206,7 @@
             "data" : {'lng' : lng,'lat':lat,'length':length},
             "dataType": "json",
             "success": function (data) {
-                console.log(data);
+                //console.log(data);
                 var html = '';
                 for(var key in data){
                     var item = data[key];
