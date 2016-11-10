@@ -200,6 +200,7 @@
     }
 
     var circle = null;
+    
     map.addEventListener("click", function(e){
         $("#position").val(e.point.lng + "," + e.point.lat);
         map.removeOverlay(circle);
@@ -207,6 +208,10 @@
         circle = new BMap.Circle(mpoint,$("input[name=mapfield]").val() * 1000,{fillColor:"blue", strokeWeight: 1 ,fillOpacity: 0.3, strokeOpacity: 0.3});
         map.addOverlay(circle);
         //ajax 处理 园内 广告机列表
+        save_list_data = {
+            lng:e.point.lng,
+            lat:e.point.lat
+        }
         getAdvList(e.point.lng,e.point.lat,$("input[name=mapfield]").val());
     });
     var status_str = ['新增','未使用','已使用'];

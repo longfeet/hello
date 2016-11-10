@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+var save_list_data = {};
 $("#staff").hide();
 $("#checkAll").click(function(){
         
@@ -83,7 +84,12 @@ $("select[name='adv_pic_status']").change(function(){
                     if(data > 0){
                         alert(data+"条记录状态修改成功！");
                         //刷新页面  目前无法在列表数据中看出状态 预留
-                        window.location.reload();
+                        console.log(save_list_data);
+                        if(save_list_data && JSON.stringify(save_list_data) !== '{}' ){
+                            getAdvList(save_list_data.lng,save_list_data.lat,$("input[name=mapfield]").val());
+                        }else{
+                            window.location.reload();
+                        }
                     }else{
                         alert("记录修改失败！");
                     }

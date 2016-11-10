@@ -212,27 +212,32 @@ class AdvController extends \yii\web\Controller
             $set[] = 'adv_install_status = '.$adv_install_status;
             switch ($adv_install_status){
                 case 0:
-                    $set[] = 'adv_use_status = 0';
+                    $set[] = ' adv_use_status = 0 ';
+                    break;
                 case 1:
-                    $set[] = 'adv_use_status = 1';
+                    $set[] = ' adv_use_status = 1 ';
+                    break;
                 case 2:
-                    $set[] = 'adv_use_status = 2';
+                    $set[] = ' adv_use_status = 2 ';
+                    break;
             }
         }
         if($adv_pic_status > -1){
             $set[] = 'adv_pic_status = '.$adv_pic_status;
             switch ($adv_pic_status){
                 case 2:
-                    $set[] = 'adv_use_status = 2';
+                    $set[] = ' adv_use_status = 2 ';
+                    break;
                 default :
-                    $set[] = 'adv_use_status = 1';
+                    $set[] = ' adv_use_status = 1 ';
+                    break;
             }
         }
         $sql = "UPDATE p_adv SET ".  implode(",", $set)." where id IN (".  implode(",", $ids).")";
         $connection=\Yii::$app->db;
         $command=$connection->createCommand($sql);
         $result=$command->execute();
-        
+         
         //操作是否需要记录 p_adv_staff
         if(in_array($adv_install_status, array(0,1)) || in_array($adv_pic_status, array(1,3))){
             $values_map = array();
@@ -249,7 +254,7 @@ class AdvController extends \yii\web\Controller
             $command=$connection->createCommand($sql);
             $result=$command->execute();
         }
-        exit(json_encode($result));
+       exit(json_encode($result));
     }
     
     public function actionMap(){
