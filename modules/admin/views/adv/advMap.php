@@ -38,7 +38,7 @@
         </div>
     </div>
          <div>
-                <div class="form-group">
+                <!--div class="form-group">
                     <label class="control-label">修改状态：</label>
                     <select class="form-control" style="width:40%;float:right;margin-right:50%;" name="adv_install_status">
                         <option value="-1">不修改</option>
@@ -46,7 +46,7 @@
                         <option value="1">待维修(损坏)</option>
                         <option value="2">正常使用</option>
                     </select>
-                </div>
+                </div-->
                 
                 <div class="form-group">
                     <label class="control-label">画面状态</label>
@@ -60,13 +60,25 @@
                     </select>
                 </div>
                 
-                <input type="button" id="editStatus" class="btn btn-info" value="修改" />
+                <div id="staff">
+                    <label class="control-label">人员分配：</label>
+                    <?php foreach($staff as $key=>$value) {
+                            echo '<span style = " margin:0 10px;" ><input type = "checkbox" name="staff" value = "'.$value->id.'" />'.$value->staff_name.'</span>';
+                        }
+                    ?>
+                </div>
+                <div>
+                    <input type="hidden" id="typeValue" value="pic" />
+                    <input type="button" id="editStatus" class="btn btn-info" value="修改" />
+                </div>
             </div>
     <!-- /. ROW  -->
 </div>
 <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=Ab2CQa603kmx8tYXETWEEOjozKgdUXVL"></script>
+<script src="/assets/adminTemplate/js/common.js"></script>
 <!-- /. PAGE INNER  -->
 <script type="text/javascript">
+    
     $("#searchComm").click(function(){
         var searchValue = $("input[name=search]").val();
         $(".mapul>li").each(function() {
@@ -216,67 +228,6 @@
             }
         });
     }
-    
-    $("#checkAll").click(function(){
-        
-        for(var key in $("input[name='adv_id']")){
-            $("input[name='adv_id']")[key].checked = this.checked;
-        }
-    })
-    
-    $(document).on('click', "input[name='adv_id']", function() {
-        var status = true;
-        for(var i=0;i< $("input[name='adv_id']").length;i++){
-            if(!$("input[name='adv_id']")[i].checked){
-                status = false;
-            }
-        }
-        console.log(status);
-        $("#checkAll").checked = status;
-    });
-    
-    function getCheckId(){
-        var arr = [];
-        for(var i=0;i< $("input[name='adv_id']").length;i++){
-            if($("input[name='adv_id']")[i].checked){
-                arr.push($("input[name='adv_id']")[i].value); 
-            }
-        }
-        return arr;
-    }
-    
-    $("#editStatus").click(function(){
-        var ids = getCheckId();
-        if(ids.length < 1){
-            alert("请选择至少一条记录！");
-            return false;
-        }
-        //读取修改状态
-        var adv_install_status = $("select[name='adv_install_status']").val();
-        var adv_pic_status = $("select[name='adv_pic_status']").val();
-        if(adv_install_status == -1 && adv_pic_status == -1 ){
-            alert("无修改！");
-            return false;
-        }
-        if(confirm("确定要修改记录状态吗？")){
-            $.ajax( {
-                "type": "POST",
-                "contentType": "application/x-www-form-urlencoded",
-                "url": "/admin/adv/ajaxeditstatus",
-                "dataType": "json",
-                "data": {ids:ids,adv_install_status:adv_install_status,adv_pic_status:adv_pic_status}, //以json格式传递
-                "success": function(data) {
-                    if(data > 0){
-                        alert(data+"条记录状态修改成功！");
-                        //刷新页面  目前无法在列表数据中看出状态 预留
-                        //window.location.reload();
-                    }else{
-                        alert("记录修改失败！");
-                    }
-                }
-            });
-        }
-    })
 </script>
 <style type="text/css">
 .mapul li {

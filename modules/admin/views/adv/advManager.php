@@ -44,7 +44,7 @@
                     </select>
                 </div>
                 
-                <div class="form-group">
+                <!--div class="form-group">
                     <label class="control-label">画面状态</label>
                     <select class="form-control" style="width:40%;float:right;margin-right:50%;" name="adv_pic_status">
                         <option value="-1">不修改</option>
@@ -54,9 +54,20 @@
                         <option value="3">待下刊</option>
                         <option value="4">已下刊</option>
                     </select>
+                </div-->
+                
+                <div id="staff">
+                    <label class="control-label">人员分配：</label>
+                    <?php foreach($staff as $key=>$value) {
+                            echo '<span style = " margin:0 10px;" ><input type = "checkbox" name="staff" value = "'.$value->id.'" />'.$value->staff_name.'</span>';
+                        }
+                    ?>
+                </div>
+                <div>
+                    <input type="hidden" id="typeValue" value="install" />
+                    <input type="button" id="editStatus" class="btn btn-info" value="修改" />
                 </div>
                 
-                <input type="button" id="editStatus" class="btn btn-info" value="修改" />
             </div>
             <!--End Advanced Tables -->
         </div>
@@ -69,6 +80,7 @@
 <link rel="stylesheet" href="/assets/adminTemplate/js/jstree/dist/themes/default-dark/style.min.css">
 <!-- JsTree Js-->
 <script src="/assets/adminTemplate/js/jstree/dist/jstree.min.js"></script>
+<script src="/assets/adminTemplate/js/common.js"></script>
 <script type="text/javascript">
 var search = null;
 $(window).ready(function(){
@@ -84,31 +96,6 @@ $(window).ready(function(){
     $("#showMap").click(function(){
         window.location.href = "/admin/adv/map";
     });
-    
-    $("#checkAll").click(function(){
-        
-        for(var key in $("input[name='adv_id']")){
-            $("input[name='adv_id']")[key].checked = this.checked;
-        }
-//        if(this.checked){
-//            for(var key in $("input[name='adv_id']")){
-//                $("input[name='adv_id']")[key].checked = true;
-//            }
-//            //$("input[name='adv_id']").checked = true;
-//        }else{
-//            for(var key in $("input[name='adv_id']")){
-//                $("input[name='adv_id']")[key].checked = false;
-//            }
-//            //$("input[name='adv_id']").checked = false;
-//        }
-    })
-    
-   
-    
-    function getCheckId(){
-        
-    }
-
     var table = $('#dataTables-example').dataTable({
             "ordering" : false,
             "language": {
@@ -143,62 +130,6 @@ $(window).ready(function(){
             },
             'columns' : <?=$columns?>
         }
-    ).api();
-    
-    $(document).on('click', "input[name='adv_id']", function() {
-        var status = true;
-        for(var i=0;i< $("input[name='adv_id']").length;i++){
-            if(!$("input[name='adv_id']")[i].checked){
-                status = false;
-            }
-        }
-        console.log(status);
-        $("#checkAll").checked = status;
-    });
-    
-    function getCheckId(){
-        var arr = [];
-        for(var i=0;i< $("input[name='adv_id']").length;i++){
-            if($("input[name='adv_id']")[i].checked){
-                arr.push($("input[name='adv_id']")[i].value); 
-            }
-        }
-        return arr;
-    }
-    
-    $("#editStatus").click(function(){
-        var ids = getCheckId();
-        if(ids.length < 1){
-            alert("请选择至少一条记录！");
-            return false;
-        }
-        //读取修改状态
-        var adv_install_status = $("select[name='adv_install_status']").val();
-        var adv_pic_status = $("select[name='adv_pic_status']").val();
-        if(adv_install_status == -1 && adv_pic_status == -1 ){
-            alert("无修改！");
-            return false;
-        }
-        if(confirm("确定要修改记录状态吗？")){
-            $.ajax( {
-                "type": "POST",
-                "contentType": "application/x-www-form-urlencoded",
-                "url": "/admin/adv/ajaxeditstatus",
-                "dataType": "json",
-                "data": {ids:ids,adv_install_status:adv_install_status,adv_pic_status:adv_pic_status}, //以json格式传递
-                "success": function(data) {
-                    if(data > 0){
-                        alert(data+"条记录状态修改成功！");
-                        //刷新页面  目前无法在列表数据中看出状态 预留
-                        //window.location.reload();
-                    }else{
-                        alert("记录修改失败！");
-                    }
-                }
-            });
-        }
-        
-    })
-    
+    ).api(); 
 });
 </script>

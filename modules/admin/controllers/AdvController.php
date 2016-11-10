@@ -41,8 +41,10 @@ class AdvController extends \yii\web\Controller
         $advList = PAdv::find()->all();
         $column = DataTools::getDataTablesColumns($this->advColumns);
         $jsonDataUrl = '/admin/adv/managerjson';
+        $company_id = \Yii::$app->session['loginUser']->company_id;
+        $staff = PStaff::find()->where('company_id = "' .$company_id. '"')->select('staff_name,id')->all();
         return $this->render('advManager', array("columns" => $column, 'jsonurl'=>$jsonDataUrl,
-            'advlist' => $advList
+            'advlist' => $advList,"staff"=>$staff
         ));
     }
 
@@ -203,23 +205,57 @@ class AdvController extends \yii\web\Controller
         $ids = $post['ids'];
         $adv_install_status = $post['adv_install_status'];
         $adv_pic_status = $post['adv_pic_status'];
+        $staffs = $post['staffs'];
+        $type = $post['type'];
         $set = array();
         if($adv_install_status > -1){
             $set[] = 'adv_install_status = '.$adv_install_status;
+            switch ($adv_install_status){
+                case 0:
+                    $set[] = 'adv_use_status = 0';
+                case 1:
+                    $set[] = 'adv_use_status = 1';
+                case 2:
+                    $set[] = 'adv_use_status = 2';
+            }
         }
         if($adv_pic_status > -1){
             $set[] = 'adv_pic_status = '.$adv_pic_status;
+            switch ($adv_pic_status){
+                case 2:
+                    $set[] = 'adv_use_status = 2';
+                default :
+                    $set[] = 'adv_use_status = 1';
+            }
         }
         $sql = "UPDATE p_adv SET ".  implode(",", $set)." where id IN (".  implode(",", $ids).")";
-        
         $connection=\Yii::$app->db;
         $command=$connection->createCommand($sql);
         $result=$command->execute();
+        
+        //操作是否需要记录 p_adv_staff
+        if(in_array($adv_install_status, array(0,1)) || in_array($adv_pic_status, array(1,3))){
+            $values_map = array();
+            if($adv_install_status != -1){
+                $point_status = $adv_install_status;
+            }else{
+                $point_status = $adv_pic_status;
+            }
+            foreach($ids as $v){
+            $values_map[] = "( $v,'".implode(",", $staffs)."',".time().",$point_status,'".$type."' )";
+            }
+            $sql = "INSERT INTO p_adv_staff (adv_id,staff_ids,ctime,point_status,type) VALUES ".implode(",", $values_map)." ;";
+            $connection=\Yii::$app->db;
+            $command=$connection->createCommand($sql);
+            $result=$command->execute();
+        }
         exit(json_encode($result));
     }
     
     public function actionMap(){
         $community = PCommunity::find()->asArray()->all();
-        return $this->render('advMap', array("data"=>$community,"datajson"=>json_encode($community)));
+        $company_id = \Yii::$app->session['loginUser']->company_id;
+        $staff = PStaff::find()->where('company_id = "' .$company_id. '"')->all();
+        return $this->render('advMap', array("data"=>$community,"datajson"=>json_encode($community),"staff"=>$staff));
     }
 }
