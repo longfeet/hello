@@ -83,7 +83,7 @@ $("select[name='adv_pic_status']").change(function(){
                     if(data > 0){
                         alert(data+"条记录状态修改成功！");
                         //刷新页面  目前无法在列表数据中看出状态 预留
-                        //window.location.reload();
+                        window.location.reload();
                     }else{
                         alert("记录修改失败！");
                     }
