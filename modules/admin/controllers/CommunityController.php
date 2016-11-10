@@ -214,7 +214,7 @@ class CommunityController extends \yii\web\Controller
         $lat = $post['lat'];
         $lng = $post['lng'];
         $length = $post['length']+0.5;
-        $sql = " SELECT adv.*,com.community_cbd,cpy.company_name from p_adv adv "
+        $sql = " SELECT adv.*,com.community_name,cpy.company_name from p_adv adv "
                 . " LEFT JOIN p_community com ON adv.adv_community_id = com.id "
                 . " LEFT JOIN p_company cpy ON adv.company_id = cpy.id "
                 . " where adv.adv_community_id IN (select id from p_community where sqrt((((".$lng."-`community_longitudex`)*PI()*12656*cos(((".$lat."+`community_latitudey`)/2)*PI()/180)/180)*((".$lng."-`community_longitudex`)*PI()*12656*cos (((".$lat."+`community_latitudey`)/2)*PI()/180)/180))+(((".$lat."-`community_latitudey`)*PI()*12656/180)*((".$lat."-`community_latitudey`)*PI()*12656/180)))<".$length .") "

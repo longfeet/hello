@@ -30,6 +30,7 @@
                     <th width="20%" rowspan="1" colspan="1" style="width: 322px;">广告名称</th>
                     <th width="35%" rowspan="1" colspan="1" style="width: 577px;">楼盘名称</th>
                     <th width="10%" rowspan="1" colspan="1" style="width: 152px;">公司名称</th>
+                    <th width="10%" rowspan="1" colspan="1" style="width: 152px;">状态</th>
                 </tr>
                 </thead>
                 <tbody id="tableCon">
@@ -208,7 +209,7 @@
         //ajax 处理 园内 广告机列表
         getAdvList(e.point.lng,e.point.lat,$("input[name=mapfield]").val());
     });
-    
+    var status_str = ['新增','未使用','已使用'];
     function getAdvList(lng,lat,length){
         //console.log(lng+","+lat);
         $.ajax({
@@ -222,7 +223,7 @@
                 var html = '';
                 for(var key in data){
                     var item = data[key];
-                    html += '<tr><td><input type="checkbox" name="adv_id" value="'+item.id+'" />'+(parseInt(key)+1)+'</td><td>'+item.adv_name+'</td><td>'+item.community_cbd+'</td><td>'+item.company_name+'</td></tr>'; 
+                    html += '<tr><td><input type="checkbox" name="adv_id" value="'+item.id+'" />'+(parseInt(key)+1)+'</td><td>'+item.adv_name+'</td><td>'+item.community_name+'</td><td>'+item.company_name+'</td><td>'+status_str[item.adv_use_status]+'</td></tr>'; 
                 }
                 document.getElementById('tableCon').innerHTML = html;
             }
