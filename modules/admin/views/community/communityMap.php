@@ -180,7 +180,7 @@
                 var html = '';
                 for(var key in data){
                     var item = data[key];
-                    html += '<tr><td>'+(parseInt(key)+1)+'</td><td>'+item.adv_name+'</td><td>'+item.community_cbd+'</td><td>'+item.company_name+'</td></tr>'; 
+                    html += '<tr><td>'+(parseInt(key)+1)+'</td><td>'+item.adv_name+'</td><td>'+item.community_name+'</td><td>'+item.company_name+'</td></tr>'; 
                 }
                 document.getElementById('tableCon').innerHTML = html;
             }
