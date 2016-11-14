@@ -39,13 +39,72 @@ class AdvController extends \yii\web\Controller
     public function actionManager()
     {
         $advList = PAdv::find()->all();
-        $column = DataTools::getDataTablesColumns($this->advColumns);
-        $jsonDataUrl = '/admin/adv/managerjson';
+        //$column = DataTools::getDataTablesColumns($this->advColumns);
+        //$jsonDataUrl = '/admin/adv/managerjson';
         $company_id = \Yii::$app->session['loginUser']->company_id;
         $staff = PStaff::find()->where('company_id = "' .$company_id. '"')->select('staff_name,id')->all();
+        
+        //获取列表数据
+        
         return $this->render('advManager', array("columns" => $column, 'jsonurl'=>$jsonDataUrl,
             'advlist' => $advList,"staff"=>$staff
         ));
+    }
+    
+    public function actionAjaxmamger(){
+        $post = \Yii::$app->request->post();
+        $page = $post['page'] ? $post['page'] : 1;
+        $count = 20;
+        $name = $post['name'];
+        $adv_no = $post['adv_no'];
+        $postion = $post['postion'];
+        $com_no = $post['com_no'];
+        
+        $where = array(
+            ' 1=1 '
+        );
+        if(!empty($name)){
+            $where[] = " com.community_name like '%$name%' ";
+        }
+        if(!empty($adv_no)){
+            $where[] = " adv.adv_no = $adv_no ";
+        }
+        if(!empty($postion)){
+            $where[] = " com.community_position = '$postion' ";
+        }
+        if(!empty($postion)){
+            $where[] = " com.community_no = $com_no ";
+        }
+        $limit = (($page-1)*$count).",$count ";
+        $sql = "select adv.*,com.community_name,cpy.company_name from p_adv adv "
+                . " LEFT JOIN p_community com ON adv.adv_community_id = com.id "
+                . " LEFT JOIN p_company cpy ON adv.company_id = cpy.id "
+                . " where ".  implode("AND", $where)
+                . " order by  adv.id desc"
+                . " limit ".$limit;
+        //exit(json_encode($sql));
+        $connection=\Yii::$app->db;
+        $command=$connection->createCommand($sql);
+        $list=$command->queryAll();
+        
+        $sql = "select count(*) allCount from p_adv adv "
+                . " LEFT JOIN p_community com ON adv.adv_community_id = com.id "
+                . " LEFT JOIN p_company cpy ON adv.company_id = cpy.id "
+                . " where ".  implode("AND", $where)
+                . " order by  adv.id desc";
+        
+        $connection=\Yii::$app->db;
+        $command=$connection->createCommand($sql);
+        $allCount=$command->queryOne(); 
+        //提供分页数据
+        $page_data = array(
+            'page'=>(int)$page,
+            'count'=>$count,
+            'allCount'=>(int)$allCount['allCount'],
+            'allPage'=>$allCount['allCount'] / $count
+        );
+        
+        exit(json_encode(array('list_data'=>$list,'page_data'=>$page_data)));
     }
 
     /**
