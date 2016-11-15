@@ -137,7 +137,7 @@
         var pointData = this._point;
         var pointSource = this._data;
         div.onclick = function(){
-            var html = "<div style='font-size:12px;'><p>楼盘编号："+pointSource.community_no+"</p><p>楼盘名称："+pointSource.community_name+"</p><p>详细地址："+pointSource.community_position+"</p><p>所属商圈："+pointSource.community_cbd+"</p></div>";
+            var html = "<div style='font-size:12px;'>楼盘编号："+pointSource.community_no+"</br>楼盘名称："+pointSource.community_name+"</br>详细地址："+pointSource.community_position+"</br>所属商圈："+pointSource.community_cbd;
             var infoWindow = new BMap.InfoWindow(html);    // 创建信息窗口对象
             console.log(pointData);
             map.openInfoWindow(infoWindow,pointData);
@@ -206,7 +206,7 @@
                             break;
                     }
                     //楼盘编号 楼盘名称，详细地址，类型，所属商圈，楼盘性质，广告位数量
-                    html += '<tr><td>'+(parseInt(key)+1)+'</td><td>'+item.community_no+'</td><td>'+item.community_name+'</td><td>'+item.community_position+'</td><td>'+item.community_level+'</td><td>'+item.community_cbd+'</td><td>'+community_nature+'</td><td>'+item.adv_num+'</td></tr>'; 
+                    html += '<tr><td>'+(parseInt(key)+1)+'</td><td>'+item.community_no+'</td><td>'+item.community_name+'</td><td>'+item.community_position+'</td><td>'+item.community_category+'</td><td>'+item.community_cbd+'</td><td>'+community_nature+'</td><td>'+item.adv_num+'</td></tr>';
                 }
                 document.getElementById('tableCon').innerHTML = html;
             }
