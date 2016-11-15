@@ -99,12 +99,12 @@ class AdvController extends \yii\web\Controller
         $command=$connection->createCommand($sql);
         $list=$command->queryAll();
         
-        $sql = "select count(*) allCount from p_adv adv "
+        $sql = "select count(DISTINCT(adv.id)) allCount from p_adv adv "
                 . " LEFT JOIN p_community com ON adv.adv_community_id = com.id "
                 . " LEFT JOIN p_company cpy ON adv.company_id = cpy.id "
                 . " LEFT JOIN p_adv_staff st ON adv.id = st.adv_id "
                 . " where ".  implode("AND", $where)
-                . " order by  adv.id desc";
+                . " ORDER BY  adv.id desc";
         
         $connection=\Yii::$app->db;
         $command=$connection->createCommand($sql);
@@ -114,9 +114,9 @@ class AdvController extends \yii\web\Controller
             'page'=>(int)$page,
             'count'=>$count,
             'allCount'=>(int)$allCount['allCount'],
-            'allPage'=>$allCount['allCount'] / $count
+            'allPage'=>ceil($allCount['allCount'] / $count),
+            'sql'=>$sql
         );
-        
         exit(json_encode(array('list_data'=>$list,'page_data'=>$page_data)));
     }
 
