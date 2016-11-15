@@ -49,9 +49,10 @@ class CommunityController extends \yii\web\Controller
      */
     public function actionManagerjson()
     {
+        $staff = \Yii::$app->session['loginUser'];
         //请求,排序,展示字段,展示字段的字段名(支持relation字段),主表实例,搜索字段
         DataTools::getJsonData(\Yii::$app->request, "id desc", $this->communityColumns, $this->communityColumnsVal,
-            new PCommunity(), "community_name");
+            new PCommunity(), "community_name","",$staff);
     }
 
     /**

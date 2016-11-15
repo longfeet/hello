@@ -36,14 +36,41 @@ class DataTools
      * @param $columns 列
      * @param $columnVals 列值字段名
      * @param $checkbox 有值标示 id 旁增加 checkbox 值 等于 checkbox name
+     * @param $staff 传入session中的user
      */
-    public static function getJsonData($request, $order, $columns, $columnVals, $object, $searchField,$checkbox='')
+    public static function getJsonData($request, $order, $columns, $columnVals, $object, $searchField, $checkbox = '', $staff = '')
     {
         $seach = $request->get('search', "");
         $data = $object::find();
         $ar = $data;
         if (isset($seach['value'])) {
-            $ar = $data->where("$searchField like \"%" . $seach['value'] . "%\"");
+            //权限控制
+            if ($staff != '') {
+                if ($staff->staff_level == 1)
+                    $ar = $data->where("company_id =".$staff->company_id." and creator = " . $staff->id." and $searchField like \"%" . $seach['value'] . "%\"");
+                else if ($staff->staff_level == 2)
+                    $ar = $data->where("company_id =".$staff->company_id." and creator in (select id from p_staff where staff_sector ='" . $staff->staff_sector . "')"." and $searchField like \"%" . $seach['value'] . "%\"");
+                else if($staff->staff_level == 3)
+                    $ar = $data->where("company_id =".$staff->company_id." and $searchField like \"%" . $seach['value'] . "%\"");
+                else
+                    $ar = $data->where("$searchField like \"%" . $seach['value'] . "%\"");
+            }else
+            {
+                $ar = $data->where("$searchField like \"%" . $seach['value'] . "%\"");
+            }
+        } else {
+            //权限控制
+            if ($staff != '') {
+                if ($staff->staff_level == 1)
+                    $ar = $data->where("company_id =".$staff->company_id." and creator = " . $staff->id);
+                else if ($staff->staff_level == 2)
+                    $ar = $data->where("company_id =".$staff->company_id." and creator in (select id from p_staff where staff_sector ='" . $staff->staff_sector . "')");
+                else if($staff->staff_level == 3)
+                    $ar = $data->where("company_id =".$staff->company_id);
+                else
+                    $ar = $data->where("$searchField like \"%" . $seach['value'] . "%\"");
+            }
+
         }
         $length = $request->get('length') ? $request->get('length') : "10";
         $start = $request->get('start') ? $request->get('start') : "0";
@@ -82,12 +109,12 @@ class DataTools
                 if (isset($columnVals[$k]) && trim($columnVals[$k]) != "" && strpos($columnVals[$k], '<') !== 0) {
                     if ($k == "id")      //序号自增长
                     {
-                        if($checkbox){
-                            $array[$v] = "<input type='checkbox' value='".$val->id."' name='".$checkbox."' />".$num;
-                        }else{
+                        if ($checkbox) {
+                            $array[$v] = "<input type='checkbox' value='" . $val->id . "' name='" . $checkbox . "' />" . $num;
+                        } else {
                             $array[$v] = $num;
                         }
-                        
+
                         $num++;
                     } else
                         $array[$v] = $val->$columnVals[$k];
@@ -106,6 +133,8 @@ class DataTools
                         $html = substr($html, 0, strlen($html) - 1);
                         $htmlArray = explode(',', $html);
                         foreach ($htmlArray as $element) {
+                            if ($element == 'details')
+                                $array[$v] .= $detailsHtml . $nbsp;
                             if ($element == 'editrole')
                                 $array[$v] .= $editRoleHtml . $nbsp;
                             if ($element == 'edit')
@@ -114,7 +143,7 @@ class DataTools
                                 $array[$v] .= $deleteHtml . $nbsp;
                             if ($element == 'bindrole')
                                 $array[$v] .= $bindRoleHtml . $nbsp;
-                            if($element == 'bindadv')
+                            if ($element == 'bindadv')
                                 $array[$v] .= $bindadv . $nbsp;
                         }
                     } else {

@@ -6,6 +6,33 @@
             </h1>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Advanced Tables -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    设备添加
+                </div>
+                <div>
+                    <div class="row" style="padding-top: 7px;">
+                        <div class="col-md-3" style="width:110px;"><label class="help-block" style="float: right;">部门名称：</label></div>
+                        <div class="col-md-5"><input class="form-control" type="text" name="sector_name" /></div>
+                    </div>
+                    <div class="row" style="padding-top: 5px;">
+                        <div class="col-md-3" style="width:110px;padding-left: 60px;padding-bottom: 5px;">
+                            <a href="javascript:;" class="btn btn-info" id="addSector" style="float:right;width:5rem;text-align:center;margin-right:50%;">添&nbsp;加</a>
+                        </div>
+                        <div class="col-md-1"><a href="javascript:;" class="btn btn-info" id="updateSector" style="float:right;width:5rem;text-align:center;margin-right:50%;">更&nbsp;新</a></div>
+                        <div class="col-md-1"><a href="javascript:;" class="btn btn-info" id="deleteSector" style="float:right;width:5rem;text-align:center;margin-right:50%;">删&nbsp;除</a></div>
+
+                        <div class="col-md-5"></div>
+                    </div>
+                </div>
+            </div>
+            <!--End Advanced Tables -->
+        </div>
+    </div>
+
     <!-- /. ROW  -->
     <div class="row">
         <div class="col-md-12">
@@ -217,5 +244,26 @@
                 });//end of ajax
             }//end of bind function
         });//end of tree
+
+        //添加
+        $("#addSector").click(function(){
+            var sector_name = $('input[name=sector_name]').val();
+
+            $.ajax({
+                "type": "POST",
+                "contentType": "application/x-www-form-urlencoded",
+                "url": "/admin/user/addsector",
+                "data" : {
+                    'sector_name' : sector_name
+                },
+                "dataType": "json",
+                "success": function (data) {
+                    alert(1);
+
+
+                }
+            });
+        });
+
     });//end of window.ready
 </script>

@@ -167,6 +167,15 @@ class UserController extends \yii\web\Controller
     }
 
     /**
+     * @return string
+     * 部门添加
+     */
+    public function actionAddsector()
+    {
+        echo "123";
+    }
+
+    /**
      * 根据company_id获得该公司下面的所有部门信息
      */
     public function actionGetsectorbycompany()
