@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 var save_list_data = {};
-$("#staff").hide();
+$("#fix_status").hide();
 $("#checkAll").click(function(){
         
     for(var key in $("input[name='adv_id']")){

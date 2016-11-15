@@ -59,7 +59,8 @@ class AdvController extends \yii\web\Controller
         $adv_no = $post['adv_no'];
         $postion = $post['postion'];
         $com_no = $post['com_no'];
-        
+        $value = $post['value'];
+        $thisVal = $post['thisVal'];
         $where = array(
             ' 1=1 '
         );
@@ -75,13 +76,24 @@ class AdvController extends \yii\web\Controller
         if(!empty($postion)){
             $where[] = " com.community_no = $com_no ";
         }
+        if(!empty($value)){
+            $where[] = " adv.".$value." in ( ".$thisVal." ) ";
+            if($value == 'adv_install_status'){
+                $where[] = " st.type = 'install' ";
+            }else{
+                $where[] = " st.type = 'pic' ";
+            }
+            $where[] = " st.point_status = ".$thisVal;
+        }
         $limit = (($page-1)*$count).",$count ";
-        $sql = "select adv.*,com.community_name,cpy.company_name from p_adv adv "
+        $sql = "SELECT adv.*,com.community_name,cpy.company_name,count(st.id) people_num FROM p_adv adv "
                 . " LEFT JOIN p_community com ON adv.adv_community_id = com.id "
                 . " LEFT JOIN p_company cpy ON adv.company_id = cpy.id "
-                . " where ".  implode("AND", $where)
-                . " order by  adv.id desc"
-                . " limit ".$limit;
+                . " LEFT JOIN p_adv_staff st ON adv.id = st.adv_id "
+                . " WHERE ".  implode(" AND ", $where)
+                . " GROUP BY adv.id "
+                . " ORDER BY  adv.id desc"
+                . " LIMIT ".$limit;
         //exit(json_encode($sql));
         $connection=\Yii::$app->db;
         $command=$connection->createCommand($sql);
@@ -90,6 +102,7 @@ class AdvController extends \yii\web\Controller
         $sql = "select count(*) allCount from p_adv adv "
                 . " LEFT JOIN p_community com ON adv.adv_community_id = com.id "
                 . " LEFT JOIN p_company cpy ON adv.company_id = cpy.id "
+                . " LEFT JOIN p_adv_staff st ON adv.id = st.adv_id "
                 . " where ".  implode("AND", $where)
                 . " order by  adv.id desc";
         
