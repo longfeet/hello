@@ -5,6 +5,7 @@
  */
 var save_list_data = {};
 $("#fix_status").hide();
+$("#staff").hide();
 $("#checkAll").click(function(){
         
     for(var key in $("input[name='adv_id']")){

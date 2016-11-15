@@ -236,11 +236,13 @@ $(window).ready(function(){
         if(value == 'adv_install_status'){
             $("#fix_status").show();
             $(".pic_status").hide();
+            $(".pic_status select").val(-1);
             $(".install_status").show();
         }
         if(value == 'adv_pic_status'){
             $("#fix_status").show();
             $(".install_status").hide();
+            $(".install_status select").val(-1);
             $(".pic_status").show();
         }
     });
