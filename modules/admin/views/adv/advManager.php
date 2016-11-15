@@ -35,6 +35,11 @@
                         <div class="form-group">
                           <input type="email" class="form-control" id="adv_no" placeholder="请输入广告位编号">
                         </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="just_see"> 浏览模式
+                            </label>
+                        </div>
                         <button type="button" id="searchBtn" class="btn btn-default">搜索</button>
                   </form>
                 </div>
@@ -217,7 +222,24 @@ $(window).ready(function(){
             getList(page);
         }
         
+    });
+    
+    $("input[name='just_see']").change(function(){
+        console.log(this.checked);
+        if(this.checked){
+            status_search = {range:'all'};
+            getList();
+            $("#fix_status").hide();
+            $("#statusFix a").hide();
+            
+        }else{
+            status_search = {range:'mine'};
+            getList();
+            $("#statusFix a").show();
+        }
     })
+    
+    
     
     $("#statusFix a").click(function(){
         event.preventDefault();
@@ -233,16 +255,16 @@ $(window).ready(function(){
         status_search.value = value;
         status_search.thisVal = thisVal;
         getList();
+        $("#fix_status").show();
+        $(".pic_status select").val(-1);
+        $(".install_status select").val(-1);
+        $("#staff").hide();
         if(value == 'adv_install_status'){
-            $("#fix_status").show();
             $(".pic_status").hide();
-            $(".pic_status select").val(-1);
             $(".install_status").show();
         }
         if(value == 'adv_pic_status'){
-            $("#fix_status").show();
             $(".install_status").hide();
-            $(".install_status select").val(-1);
             $(".pic_status").show();
         }
     });

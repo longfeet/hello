@@ -61,9 +61,26 @@ class AdvController extends \yii\web\Controller
         $com_no = $post['com_no'];
         $value = $post['value'];
         $thisVal = $post['thisVal'];
+        $range = $post['range'] ? $post['range'] : 'mine' ;
         $where = array(
             ' 1=1 '
         );
+        if($range === 'mine'){
+            //读取用户等级和部门 
+            $user_level = \Yii::$app->session['loginUser']->staff_level;
+            $staff_sector = \Yii::$app->session['loginUser']->staff_level;
+            $user_id = \Yii::$app->session['loginUser']->id;
+
+            switch ($user_level){
+                case 1:
+                    $where[] = " adv.creator = $user_id ";
+                    break;
+                case 2:
+                    $where[] = " adv.creator IN ( select id from p_staff where staff_sector = $staff_sector ) ";
+                    break;
+            }
+        }
+        
         if(!empty($name)){
             $where[] = " com.community_name like '%$name%' ";
         }
@@ -76,20 +93,23 @@ class AdvController extends \yii\web\Controller
         if(!empty($postion)){
             $where[] = " com.community_no = $com_no ";
         }
+        $st_where = array(
+            ' adv.id = st.adv_id '
+        );
         if(!empty($value)){
             $where[] = " adv.".$value." in ( ".$thisVal." ) ";
             if($value == 'adv_install_status'){
-                $where[] = " st.type = 'install' ";
+                $st_where[] = " st.type = 'install' ";
             }else{
-                $where[] = " st.type = 'pic' ";
+                $st_where[] = " st.type = 'pic' ";
             }
-            $where[] = " st.point_status = ".$thisVal;
+            $st_where[] = " st.point_status = ".$thisVal;
         }
         $limit = (($page-1)*$count).",$count ";
         $sql = "SELECT adv.*,com.community_name,cpy.company_name,count(st.id) people_num FROM p_adv adv "
                 . " LEFT JOIN p_community com ON adv.adv_community_id = com.id "
                 . " LEFT JOIN p_company cpy ON adv.company_id = cpy.id "
-                . " LEFT JOIN p_adv_staff st ON adv.id = st.adv_id "
+                . " LEFT JOIN p_adv_staff st ON ( ".  implode(" AND ", $st_where)." ) "
                 . " WHERE ".  implode(" AND ", $where)
                 . " GROUP BY adv.id "
                 . " ORDER BY  adv.id desc"
@@ -102,7 +122,6 @@ class AdvController extends \yii\web\Controller
         $sql = "select count(DISTINCT(adv.id)) allCount from p_adv adv "
                 . " LEFT JOIN p_community com ON adv.adv_community_id = com.id "
                 . " LEFT JOIN p_company cpy ON adv.company_id = cpy.id "
-                . " LEFT JOIN p_adv_staff st ON adv.id = st.adv_id "
                 . " where ".  implode("AND", $where)
                 . " ORDER BY  adv.id desc";
         
