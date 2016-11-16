@@ -52,7 +52,7 @@ class DataTools
                     $ar = $data->where("company_id =".$staff->company_id." and creator in (select id from p_staff where staff_sector ='" . $staff->staff_sector . "')"." and $searchField like \"%" . $seach['value'] . "%\"");
                 else if($staff->staff_level == 3)
                     $ar = $data->where("company_id =".$staff->company_id." and $searchField like \"%" . $seach['value'] . "%\"");
-                else
+                else if($staff->staff_level == 4)
                     $ar = $data->where("$searchField like \"%" . $seach['value'] . "%\"");
             }else
             {
@@ -67,7 +67,7 @@ class DataTools
                     $ar = $data->where("company_id =".$staff->company_id." and creator in (select id from p_staff where staff_sector ='" . $staff->staff_sector . "')");
                 else if($staff->staff_level == 3)
                     $ar = $data->where("company_id =".$staff->company_id);
-                else
+                else if($staff->staff_level == 4)
                     $ar = $data->where("$searchField like \"%" . $seach['value'] . "%\"");
             }
 
