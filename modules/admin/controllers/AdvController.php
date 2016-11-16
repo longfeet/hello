@@ -70,13 +70,21 @@ class AdvController extends \yii\web\Controller
             $user_level = \Yii::$app->session['loginUser']->staff_level;
             $staff_sector = \Yii::$app->session['loginUser']->staff_level;
             $user_id = \Yii::$app->session['loginUser']->id;
-
+            $company_id = \Yii::$app->session['loginUser']->company_id;
             switch ($user_level){
                 case 1:
                     $where[] = " adv.creator = $user_id ";
                     break;
                 case 2:
-                    $where[] = " adv.creator IN ( select id from p_staff where staff_sector = $staff_sector ) ";
+                    $where[] = " adv.creator IN ( select id from p_staff where staff_sector = $staff_sector AND company_id = $company_id ) ";
+                    break;
+                case 3:
+                    $where[] = " adv.creator IN ( select id from p_staff where company_id = $company_id ) ";
+                    break;
+                case 4:
+                    break;
+                default :
+                    die("非法请求");
                     break;
             }
         }
