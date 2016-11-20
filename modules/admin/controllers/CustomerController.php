@@ -39,7 +39,7 @@ class CustomerController extends \yii\web\Controller
         $staff = $session['loginUser'];
         //请求,排序,展示字段,展示字段的字段名(支持relation字段),主表实例,搜索字段
         DataTools::getJsonDataGenerl(\Yii::$app->request, "id desc", $this->columns, $this->columnsVal,
-            new PCustomer, "customer_company", "customer", 2, $staff->company_id);
+            new PCustomer, "customer_company", "customer", 2, $staff->company_id, $staff);
     }
 
     /*
@@ -167,11 +167,10 @@ class CustomerController extends \yii\web\Controller
      */
     public function actionDoexcel()
     {
-        if ($_FILES["commExcel"]["error"] <= 0)
-        {
-            $temp = explode(".",$_FILES["commExcel"]["name"]);
+        if ($_FILES["commExcel"]["error"] <= 0) {
+            $temp = explode(".", $_FILES["commExcel"]["name"]);
             $suffix = end($temp);
-            if($suffix == "xlsx") {
+            if ($suffix == "xlsx") {
                 $excel = ExcelTools::getExcelObject($_FILES["commExcel"]["tmp_name"]);
                 ExcelTools::setDataIntoCustomer($excel);
             }

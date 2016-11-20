@@ -1,6 +1,7 @@
 <?php
 
 namespace app\modules\admin\controllers;
+
 use app\modules\admin\models\PAdv;
 
 use app\modules\admin\models\DataTools;
@@ -9,6 +10,7 @@ use app\modules\admin\models\PModel;
 use app\modules\admin\models\ExcelTools;
 use app\modules\admin\models\PStaff;
 use app\modules\admin\models\PStaffRole;
+use app\modules\admin\models\PAdvStaff;
 
 
 /**
@@ -19,18 +21,18 @@ use app\modules\admin\models\PStaffRole;
 class AdvController extends \yii\web\Controller
 {
 
-    public $layout='admin';
+    public $layout = 'admin';
 
     /**
      * @var array 显示的数据列
      */
-    public $advColumns = array("id","adv_name","community_name","company_name","edit");
+    public $advColumns = array("id", "adv_name", "community_name", "company_name", "edit");
 
     /**
      * relation 关联的字段做成数组,支持多relation的深层字段属性(最多三层)
      * @var array
      */
-    public $advColumnsVal = array("id","adv_name",array("community","community_name"),array("company","company_name"),"<bindadv,edit,delete>");
+    public $advColumnsVal = array("id", "adv_name", array("community", "community_name"), array("company", "company_name"), "<bindadv,edit,delete>");
 
     /**
      *
@@ -42,16 +44,17 @@ class AdvController extends \yii\web\Controller
         //$column = DataTools::getDataTablesColumns($this->advColumns);
         //$jsonDataUrl = '/admin/adv/managerjson';
         $company_id = \Yii::$app->session['loginUser']->company_id;
-        $staff = PStaff::find()->where('company_id = "' .$company_id. '"')->select('staff_name,id')->all();
-        
+        $staff = PStaff::find()->where('company_id = "' . $company_id . '"')->select('staff_name,id')->all();
+
         //获取列表数据
-        
-        return $this->render('advManager', array("columns" => $column, 'jsonurl'=>$jsonDataUrl,
-            'advlist' => $advList,"staff"=>$staff
+
+        return $this->render('advManager', array("columns" => $column, 'jsonurl' => $jsonDataUrl,
+            'advlist' => $advList, "staff" => $staff
         ));
     }
-    
-    public function actionAjaxmamger(){
+
+    public function actionAjaxmamger()
+    {
         $post = \Yii::$app->request->post();
         $page = $post['page'] ? $post['page'] : 1;
         $count = 20;
@@ -61,17 +64,17 @@ class AdvController extends \yii\web\Controller
         $com_no = $post['com_no'];
         $value = $post['value'];
         $thisVal = $post['thisVal'];
-        $range = $post['range'] ? $post['range'] : 'mine' ;
+        $range = $post['range'] ? $post['range'] : 'mine';
         $where = array(
             ' 1=1 '
         );
-        if($range === 'mine'){
+        if ($range === 'mine') {
             //读取用户等级和部门 
             $user_level = \Yii::$app->session['loginUser']->staff_level;
-            $staff_sector = \Yii::$app->session['loginUser']->staff_level;
+            $staff_sector = \Yii::$app->session['loginUser']->staff_sector;
             $user_id = \Yii::$app->session['loginUser']->id;
             $company_id = \Yii::$app->session['loginUser']->company_id;
-            switch ($user_level){
+            switch ($user_level) {
                 case 1:
                     $where[] = " adv.creator = $user_id ";
                     break;
@@ -88,63 +91,79 @@ class AdvController extends \yii\web\Controller
                     break;
             }
         }
-        
-        if(!empty($name)){
+
+        if (!empty($name)) {
             $where[] = " com.community_name like '%$name%' ";
         }
-        if(!empty($adv_no)){
+        if (!empty($adv_no)) {
             $where[] = " adv.adv_no = $adv_no ";
         }
-        if(!empty($postion)){
+        if (!empty($postion)) {
             $where[] = " com.community_position = '$postion' ";
         }
-        if(!empty($postion)){
+        if (!empty($postion)) {
             $where[] = " com.community_no = $com_no ";
         }
         $st_where = array(
             ' adv.id = st.adv_id '
         );
-        if(!empty($value)){
-            $where[] = " adv.".$value." in ( ".$thisVal." ) ";
-            if($value == 'adv_install_status'){
+        if (!empty($value)) {
+            $where[] = " adv." . $value . " in ( " . $thisVal . " ) ";
+            if ($value == 'adv_install_status') {
                 $st_where[] = " st.type = 'install' ";
-            }else{
+            } else {
                 $st_where[] = " st.type = 'pic' ";
             }
-            $st_where[] = " st.point_status = ".$thisVal;
+            $st_where[] = " st.point_status = " . $thisVal;
         }
-        $limit = (($page-1)*$count).",$count ";
-        $sql = "SELECT adv.*,com.community_name,cpy.company_name,count(st.id) people_num FROM p_adv adv "
-                . " LEFT JOIN p_community com ON adv.adv_community_id = com.id "
-                . " LEFT JOIN p_company cpy ON adv.company_id = cpy.id "
-                . " LEFT JOIN p_adv_staff st ON ( ".  implode(" AND ", $st_where)." ) "
-                . " WHERE ".  implode(" AND ", $where)
-                . " GROUP BY adv.id "
-                . " ORDER BY  adv.id desc"
-                . " LIMIT ".$limit;
+        $limit = (($page - 1) * $count) . ",$count ";
+        $sql = "SELECT adv.*,com.community_name,cpy.company_name,count(st.id) people_num,st.id stid FROM p_adv adv "
+            . " LEFT JOIN p_community com ON adv.adv_community_id = com.id "
+            . " LEFT JOIN p_company cpy ON adv.company_id = cpy.id "
+            . " LEFT JOIN p_adv_staff st ON ( " . implode(" AND ", $st_where) . " ) "
+            . " WHERE " . implode(" AND ", $where)
+            . " GROUP BY adv.id "
+            . " ORDER BY  adv.id desc"
+            . " LIMIT " . $limit;
         //exit(json_encode($sql));
-        $connection=\Yii::$app->db;
-        $command=$connection->createCommand($sql);
-        $list=$command->queryAll();
-        
+        $connection = \Yii::$app->db;
+        $command = $connection->createCommand($sql);
+        $list = $command->queryAll();
+
         $sql = "select count(DISTINCT(adv.id)) allCount from p_adv adv "
-                . " LEFT JOIN p_community com ON adv.adv_community_id = com.id "
-                . " LEFT JOIN p_company cpy ON adv.company_id = cpy.id "
-                . " where ".  implode("AND", $where)
-                . " ORDER BY  adv.id desc";
-        
-        $connection=\Yii::$app->db;
-        $command=$connection->createCommand($sql);
-        $allCount=$command->queryOne(); 
+            . " LEFT JOIN p_community com ON adv.adv_community_id = com.id "
+            . " LEFT JOIN p_company cpy ON adv.company_id = cpy.id "
+            . " where " . implode("AND", $where)
+            . " ORDER BY  adv.id desc";
+
+        $connection = \Yii::$app->db;
+        $command = $connection->createCommand($sql);
+        $allCount = $command->queryOne();
         //提供分页数据
         $page_data = array(
-            'page'=>(int)$page,
-            'count'=>$count,
-            'allCount'=>(int)$allCount['allCount'],
-            'allPage'=>ceil($allCount['allCount'] / $count),
-            'sql'=>$sql
+            'page' => (int)$page,
+            'count' => $count,
+            'allCount' => (int)$allCount['allCount'],
+            'allPage' => ceil($allCount['allCount'] / $count),
+            'sql' => $sql
         );
-        exit(json_encode(array('list_data'=>$list,'page_data'=>$page_data)));
+        exit(json_encode(array('list_data' => $list, 'page_data' => $page_data, 'range' => $range)));
+    }
+
+    public function actionShowpeople()
+    {
+        $result = "";
+        $id = \Yii::$app->request->get('id', '0');
+        $advStaff = PAdvStaff::find()->where("id=" . $id)->one();
+        if ($advStaff != '') {
+            $result = "分配人员为：";
+            $staff_ids = explode(",", $advStaff->staff_ids);
+            foreach ($staff_ids as $staff_id) {
+                $staff = PStaff::find()->where("id=" . $staff_id)->one();
+                $result = $result . $staff->staff_name . "；";
+            }
+        }
+        echo json_encode($result);
     }
 
     /**
@@ -153,9 +172,9 @@ class AdvController extends \yii\web\Controller
     public function actionAdd()
     {
         $company_id = \Yii::$app->session['loginUser']->company_id;
-        $models = PModel::find()->where('company_id = "' .$company_id. '" and model_status = "3"')->all();
+        $models = PModel::find()->where('company_id = "' . $company_id . '" and model_status = "3"')->all();
         $community = PCommunity::find()->all();
-        return $this->render('advAdd',array('list'=>$community,'model'=>$models));
+        return $this->render('advAdd', array('list' => $community, 'model' => $models));
     }
 
     /**
@@ -167,9 +186,9 @@ class AdvController extends \yii\web\Controller
     {
         $company_id = \Yii::$app->session['loginUser']->company_id;
         $adv = PAdv::find()->where('id = "' . $id . '"')->one();
-        $models = PModel::find()->where('company_id = "' .$company_id. '"')->all();
+        $models = PModel::find()->where('company_id = "' . $company_id . '"')->all();
         $community = PCommunity::find()->all();
-        return $this->render('advEdit',array('data'=>$adv,'list'=>$community, 'model'=>$models));
+        return $this->render('advEdit', array('data' => $adv, 'list' => $community, 'model' => $models));
     }
 
     /**
@@ -181,9 +200,9 @@ class AdvController extends \yii\web\Controller
     {
         $company_id = \Yii::$app->session['loginUser']->company_id;
         $adv = PAdv::find()->where('id = "' . $id . '"')->one();
-        $models = PModel::find()->where('company_id = "' .$company_id. '"')->all();
+        $models = PModel::find()->where('company_id = "' . $company_id . '"')->all();
         $community = PCommunity::find()->all();
-        return $this->render('advDetails',array('data'=>$adv,'list'=>$community, 'model'=>$models));
+        return $this->render('advDetails', array('data' => $adv, 'list' => $community, 'model' => $models));
     }
 
     /**
@@ -193,7 +212,7 @@ class AdvController extends \yii\web\Controller
     {
         //请求,排序,展示字段,展示字段的字段名(支持relation字段),主表实例,搜索字段
         DataTools::getJsonData(\Yii::$app->request, "id desc", $this->advColumns, $this->advColumnsVal,
-            new PAdv(), "adv_name",'adv_id');
+            new PAdv(), "adv_name", 'adv_id');
     }
 
     public function actionDoadd()
@@ -204,8 +223,8 @@ class AdvController extends \yii\web\Controller
         $adv->adv_no = $post['adv_no'];
         $adv->adv_community_id = $post['adv_community_id'];
         $adv->adv_name = $post['adv_name'];
-        $adv->adv_starttime = $post['adv_starttime'];
-        $adv->adv_endtime = $post['adv_endtime'];
+//        $adv->adv_starttime = $post['adv_starttime'];
+//        $adv->adv_endtime = $post['adv_endtime'];
         $adv->adv_image = $post['adv_image'];
         $adv->adv_property = $post['adv_property'];
         $adv->adv_position = $post['adv_position'];
@@ -258,11 +277,10 @@ class AdvController extends \yii\web\Controller
 
     public function actionDoexcel()
     {
-        if ($_FILES["commExcel"]["error"] <= 0)
-        {
-            $temp = explode(".",$_FILES["commExcel"]["name"]);
+        if ($_FILES["commExcel"]["error"] <= 0) {
+            $temp = explode(".", $_FILES["commExcel"]["name"]);
             $suffix = end($temp);
-            if($suffix == "xlsx") {
+            if ($suffix == "xlsx") {
                 $excel = ExcelTools::getExcelObject($_FILES["commExcel"]["tmp_name"]);
 
                 $company_id = \Yii::$app->session['loginUser']->company_id;
@@ -273,7 +291,7 @@ class AdvController extends \yii\web\Controller
 
                 $modelList = PModel::find()->select('id,model_id,model_name')->where('company_id=' . $company_id . ' and is_delete=0')->asArray()->all();
 
-                ExcelTools::setDataIntoAdv($excel,$communityList,$modelList);
+                ExcelTools::setDataIntoAdv($excel, $communityList, $modelList);
             }
         }
         $this->redirect("/admin/adv/manager");
@@ -284,22 +302,24 @@ class AdvController extends \yii\web\Controller
         return $this->render('process');
     }
 
-    public function actionFlow($id) {
+    public function actionFlow($id)
+    {
         $company_id = \Yii::$app->session['loginUser']->company_id;
-        $adv = PAdv::find()->where('id = "' . $id . '" and company_id = "' .$company_id. '"')->one();
-        $models = PModel::find()->where('company_id = "' .$company_id. '"')->all();
-        $community = PCommunity::find()->where('company_id = "' .$company_id. '"')->all();
-        $staff = PStaff::find()->where('company_id = "' .$company_id. '"')->all();
-        return $this->render('advFlow', array('data'=>$adv,'list'=>$community, 'model'=>$models,
-            'staff'=>$staff));
+        $adv = PAdv::find()->where('id = "' . $id . '" and company_id = "' . $company_id . '"')->one();
+        $models = PModel::find()->where('company_id = "' . $company_id . '"')->all();
+        $community = PCommunity::find()->where('company_id = "' . $company_id . '"')->all();
+        $staff = PStaff::find()->where('company_id = "' . $company_id . '"')->all();
+        return $this->render('advFlow', array('data' => $adv, 'list' => $community, 'model' => $models,
+            'staff' => $staff));
     }
 
     public function actionDownloadexcel()
     {
         $this->redirect("/excel/模版（广告位信息）.xlsx");
     }
-    
-    public function actionAjaxeditstatus(){
+
+    public function actionAjaxeditstatus()
+    {
         $post = \Yii::$app->request->post();
         $ids = $post['ids'];
         $adv_install_status = $post['adv_install_status'];
@@ -307,59 +327,60 @@ class AdvController extends \yii\web\Controller
         $staffs = $post['staffs'];
         $type = $post['type'];
         $set = array();
-        if($adv_install_status > -1){
-            $set[] = 'adv_install_status = '.$adv_install_status;
-            switch ($adv_install_status){
-                case 0:
-                    $set[] = ' adv_use_status = 0 ';
-                    break;
-                case 1:
-                    $set[] = ' adv_use_status = 1 ';
-                    break;
-                case 2:
-                    $set[] = ' adv_use_status = 2 ';
-                    break;
-            }
+        if ($adv_install_status > -1) {
+            $set[] = 'adv_install_status = ' . $adv_install_status;
+//            switch ($adv_install_status) {
+//                case 0:
+//                    $set[] = ' adv_use_status = 0 ';
+//                    break;
+//                case 1:
+//                    $set[] = ' adv_use_status = 1 ';
+//                    break;
+//                case 2:
+//                    $set[] = ' adv_use_status = 2 ';
+//                    break;
+//            }
         }
-        if($adv_pic_status > -1){
-            $set[] = 'adv_pic_status = '.$adv_pic_status;
-            switch ($adv_pic_status){
-                case 2:
-                    $set[] = ' adv_use_status = 2 ';
-                    break;
-                default :
-                    $set[] = ' adv_use_status = 1 ';
-                    break;
-            }
+        if ($adv_pic_status > -1) {
+            $set[] = 'adv_pic_status = ' . $adv_pic_status;
+//            switch ($adv_pic_status) {
+//                case 2:
+//                    $set[] = ' adv_use_status = 2 ';
+//                    break;
+//                default :
+//                    $set[] = ' adv_use_status = 1 ';
+//                    break;
+//            }
         }
-        $sql = "UPDATE p_adv SET ".  implode(",", $set)." where id IN (".  implode(",", $ids).")";
-        $connection=\Yii::$app->db;
-        $command=$connection->createCommand($sql);
-        $result=$command->execute();
-         
+        $sql = "UPDATE p_adv SET " . implode(",", $set) . " where id IN (" . implode(",", $ids) . ")";
+        $connection = \Yii::$app->db;
+        $command = $connection->createCommand($sql);
+        $result = $command->execute();
+
         //操作是否需要记录 p_adv_staff
-        if(in_array($adv_install_status, array(0,1)) || in_array($adv_pic_status, array(1,3))){
+        if (in_array($adv_install_status, array(0, 1)) || in_array($adv_pic_status, array(1, 3))) {
             $values_map = array();
-            if($adv_install_status != -1){
+            if ($adv_install_status != -1) {
                 $point_status = $adv_install_status;
-            }else{
+            } else {
                 $point_status = $adv_pic_status;
             }
-            foreach($ids as $v){
-            $values_map[] = "( $v,'".implode(",", $staffs)."',".time().",$point_status,'".$type."' )";
+            foreach ($ids as $v) {
+                $values_map[] = "( $v,'" . implode(",", $staffs) . "'," . time() . ",$point_status,'" . $type . "' )";
             }
-            $sql = "INSERT INTO p_adv_staff (adv_id,staff_ids,ctime,point_status,type) VALUES ".implode(",", $values_map)." ;";
-            $connection=\Yii::$app->db;
-            $command=$connection->createCommand($sql);
-            $result=$command->execute();
+            $sql = "INSERT INTO p_adv_staff (adv_id,staff_ids,ctime,point_status,type) VALUES " . implode(",", $values_map) . " ;";
+            $connection = \Yii::$app->db;
+            $command = $connection->createCommand($sql);
+            $result = $command->execute();
         }
-       exit(json_encode($result));
+        exit(json_encode($result));
     }
-    
-    public function actionMap(){
+
+    public function actionMap()
+    {
         $community = PCommunity::find()->asArray()->all();
         $company_id = \Yii::$app->session['loginUser']->company_id;
-        $staff = PStaff::find()->where('company_id = "' .$company_id. '"')->all();
-        return $this->render('advMap', array("data"=>$community,"datajson"=>json_encode($community),"staff"=>$staff));
+        $staff = PStaff::find()->where('company_id = "' . $company_id . '"')->all();
+        return $this->render('advMap', array("data" => $community, "datajson" => json_encode($community), "staff" => $staff));
     }
 }

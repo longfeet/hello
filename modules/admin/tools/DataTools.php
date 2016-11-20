@@ -186,7 +186,7 @@ class DataTools
             //权限控制
             if ($staff != '') {
                 if ($staff->staff_level == 1 || $staff->staff_level == 2 || $staff->staff_level == 3)
-                    $ar = $data->where("company_id =" . $staff->company_id);
+                    $ar = $data->where("company_id =" . $staff->company_id . " and adv_install_status=2 and (adv_use_status=0 or adv_use_status=1)");
             }
 
         }
@@ -417,21 +417,27 @@ class DataTools
      * @param $company_id 公司id
      * @param $staff 登录者信息
      */
-    public static function getJsonDataGenerl($request, $order, $columns, $columnVals, $object, $searchField, $name = "", $is_delete = 2, $company_id = 0,$staff='')
+    public static function getJsonDataGenerl($request, $order, $columns, $columnVals, $object, $searchField, $name = "", $is_delete = 2, $company_id = 0, $staff = '')
     {
         $seach = $request->get('search', "");
         $data = $object::find();
         $ar = $data;
         if (isset($seach['value'])) {
-
-            if ($is_delete == 2 && $company_id == 0)
+            //权限控制
+            if ($staff != '') {
+                if ($staff->staff_level == 1 || $staff->staff_level == 2 || $staff->staff_level == 3)
+                    $ar = $data->where("company_id =" . $staff->company_id . " and $searchField like \"%" . $seach['value'] . "%\"");
+                else if ($staff->staff_level == 4)
+                    $ar = $data->where("$searchField like \"%" . $seach['value'] . "%\"");
+            } else {
                 $ar = $data->where("$searchField like \"%" . $seach['value'] . "%\"");
-            else if ($is_delete != 2 && $company_id == 0)
-                $ar = $data->where("$searchField like \"%" . $seach['value'] . "%\" and is_delete =" . $is_delete);
-            else if ($is_delete = 2 && $company_id != 0)
-                $ar = $data->where("$searchField like \"%" . $seach['value'] . "%\" and company_id =" . $company_id);
-            else
-                $ar = $data->where("$searchField like \"%" . $seach['value'] . "%\" and company_id=" . $company_id . " and is_delete =" . $is_delete);
+            }
+        } else {
+            //权限控制
+            if ($staff != '') {
+                if ($staff->staff_level == 1 || $staff->staff_level == 2 || $staff->staff_level == 3)
+                    $ar = $data->where("company_id =" . $staff->company_id);
+            }
         }
         $length = $request->get('length') ? $request->get('length') : "10";
         $start = $request->get('start') ? $request->get('start') : "0";
@@ -514,7 +520,7 @@ class DataTools
      * @param $is_delete 该记录是否删除。 默认2（没有is_delete字段），0（未删除），1（已删除）
      * @param $staff 登录者信息
      */
-    public static function getJsonDataStaff($request, $order, $columns, $columnVals, $object, $searchField, $name, $is_delete = 2,$staff='')
+    public static function getJsonDataStaff($request, $order, $columns, $columnVals, $object, $searchField, $name, $is_delete = 2, $staff = '')
     {
         $seach = $request->get('search', "");
         $data = $object::find();
@@ -529,7 +535,7 @@ class DataTools
             } else {
                 $ar = $data->where("$searchField like \"%" . $seach['value'] . "%\"");
             }
-        }else{
+        } else {
             //权限控制
             if ($staff != '') {
                 if ($staff->staff_level == 1 || $staff->staff_level == 2 || $staff->staff_level == 3)

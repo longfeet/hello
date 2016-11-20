@@ -37,7 +37,7 @@
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" name="just_see"> 浏览模式
+                                <input type="checkbox" name="just_see" id="just_see"> 浏览模式
                             </label>
                         </div>
                         <button type="button" id="searchBtn" class="btn btn-default">搜索</button>
@@ -170,11 +170,32 @@ function buildHtml(data){
     var html = '';
     for(var key in data.list_data){
         var item = data.list_data[key];
-        var control_html = '<a href="/admin/adv/details?id='+item.id+'">详情</a> | <a href="/admin/adv/edit?id='+item.id+'">编辑</a> | <a href="/admin/adv/flow?id='+item.id+'">流程</a>';
-        html += '<tr><td><input type="checkbox" value="'+item.id+'" name="adv_id" />'+(parseInt(key)+1)+'</td><td>'+item.adv_name+'</td><td>'+item.community_name+'</td><td>'+item.company_name+'</td><td>'+item.people_num+'(人)</td><td>'+install_status[item.adv_install_status]+'</td><td>'+pic_status[item.adv_pic_status]+'</td><td>'+control_html+'</td></tr>';
+
+        var hasPeople= "";
+        if(item.people_num>0)
+            hasPeople="已分配"
+
+        var control_html = "";
+        if(data.range == "mine")
+            control_html= '<div class="advEdit"><a href="/admin/adv/details?id='+item.id+'">详情</a> | <a href="/admin/adv/edit?id='+item.id+'">编辑</a></div>';
+        html += '<tr><td><input type="checkbox" value="'+item.id+'" name="adv_id" />'+(parseInt(key)+1)+'</td><td>'+item.adv_name+'</td><td>'+item.community_name+'</td><td>'+item.company_name+'</td><td><a href="javascript:;" class="showPeople" adv_staff_id="'+item.stid+'">'+hasPeople+'</a></td><td>'+install_status[item.adv_install_status]+'</td><td>'+pic_status[item.adv_pic_status]+'</td><td>'+control_html+'</td></tr>';
     }
     document.getElementById("table_content").innerHTML = html;
     buildPage(data.page_data);
+
+    $('.showPeople').click(function(){
+        var adv_staff_id = $(this).attr("adv_staff_id");
+        $.ajax({
+            "type": "GET",
+            "contentType": "application/json",
+            "url": "/admin/adv/showpeople",
+            "dataType": "json",
+            "data": {id: adv_staff_id}, //以json格式传递
+            "success": function (data) {
+                alert(data);
+            }
+        });
+    });
 }
 
 document.getElementById("searchBtn").addEventListener('click',function(){
@@ -201,8 +222,6 @@ function buildPage(page_data){
     }
     document.getElementById("fenyeHtml").innerHTML = html+prev_html+num_html+next_html+'</ul>';
 }
-
-
 
 $(window).ready(function(){
     getList();
@@ -232,7 +251,6 @@ $(window).ready(function(){
             getList();
             $("#fix_status").hide();
             $("#statusFix a").hide();
-            
         }else{
             status_search = {range:'mine'};
             getList();
@@ -264,14 +282,15 @@ $(window).ready(function(){
         if(value == 'adv_install_status'){
             $(".pic_status").hide();
             $(".install_status").show();
+            $("#typeValue").val("install");  //设置提交按钮的值，从而指定相应adv_staff表中point_status
         }
         if(value == 'adv_pic_status'){
             $(".install_status").hide();
             $(".pic_status").show();
+            $("#typeValue").val("pic"); //设置提交按钮的值，从而指定相应adv_staff表中point_status
         }
     });
-   
-    
+
 //    var table = $('#dataTables-example').dataTable({
 //            "ordering" : false,
 //            "language": {

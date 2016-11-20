@@ -87,6 +87,7 @@ class SaleController extends \yii\web\Controller
 
         //遍历设置销售信息
         foreach ($ids as $key => $value) {
+            $advInfo = new PAdv();
             $advInfo = PAdv::find()->where("id=" . $value)->one();
             if($advInfo!=null)
             {
