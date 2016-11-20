@@ -1,7 +1,7 @@
 <div id="page-inner">
     <div class="row">
         <div class="col-md-12">
-            <h1 class="page-header">销售管理</h1>
+            <h1 class="page-header">销售管理/ <small>广告位销售</small></h1>
         </div>
     </div>
     <!-- /. ROW  -->
@@ -15,7 +15,7 @@
                         <table class="table table-striped table-bordered table-hover" id="dataTables-example">
                             <thead>
                             <tr>
-                                <th>序号</th>
+                                <th><input type="checkbox" id="checkAll"/>序号</th>
                                 <th>楼盘名称</th>
                                 <th>广告位编号</th>
                                 <th>广告位名称</th>
@@ -34,235 +34,134 @@
         </div>
     </div>
     <!-- /. ROW  -->
+
+    <div class="row">
+        <div class="col-md-1" style="width:120px;height: 35px;line-height:35px;">客户公司：</div>
+        <div class="col-md-9">
+            <select class="form-control" name="sales_company">
+                <option value="0">==请选择==</option>
+                <?php foreach ($customerList as $customer) { ?>
+                    <option value="<?= $customer->id ?>"><?= $customer->customer_company ?></option>
+                <?php } ?>
+            </select>
+        </div>
+    </div>
+    <div class="row" style="padding-top: 5px;">
+        <div class="col-md-1" style="width:120px;height: 35px;line-height:35px;">客户联系人：</div>
+        <div class="col-md-9"><input class="form-control" type="text" name="sales_customer"/></div>
+    </div>
+    <div class="row" style="padding-top: 5px;">
+        <div class="col-md-1" style="width:120px;height: 35px;line-height:35px;">开始时间：</div>
+        <div class="col-md-9"><input type="text" class="form-control" name="sales_starttime" id="sales_starttime"/>
+        </div>
+    </div>
+    <div class="row" style="padding-top: 5px;">
+        <div class="col-md-1" style="width:120px;height: 35px;line-height:35px;">到期时间：</div>
+        <div class="col-md-9"><input type="text" class="form-control" name="sales_endtime" id="sales_endtime"/></div>
+    </div>
+    <div class="row" style="padding-top: 5px;">
+        <div class="col-md-1" style="width:120px;height: 35px;line-height:35px;">销售人员：</div>
+        <div class="col-md-9"><input type="text" class="form-control" name="sales_person"
+                                     value="<?= $staff->staff_name ?>"/></div>
+    </div>
+    <div class="row" style="padding-top: 5px;">
+        <div class="col-md-1" style="width:120px;height: 35px;line-height:35px;">销售状态：</div>
+        <div class="col-md-9">
+            <select class="form-control" name="sales_status">
+                <option value="0">销售</option>
+                <option value="1">赠送</option>
+                <option value="2">置换</option>
+            </select>
+        </div>
+    </div>
+    <div class="row" style="padding-top: 5px;">
+        <div class="col-md-1" style="width:120px;height: 35px;line-height:35px;">备注：</div>
+        <div class="col-md-9"><textarea class="form-control" rows="3" name="sales_note"></textarea></div>
+    </div>
+    <div class="row" style="padding-top: 5px;">
+        <div class="col-md-1" style="width:120px;height: 35px;line-height:35px;">
+            <input type="button" id="saleSubmit" class="btn btn-info" value="提交"/>
+        </div>
+    </div>
+
+
 </div>
 <!-- /. PAGE INNER  -->
 <script src="/assets/artDialog/dist/dialog.js"></script>
-<script src="/assets/artDialog/dist/dialog-plus.js"></script>
-<link href="/assets/artDialog/css/ui-dialog.css" rel="stylesheet" />
+<script src="/assets/datepicker/jquery.ui.datepicker.js"></script>
+<script src="/assets/datepicker/jquery-ui.js"></script>
+<link rel="stylesheet" href="/css/jquery-ui.css">
+<link href="/assets/artDialog/css/ui-dialog.css" rel="stylesheet"/>
 <!-- JsTree Styles-->
 <link rel="stylesheet" href="/assets/adminTemplate/js/jstree/dist/themes/default/style.min.css">
 <link rel="stylesheet" href="/assets/adminTemplate/js/jstree/dist/themes/default-dark/style.min.css">
 <style type="text/css">
     .mydanger {
-        color:red;
+        color: red;
     }
 </style>
 <script type="text/javascript">
     $(document).ready(function () {
-
-        //excel上传
-        $("#addExcel").click(function(){
-            window.location.href = "/admin/customer/addexcel";
+        $('#sales_starttime').datepicker({
+            dateFormat: "yy-mm-dd",
+            monthNamesShort: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+            dayNamesMin: ['日', '一', '二', '三', '四', '五', '六'],
+            changeMonth: true,
+            changeYear: true
+        });
+        $('#sales_endtime').datepicker({
+            dateFormat: "yy-mm-dd",
+            monthNamesShort: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+            dayNamesMin: ['日', '一', '二', '三', '四', '五', '六'],
+            changeMonth: true,
+            changeYear: true
         });
 
-        var addDialog = dialog({
-            title:'添加客户信息',
-            id:'customerAdd',
-            drag:true,
-            content:$('#customerAdd'),
-            fixed:true,
-            top : '0%',
-            okValue: '确 定',
-            ok: function () {
-                var company = $('input[name=company]').val();
-                var address = $('input[name=address]').val();
-                var contact = $('input[name=contact]').val();
-                var phone = $('input[name=phone]').val();
-                var email = $('input[name=email]').val();
-                var industry = $('input[name=industry]').val();
+        $("#checkAll").click(function () {
 
-                if(company == "") {
-                    $('#addInfo').html('公司名称不能为空!');
-                    $('input[name=company]').addClass('alert-danger').focus();
-                }
-                if(address == "") {
-                    $('#addInfo').html('公司地址不能为空!');
-                    $('input[name=address]').addClass('alert-danger').focus();
-                }
-                if(contact == "") {
-                    $('#addInfo').html('联系人不能为空!');
-                    $('input[name=contact]').addClass('alert-danger').focus();
-                }
-                if(industry == "") {
-                    $('#addInfo').html('所属行业不能为空!');
-                    $('input[name=industry]').addClass('alert-danger').focus();
-                }
+            for (var key in $("input[name='adv_id']")) {
+                $("input[name='adv_id']")[key].checked = this.checked;
+            }
+        })
+
+        //客户公司联动客户联系人
+        $('select[name=sales_company]').change(function () {
+            var customer_id = $('select[name=sales_company] option:selected').val();
+            if (customer_id != 0) {
                 $.ajax({
                     "type": "POST",
                     "contentType": "application/x-www-form-urlencoded",
-                    "url": "/admin/customer/addcustomer",
-                    "data" : {
-                        'company' : company,
-                        'address' : address,
-                        'contact' : contact,
-                        'phone' : phone,
-                        'email' : email,
-                        'industry' : industry
-                    },
+                    "url": "/admin/sale/getcustomerinfo?customer_id=" + customer_id,
                     "dataType": "json",
                     "success": function (data) {
-                        if(data != '1') {
-                            $('#addInfo').addClass('text-danger').show();
-                            if(data == '-1') {//角色代码存在
-                                $('#addInfo').html('必填项不能为空!');
-                                $('input[name=new_staff_name]').addClass('alert-danger').focus();
-                            }else if(data == '-2'){
-                                $('#addInfo').html('公司名称已存在!');
-                                $('input[name=new_staff_name]').addClass('alert-danger').focus();
-                            }
-                            return false;
-                        } else {
-                            window.location.reload();
-                        }
+                        $("input[name='sales_customer']").val(data[0].customer_contact);
                     }
                 });
-                return false;
-            },
-            cancelValue:'取消',
-            cancel: function () {
-                this.close();// 隐藏
-                return false;
-            },
-            resize:true,
-        });
-
-        var editDialog = dialog({
-            title:'修改客户信息',
-            id:'customerEdit',
-            drag:true,
-            content:$('#customerEdit'),
-            fixed:true,
-            top : '0%',
-            okValue: '确 定',
-            ok: function () {
-                var customerID=$('input[name=customerID]').val();
-                var companyEdit = $('input[name=companyEdit]').val();
-                var addressEdit = $('input[name=addressEdit]').val();
-                var contactEdit = $('input[name=contactEdit]').val();
-                var phoneEdit = $('input[name=phoneEdit]').val();
-                var emailEdit = $('input[name=emailEdit]').val();
-                var industryEdit = $('input[name=industryEdit]').val();
-
-                if(companyEdit == "") {
-                    $('#editInfo').html('公司名称不能为空!');
-                    $('input[name=companyEdit]').addClass('alert-danger').focus();
-                }
-                if(addressEdit == "") {
-                    $('#editInfo').html('公司地址不能为空!');
-                    $('input[name=addressEdit]').addClass('alert-danger').focus();
-                }
-                if(contactEdit == "") {
-                    $('#editInfo').html('联系人不能为空!');
-                    $('input[name=contactEdit]').addClass('alert-danger').focus();
-                }
-                if(industryEdit == "") {
-                    $('#editInfo').html('所属行业不能为空!');
-                    $('input[name=industryEdit]').addClass('alert-danger').focus();
-                }
-
-                $.ajax({
-                    "type": "POST",
-                    "contentType": "application/x-www-form-urlencoded",
-                    "url": "/admin/customer/updatecustomer",
-                    "data" : {
-                        'customerID':customerID,
-                        'company' : companyEdit,
-                        'address' : addressEdit,
-                        'contact' : contactEdit,
-                        'phone' : phoneEdit,
-                        'email' : emailEdit,
-                        'industry' : industryEdit
-                    },
-                    "dataType": "json",
-                    "success": function (data) {
-                        $('#editInfo').addClass('text-danger').show();
-                        if(data == '-1') {//角色名存在
-                            $('#editInfo').html('非法客户id!');
-                        }
-                        if(data == '1') {
-                            editDialog.close();
-                            table.page(table.page()).draw(false);
-                        }
-                    }
-                });
-                return false;
-            },
-            cancelValue:'取消',
-            cancel: function () {
-                this.close();// 隐藏
-                return false;
-            },
-            resize:true,
-        });
-
-        var detailsDialog = dialog({
-            autoOpen:false,
-            title:'客户信息',
-            id:'customerDetails',
-            drag:true,
-            content:$('#customerDetails'),
-            fixed:true,
-            top : '0%',
-            cancelValue:'确定',
-            cancel: function () {
-                this.close();// 隐藏
-                return false;
-            },
-            resize:true,
-        });
-
-        mybind("#dialog",function() {
-            //移除提示项
-            $('input[name=company]').keydown(function(){
-                if($(this).hasClass('alert-danger')) {
-                    $('#addInfo').hide();
-                    $('input[name=company]').removeClass('alert-danger');
-                }
-            });
-            $('input[name=address]').keydown(function(){
-                if($(this).hasClass('alert-danger')) {
-                    $('#addInfo').hide();
-                    $('input[name=address]').removeClass('alert-danger');
-                }
-            });
-            $('input[name=contact]').keydown(function(){
-                if($(this).hasClass('alert-danger')) {
-                    $('#addInfo').hide();
-                    $('input[name=contact]').removeClass('alert-danger');
-                }
-            });
-            $('input[name=industry]').keydown(function(){
-                if($(this).hasClass('alert-danger')) {
-                    $('#addInfo').hide();
-                    $('input[name=industry]').removeClass('alert-danger');
-                }
-            });
-            addDialog.show();
-        });
-
-        mybind("#dialogSubmit",function() {
-            addDialog.close();
-        });
+            }
+            else {
+                $("input[name='sales_customer']").val("");
+            }
+        })
 
         var table = $('#dataTables-example').dataTable({
             "ordering": false,
             "language": {
                 "url": "/assets/adminTemplate/js/dataTables/zh-cn.txt"
             },
-            "aLengthMenu" : [10,20,50,100],
+            "aLengthMenu": [10, 20, 50, 100],
             "serverSide": true,
-            "fnServerData": function(sSource, aoData, fnCallback) {
-                $.ajax( {
+            "fnServerData": function (sSource, aoData, fnCallback) {
+                $.ajax({
                     "type": "GET",
                     "contentType": "application/json",
                     "url": "<?=$jsonurl?>",
                     "dataType": "json",
                     "data": aoData, //以json格式传递
-                    "success": function(data) {
+                    "success": function (data) {
                         fnCallback(data);
 
                         //详情
-                        $('.customerDetails').bind("click", function(){
+                        $('.customerDetails').bind("click", function () {
                             var customerID = $(this).attr('customer_id');
                             $.ajax({
                                 "type": "GET",
@@ -270,7 +169,7 @@
                                 "data": {'customerID': customerID},
                                 "dataType": "json",
                                 "success": function (data) {
-                                    if(data != null && data.customer_company != null) {
+                                    if (data != null && data.customer_company != null) {
                                         $('#showCompany').html(data.customer_company);
                                         $('#showAddress').html(data.customer_address);
                                         $('#showContact').html(data.customer_contact);
@@ -285,14 +184,14 @@
                             detailsDialog.show();
                         });
                         //更新
-                        $('.customerEdit').bind("click", function(){
+                        $('.customerEdit').bind("click", function () {
                             var companyEdit = $('input[name=companyEdit]');
                             var addressEdit = $('input[name=addressEdit]');
                             var contactEdit = $('input[name=contactEdit]');
                             var phoneEdit = $('input[name=phoneEdit]');
                             var emailEdit = $('input[name=emailEdit]');
                             var industryEdit = $('input[name=industryEdit]');
-                            if(companyEdit.hasClass('alert-danger') || addressEdit.hasClass('alert-danger') || contactEdit.hasClass('alert-danger') || industryEdit.hasClass('alert-danger')) {
+                            if (companyEdit.hasClass('alert-danger') || addressEdit.hasClass('alert-danger') || contactEdit.hasClass('alert-danger') || industryEdit.hasClass('alert-danger')) {
                                 $('#editInfo').hide();
                                 companyEdit.removeClass('alert-danger');
                                 addressEdit.removeClass('alert-danger');
@@ -307,7 +206,7 @@
                                 "data": {'customerID': customerID},
                                 "dataType": "json",
                                 "success": function (data) {
-                                    if(data != null && data.customer_company != null) {
+                                    if (data != null && data.customer_company != null) {
                                         companyEdit.val(data.customer_company);
                                         addressEdit.val(data.customer_address);
                                         contactEdit.val(data.customer_contact);
@@ -323,7 +222,7 @@
                             editDialog.show();
                         });
                         //删除（硬删除 ）
-                        $('.customerDelete').bind("click", function(){
+                        $('.customerDelete').bind("click", function () {
                             var customerID = $(this).attr('customer_id');
                             $.ajax({
                                 "type": "POST",
@@ -334,10 +233,10 @@
                                 },
                                 "dataType": "json",
                                 "success": function (data) {
-                                    if(data == '-1') {//角色名存在
+                                    if (data == '-1') {//角色名存在
                                         alert('非法客户id!');
                                     }
-                                    if(data == '1') {
+                                    if (data == '1') {
                                         table.page(table.page()).draw(false);
                                     }
                                 }
@@ -346,13 +245,79 @@
                     }
                 });
             },
-            'columns' : <?=$columns?>
+            'columns': <?=$columns?>
         }).api();
 
+        //提交
+        $("#saleSubmit").click(function () {
+            var ids = getCheckValue('adv_id');
+            if (ids.length < 1) {
+                alert("请选择至少一条记录！");
+                return false;
+            }
+
+            //读取销售信息
+            var sales_company = $('select[name=sales_company]').val();
+            var sales_customer = $('input[name=sales_customer]').val();
+            var sales_starttime = $('input[name=sales_starttime]').val();
+            var sales_endtime = $('input[name=sales_endtime]').val();
+            var sales_person = $('input[name=sales_person]').val();
+            var sales_status = $('select[name=sales_status]').val();
+            var sales_note = $('textarea[name=sales_note]').val();
+
+            //数据验证;
+            if (sales_company == "0") {
+                alert("请选择客户公司");
+            } else if (sales_starttime == "") {
+                alert("请选开始时间");
+            } else if(sales_endtime == "")
+            {
+                alert("请选到期时间");
+            }
+            else
+            {
+                $.ajax( {
+                    "type": "POST",
+                    "contentType": "application/x-www-form-urlencoded",
+                    "url": "/admin/sale/dosale",
+                    "dataType": "json",
+                    "data": {
+                        ids:ids,
+                        sales_company:sales_company,
+                        sales_customer:sales_customer,
+                        sales_starttime:sales_starttime,
+                        sales_endtime:sales_endtime,
+                        sales_person:sales_person,
+                        sales_status:sales_status,
+                        sales_note:sales_note
+                    }, //以json格式传递
+                    "success": function(data) {
+                        if(data > 0){
+                            window.location.reload();
+                        }else{
+                            alert("数据录入失败！");
+                        }
+                    }
+                });
+            }
+
+
+        })
+
+        //获得选中的广告位（adv）的id
+        function getCheckValue(nameId) {
+            var arr = [];
+            for (var i = 0; i < $("input[name='" + nameId + "']").length; i++) {
+                if ($("input[name='" + nameId + "']")[i].checked) {
+                    arr.push($("input[name='" + nameId + "']")[i].value);
+                }
+            }
+            return arr;
+        }
     });
 
     function mybind(func, fn) {
-        $(func).bind("touchstart",fn);
-        $(func).bind("click",fn);
+        $(func).bind("touchstart", fn);
+        $(func).bind("click", fn);
     }
 </script>

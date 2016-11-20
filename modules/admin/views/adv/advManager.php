@@ -214,9 +214,10 @@ $(window).ready(function(){
         window.location.href = "/admin/adv/add";
     });
     
-    $("#fenyeHtml").on('click','a',function(){
-        event.preventDefault();
-        event.stopPropagation();
+    $("#fenyeHtml").on('click','a',function(e){
+        var a = e||window.event;
+        a.preventDefault();
+        a.stopPropagation();
         var page = $(this).attr("value");
         if(page > 0){
             getList(page);
@@ -241,9 +242,10 @@ $(window).ready(function(){
     
     
     
-    $("#statusFix a").click(function(){
-        event.preventDefault();
-        event.stopPropagation();
+    $("#statusFix a").click(function(e){
+        var a = e||window.event;
+        a.preventDefault();
+        a.stopPropagation();
         $("#statusFix a").remove("btn-success");
         $("#statusFix a").addClass("btn-info");
         $(this).removeClass("btn-info");
