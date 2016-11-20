@@ -259,6 +259,7 @@
                         <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>-->
                         </li>
                             <li class="divider"></li>
+                            <li><div style="padding: 3px 20px;">当前用户：<?=$this->params['staffName'] ?></div></li>
                             <li><a href="/admin/message/messagemanager"><i class="fa fa-sign-out fa-fw"></i>新消息</a></li>
                             <li><a href="/admin/user/passwordmanager"><i class="fa fa-sign-out fa-fw"></i>密码修改</a></li>
                             <li><a href="/admin/login/dologout"><i class="fa fa-sign-out fa-fw"></i>退出登录</a></li>

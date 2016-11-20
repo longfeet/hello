@@ -38,6 +38,7 @@ class AdminModule extends \yii\base\Module
                     $userLogin = $session['loginUser'];
                     $menulists = PMenu::getrolemenulist($userLogin->roleId->role_id, $_SERVER['REQUEST_URI']);
                     $view = \Yii::$app->view;
+                    $view->params['staffName'] = $userLogin->staff_name;
                     $view->params['menuList'] = $menulists['roleMenu'];
                     $view->params['menuAuth'] = $menulists['token'];
                     if($menulists['token']['is_auth'] === false) {
