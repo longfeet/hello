@@ -159,14 +159,14 @@ class UserController extends \yii\web\Controller
     public function actionSectormanager()
     {
         $staff = \Yii::$app->session['loginUser'];
-        $company = PCompany::find()->where("id=".$staff->company_id)->one();
+        $company = PCompany::find()->where("id=" . $staff->company_id)->one();
 
-        $sectorArray = PSector::find()->where("company_id = ".$company->id)->asArray()->all();
-        foreach($sectorArray as $key=>&$value) {
-            $staffs = PStaff::find()->where('staff_sector = "' .$value['id']. '"')->asArray()->all();
+        $sectorArray = PSector::find()->where("company_id = " . $company->id)->asArray()->all();
+        foreach ($sectorArray as $key => &$value) {
+            $staffs = PStaff::find()->where('staff_sector = "' . $value['id'] . '"')->asArray()->all();
             $value['staffs'] = $staffs;
         }
-        return $this->render("sectorManager", array('list' => $sectorArray,'company'=>$company));
+        return $this->render("sectorManager", array('list' => $sectorArray, 'company' => $company));
     }
 
     /**
@@ -178,18 +178,17 @@ class UserController extends \yii\web\Controller
         $date = date('Y-m-d H:i:s');
         $sector_name = \Yii::$app->request->post('sector_name', null);
         $staff = \Yii::$app->session['loginUser'];
-        if($sector_name != null && trim($sector_name) != "" )
-        {
-            $sectorNameExists =PSector::find()->where("sector_name ='".$sector_name."' and company_id=".$staff->company_id)->one();
-            if($sectorNameExists!=null)
+        if ($sector_name != null && trim($sector_name) != "") {
+            $sectorNameExists = PSector::find()->where("sector_name ='" . $sector_name . "' and company_id=" . $staff->company_id)->one();
+            if ($sectorNameExists != null)
                 echo "-2";   //部门名称已存在
-            else{
-                $sector=new PSector();
-                $sector->company_id=$staff->company_id;
-                $sector->sector_name=$sector_name;
-                $sector->is_delete=0;
-                $sector->create_time=$date;
-                $sector->update_time=$date;
+            else {
+                $sector = new PSector();
+                $sector->company_id = $staff->company_id;
+                $sector->sector_name = $sector_name;
+                $sector->is_delete = 0;
+                $sector->create_time = $date;
+                $sector->update_time = $date;
                 $sector->save();
 
                 echo "1";  //添加成功
@@ -206,17 +205,17 @@ class UserController extends \yii\web\Controller
         $request = \Yii::$app->request;
         $sector_id = $request->post('sector_id', '0');
         $sector_name = $request->post('sector_name', null);
-        $company_id=$request->post('company_id', 0);
+        $company_id = $request->post('company_id', 0);
 
         $sector = PSector::find()->where('id = ' . $sector_id)->one();
         if ($sector != null) {
-            if ($sector_name != null && trim($sector_name) != "" ) {
-                $sectorNameExsits = PSector::find()->where('sector_name = "' . $sector_name . '" and company_id ='.$company_id.' and id !=' . $sector_id)->one();
+            if ($sector_name != null && trim($sector_name) != "") {
+                $sectorNameExsits = PSector::find()->where('sector_name = "' . $sector_name . '" and company_id =' . $company_id . ' and id !=' . $sector_id)->one();
                 if ($sectorNameExsits != null)
                     echo "-2";  //部门名称存在
                 else {
-                    $sector->sector_name=trim($sector_name);
-                    $sector->update_time=$date;
+                    $sector->sector_name = trim($sector_name);
+                    $sector->update_time = $date;
                     $sector->save();
 
                     echo "1";  //更新成功
@@ -252,9 +251,9 @@ class UserController extends \yii\web\Controller
     public function actionGetsectorbyid()
     {
         $sector_id = \Yii::$app->request->post('sector_id', '0');
-        $sector_name="";
-        $sector = PSector::find()->where("id =".$sector_id)->one();
-        $sector_name=$sector->sector_name;
+        $sector_name = "";
+        $sector = PSector::find()->where("id =" . $sector_id)->one();
+        $sector_name = $sector->sector_name;
         DataTools::jsonEncodeResponse($sector_name);
     }
 
@@ -302,6 +301,19 @@ class UserController extends \yii\web\Controller
         $column = DataTools::getDataTablesColumns($this->staffcolumns);
         $jsonDataUrl = '/admin/user/staffmanagerjson';
         return $this->render("staffManager", array("columns" => $column, 'jsonurl' => $jsonDataUrl, 'stafflist' => $staffList, 'companyList' => $companyList, 'sectorList' => $sectorList));
+    }
+
+
+    /**
+     * 人员管理表格列表
+     */
+    public function actionStaffmanagerjson()
+    {
+        $session = \Yii::$app->session;
+        $staffInfo = $session['loginUser'];
+        //请求,排序,展示字段,展示字段的字段名(支持relation字段),主表实例,搜索字段
+        DataTools::getJsonDataStaff(\Yii::$app->request, "id desc", $this->staffcolumns, $this->staffcolumnsVal,
+            new PStaff, "staff_name", "staff", 0, $staffInfo);
     }
 
     /*
@@ -362,7 +374,7 @@ class UserController extends \yii\web\Controller
 
                 $company_id = \Yii::$app->session['loginUser']->company_id;
                 $sectorList = PSector::find()->select('id,sector_name')->where('company_id=' . $company_id . ' and is_delete=0')->asArray()->all();
-                ExcelTools::setDataIntoStaff($excel,$sectorList);
+                ExcelTools::setDataIntoStaff($excel, $sectorList);
             }
         }
         $this->redirect("/admin/user/staffmanager");
@@ -439,16 +451,6 @@ class UserController extends \yii\web\Controller
             echo "-1"; //该id不存在
         }
         exit;
-    }
-
-    /**
-     * 人员管理表格列表
-     */
-    public function actionStaffmanagerjson()
-    {
-        //请求,排序,展示字段,展示字段的字段名(支持relation字段),主表实例,搜索字段
-        DataTools::getJsonDataStaff(\Yii::$app->request, "id desc", $this->staffcolumns, $this->staffcolumnsVal,
-            new PStaff, "staff_name", "staff", 0);
     }
 
     /*

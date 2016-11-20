@@ -415,13 +415,15 @@ class DataTools
      * @param $name  前缀名称，如roleEdit、roleDelete中role这个前缀即为想也页面的名称
      * @param $is_delete 该记录是否删除。 默认2（没有is_delete字段），0（未删除），1（已删除）
      * @param $company_id 公司id
+     * @param $staff 登录者信息
      */
-    public static function getJsonDataGenerl($request, $order, $columns, $columnVals, $object, $searchField, $name = "", $is_delete = 2, $company_id = 0)
+    public static function getJsonDataGenerl($request, $order, $columns, $columnVals, $object, $searchField, $name = "", $is_delete = 2, $company_id = 0,$staff='')
     {
         $seach = $request->get('search', "");
         $data = $object::find();
         $ar = $data;
         if (isset($seach['value'])) {
+
             if ($is_delete == 2 && $company_id == 0)
                 $ar = $data->where("$searchField like \"%" . $seach['value'] . "%\"");
             else if ($is_delete != 2 && $company_id == 0)
@@ -510,17 +512,31 @@ class DataTools
      * @param $columnVals 列值字段名
      * @param $name  前缀名称，如roleEdit、roleDelete中role这个前缀即为想也页面的名称
      * @param $is_delete 该记录是否删除。 默认2（没有is_delete字段），0（未删除），1（已删除）
+     * @param $staff 登录者信息
      */
-    public static function getJsonDataStaff($request, $order, $columns, $columnVals, $object, $searchField, $name, $is_delete = 2)
+    public static function getJsonDataStaff($request, $order, $columns, $columnVals, $object, $searchField, $name, $is_delete = 2,$staff='')
     {
         $seach = $request->get('search', "");
         $data = $object::find();
         $ar = $data;
         if (isset($seach['value'])) {
-            if ($is_delete == 2)
+            //权限控制
+            if ($staff != '') {
+                if ($staff->staff_level == 1 || $staff->staff_level == 2 || $staff->staff_level == 3)
+                    $ar = $data->where("company_id =" . $staff->company_id . " and is_delete = 0 and $searchField like \"%" . $seach['value'] . "%\"");
+                else if ($staff->staff_level == 4)
+                    $ar = $data->where("is_delete = 0 and $searchField like \"%" . $seach['value'] . "%\"");
+            } else {
                 $ar = $data->where("$searchField like \"%" . $seach['value'] . "%\"");
-            else
-                $ar = $data->where("$searchField like \"%" . $seach['value'] . "%\" and is_delete =" . $is_delete);
+            }
+        }else{
+            //权限控制
+            if ($staff != '') {
+                if ($staff->staff_level == 1 || $staff->staff_level == 2 || $staff->staff_level == 3)
+                    $ar = $data->where("company_id =" . $staff->company_id . " and is_delete = 0");
+                else if ($staff->staff_level == 4)
+                    $ar = $data->where("is_delete = 0");
+            }
         }
         $length = $request->get('length') ? $request->get('length') : "10";
         $start = $request->get('start') ? $request->get('start') : "0";
