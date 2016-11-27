@@ -17,7 +17,7 @@
                         <input name="id" type="hidden" value="<?=$model->id?>" />
                         <div class="form-group">
                             <label class="control-label">设备编号：</label>
-                            <label class="control-label"><?=$model->model_no?></label>
+                            <label class="control-label"><?=$model->model_id?></label>
                         </div>
                         <div class="form-group">
                             <label class="control-label">产品名称：</label>
@@ -57,7 +57,6 @@
 </div>
 <style type="text/css">
     .form-group:after {
-        content:":";
         clear:both;
     }
     .form-group input.form-control {

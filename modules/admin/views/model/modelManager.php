@@ -19,10 +19,13 @@
                             <thead>
                             <tr>
                                 <th>序号</th>
+                                <th>设备型号</th>
                                 <th>设备名称</th>
                                 <th>设备类别</th>
+                                <th>设备尺寸</th>
+                                <th>展示尺寸</th>
                                 <th>生产厂家</th>
-                                <th>所属公司</th>
+                                <th>备注</th>
                                 <th>编辑</th>
                             </tr>
                             </thead>
@@ -75,7 +78,24 @@
                             });
                             $('.roleDelete').click(function(){
                                 if(confirm("确定要删除吗?")) {
-
+                                    var id =$(this).attr("role_id");   //获得model的id
+                                    $.ajax({
+                                        "type": "POST",
+                                        "contentType": "application/x-www-form-urlencoded",
+                                        "url": "/admin/model/dodelete",
+                                        "data": {
+                                            'id': id,
+                                        },
+                                        "dataType": "json",
+                                        "success": function (data) {
+                                            if (data == '-1') {//角色名存在
+                                                alert('非法客户id!');
+                                            }
+                                            if (data == '1') {
+                                                table.page(table.page()).draw(false);
+                                            }
+                                        }
+                                    });
                                 }
                             });
                             if(search == null) {
