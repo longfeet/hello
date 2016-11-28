@@ -66,12 +66,16 @@
                             <label class="control-label">楼盘坐标：</label>
                             <label class="control-label"><?=$data->community_longitudex?>,<?=$data->community_latitudey?></label>
                         </div>
-                        <div id="map" style="width:50rem;height:50rem;margin-left:10%;">
+                        <div class="form-group">
+                            <label class="control-label"></label>
+                            <label class="control-label"><div id="map" style="width:50rem;height:50rem;"></label>
+                        </div>
+
 
                         </div>
                         <div class="form-group">
                             <label class="control-label">楼盘门头图片：</label>
-                            <img src="<?=$data->community_image1?>" style="float:right;margin-right:67%;"/>
+                            <img src="<?=$data->community_image1?>" style="height="500" width="500""/>
                         </div>
                     </form>
                 </div>
