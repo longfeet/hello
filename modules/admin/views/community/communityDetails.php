@@ -70,12 +70,10 @@
                             <label class="control-label"></label>
                             <label class="control-label"><div id="map" style="width:50rem;height:50rem;"></label>
                         </div>
-
-
                         </div>
                         <div class="form-group">
                             <label class="control-label">楼盘门头图片：</label>
-                            <img src="<?=$data->community_image1?>" style="height="500" width="500""/>
+                            <img src="<?=$data->community_image1?>" style="width:500px; width:500px;"/>
                         </div>
                     </form>
                 </div>

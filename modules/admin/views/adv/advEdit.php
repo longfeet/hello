@@ -31,17 +31,21 @@
                             <label class="control-label">广告位名称</label>
                             <input type="text" name="adv_name" class="form-control" value="<?=$data->adv_name?>" />
                         </div>
-                        <div class="form-group">
+<!--                        <div class="form-group">
                             <label class="control-label">广告位开始时间</label>
                             <input type="text" name="adv_starttime" class="form-control" id="selectDate1" value="<?=substr($data->adv_starttime,0,10)?>" />
                         </div>
                         <div class="form-group">
                             <label class="control-label">广告位结束时间</label>
                             <input type="text" name="adv_endtime" class="form-control" id="selectDate2" value="<?=substr($data->adv_endtime,0,10)?>" />
-                        </div>
+                        </div>-->
                         <div class="form-group">
                             <label class="control-label">广告位画面</label>
                             <input type="file" style="float:right;margin-right:67%;" name="adv_image" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">原画</label>
+                            <img src="<?=$data->adv_image?>" style="float:right;margin-right:63%;width:400px;padding-bottom: 10px;" />
                         </div>
                         <div class="form-group">
                             <label class="control-label">广告位性质</label>

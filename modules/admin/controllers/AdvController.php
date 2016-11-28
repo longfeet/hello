@@ -11,6 +11,7 @@ use app\modules\admin\models\ExcelTools;
 use app\modules\admin\models\PStaff;
 use app\modules\admin\models\PStaffRole;
 use app\modules\admin\models\PAdvStaff;
+use app\modules\admin\models\FileTools;
 
 
 /**
@@ -172,7 +173,7 @@ class AdvController extends \yii\web\Controller
     public function actionAdd()
     {
         $company_id = \Yii::$app->session['loginUser']->company_id;
-        $models = PModel::find()->where('company_id = "' . $company_id . '" and model_status = "3"')->all();
+        $models = PModel::find()->where('company_id = ' . $company_id)->all();
         $community = PCommunity::find()->all();
         return $this->render('advAdd', array('list' => $community, 'model' => $models));
     }
@@ -225,7 +226,7 @@ class AdvController extends \yii\web\Controller
         $adv->adv_name = $post['adv_name'];
 //        $adv->adv_starttime = $post['adv_starttime'];
 //        $adv->adv_endtime = $post['adv_endtime'];
-        $adv->adv_image = $post['adv_image'];
+//        $adv->adv_image = $post['adv_image'];
         $adv->adv_property = $post['adv_property'];
         $adv->adv_position = $post['adv_position'];
         $adv->model_id = $post['model_id'];
@@ -238,6 +239,9 @@ class AdvController extends \yii\web\Controller
         $adv->creator = \Yii::$app->session['loginUser']->id;
         $adv->create_time = $now;
         $adv->update_time = $now;
+        if($_FILES['adv_image']['error'] <= 0) {
+            $adv->adv_image = FileTools::uploadFile($_FILES['adv_image'], 'adv');
+        }
         $adv->save();
         $this->redirect("/admin/adv/manager");
     }
@@ -250,9 +254,9 @@ class AdvController extends \yii\web\Controller
         $adv->adv_no = $post['adv_no'];
         $adv->adv_community_id = $post['adv_community_id'];
         $adv->adv_name = $post['adv_name'];
-        $adv->adv_starttime = $post['adv_starttime'];
-        $adv->adv_endtime = $post['adv_endtime'];
-        $adv->adv_image = $post['adv_image'];
+//        $adv->adv_starttime = $post['adv_starttime'];
+//        $adv->adv_endtime = $post['adv_endtime'];
+//        $adv->adv_image = $post['adv_image'];
         $adv->adv_property = $post['adv_property'];
         $adv->adv_position = $post['adv_position'];
         $adv->model_id = $post['model_id'];
@@ -263,6 +267,9 @@ class AdvController extends \yii\web\Controller
         $adv->company_id = \Yii::$app->session['loginUser']->company_id;
         $adv->updater = \Yii::$app->session['loginUser']->id;
         $adv->update_time = $now;
+        if($_FILES['adv_image']['error'] <= 0) {
+            $adv->adv_image = FileTools::uploadFile($_FILES['adv_image'], 'adv');
+        }
         $adv->save();
         $this->redirect("/admin/adv/manager");
     }
