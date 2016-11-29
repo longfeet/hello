@@ -170,7 +170,8 @@
                 "success": function (data) {
                     var imgString = "";
                     for (var i = 0; i < data.length; i++) {
-                        imgString += "<img src='" + data[i].image_path + "' style='width:500px; width:500px;padding-bottom: 5px;'/><br/>";
+                        imgString += "<img src='" + data[i].image_path + "' style='width:500px; width:500px;padding-bottom: 5px;'/>" +
+                            "<a href='/admin/community/downloadimage?file="+data[i].image_name+"'>图片下载</a><br/>";
                     }
                     $('#details').html(imgString);
                 }

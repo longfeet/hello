@@ -173,7 +173,7 @@ class CommunityController extends \yii\web\Controller
         if ($_FILES['community_image1']['error'] <= 0) {
             $image = new PImage();
             $image->image_path = $communityImage;
-            $image->image_soruce = 0;     //0为community表
+            $image->image_source = 0;     //0为community表
             $image->source_id = $communityID;
             $image->create_time = $now;
             $image->creator = \Yii::$app->session['loginUser']->id;
@@ -217,8 +217,9 @@ class CommunityController extends \yii\web\Controller
         //图片信息保持至图片附件表
         if ($_FILES['community_image1']['error'] <= 0) {
             $image = new PImage();
+            $image->image_name=basename($communityImage);
             $image->image_path = $communityImage;
-            $image->image_soruce = 0;     //0为community表
+            $image->image_source = 0;     //0为community表
             $image->source_id = $communityID;
             $image->create_time = $now;
             $image->creator = \Yii::$app->session['loginUser']->id;
@@ -235,8 +236,19 @@ class CommunityController extends \yii\web\Controller
     {
         $community_id = \Yii::$app->request->get('community_id', '0');
         //$imageList=PImage::find()->select("image_path")->where("source_id=".$community_id." and image_source=0")->asArray()->all();  //image_source为0代表community表对应图片
-        $imageList = PImage::find()->select("image_path")->where('source_id=' . $community_id . ' and image_soruce = 0')->orderBy("create_time desc")->asArray()->all();
+        $imageList = PImage::find()->select("image_name,image_path")->where('source_id=' . $community_id . ' and image_source = 0')->orderBy("create_time desc")->asArray()->all();
         DataTools::jsonEncodeResponse($imageList);
+    }
+
+    /*
+     * 图片下载
+     */
+    public function actionDownloadimage()
+    {
+        $file = \Yii::$app->request->get('file', null);
+        //echo $file;
+        FileTools::downFile($file,"community");
+        //FileTools::downloadFile($file);
     }
 
     public function actionDownloadppt()

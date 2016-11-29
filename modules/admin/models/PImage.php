@@ -31,7 +31,7 @@ class PImage extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['image_soruce', 'source_id', 'creator'], 'integer'],
+            [['image_source', 'source_id', 'creator'], 'integer'],
             [['create_time'], 'safe'],
             [['image_name', 'image_path'], 'string', 'max' => 255],
         ];
@@ -46,7 +46,7 @@ class PImage extends \yii\db\ActiveRecord
             'id' => 'ID',
             'image_name' => 'Image Name',
             'image_path' => 'Image Path',
-            'image_soruce' => 'Image Soruce',
+            'image_source' => 'Image Source',
             'source_id' => 'Source ID',
             'create_time' => 'Create Time',
             'creator' => 'Creator',
