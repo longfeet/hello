@@ -10,7 +10,7 @@ use Yii;
  * @property string $id
  * @property string $image_name
  * @property string $image_path
- * @property integer $image_soruce
+ * @property integer $image_source
  * @property string $source_id
  * @property string $create_time
  * @property string $creator

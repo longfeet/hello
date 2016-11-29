@@ -247,7 +247,7 @@ class CommunityController extends \yii\web\Controller
     {
         $file = \Yii::$app->request->get('file', null);
         //echo $file;
-        FileTools::downFile($file,"community");
+        FileTools::downloadFile($file,"community");
         //FileTools::downloadFile($file);
     }
 
