@@ -101,6 +101,7 @@ $(window).ready(function(){
                                     "data": {id: $(this).attr("role_id")}, //以json格式传递
                                     "success": function (data) {
                                         console.log(data);
+                                        table.page(table.page()).draw(false);
                                     }
                                 });
                             }

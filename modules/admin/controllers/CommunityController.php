@@ -10,6 +10,7 @@ use app\modules\admin\models\PImage;
 use app\modules\admin\models\DataTools;
 use app\modules\admin\models\ExcelTools;
 use app\modules\admin\models\PPTools;
+use app\modules\admin\models\Message;
 
 /**
  * 小区管理
@@ -111,7 +112,7 @@ class CommunityController extends \yii\web\Controller
      */
     public function actionDeleteajax($id)
     {
-        $community = PCommunity::find('id = "' . $id . '"')->one();
+        $community = PCommunity::find()->where('id = "' . $id . '"')->one();
         if (empty($community)) {
             echo "0";
             exit;
@@ -123,6 +124,14 @@ class CommunityController extends \yii\web\Controller
         }
         $community->delete();
         echo "1";
+
+        //设置message消息
+        $now = date("Y-m-d H:i:s");
+        $staff_name = \Yii::$app->session['loginUser']->staff_name;
+        $company_id = \Yii::$app->session['loginUser']->company_id;
+        $message = $staff_name . "于" . $now . "删除了1条楼盘信息，楼盘编号为：" . $community->community_no . ",楼盘名称为：" . $community->community_name . "。";
+        Message::sendMessage($company_id, $message);
+
         exit;
     }
 
@@ -172,7 +181,7 @@ class CommunityController extends \yii\web\Controller
         //图片信息保持至图片附件表
         if ($_FILES['community_image1']['error'] <= 0) {
             $image = new PImage();
-            $image->image_name=basename($communityImage);
+            $image->image_name = basename($communityImage);
             $image->image_path = $communityImage;
             $image->image_source = 0;     //0为community表
             $image->source_id = $communityID;
@@ -180,6 +189,12 @@ class CommunityController extends \yii\web\Controller
             $image->creator = \Yii::$app->session['loginUser']->id;
             $image->save();
         }
+
+        //设置message消息
+        $staff_name = \Yii::$app->session['loginUser']->staff_name;
+        $company_id = \Yii::$app->session['loginUser']->company_id;
+        $message = $staff_name . "于" . $now . "添加了1条楼盘信息，楼盘编号为：" . $post['community_no'] . ",楼盘名称为：" . $post['community_name'] . "。";
+        Message::sendMessage($company_id, $message);
 
         $this->redirect("/admin/community/manager");
     }
@@ -218,7 +233,7 @@ class CommunityController extends \yii\web\Controller
         //图片信息保持至图片附件表
         if ($_FILES['community_image1']['error'] <= 0) {
             $image = new PImage();
-            $image->image_name=basename($communityImage);
+            $image->image_name = basename($communityImage);
             $image->image_path = $communityImage;
             $image->image_source = 0;     //0为community表
             $image->source_id = $communityID;
@@ -226,6 +241,12 @@ class CommunityController extends \yii\web\Controller
             $image->creator = \Yii::$app->session['loginUser']->id;
             $image->save();
         }
+
+        //设置message消息
+        $staff_name = \Yii::$app->session['loginUser']->staff_name;
+        $company_id = \Yii::$app->session['loginUser']->company_id;
+        $message = $staff_name . "于" . $now . "修改了1条楼盘信息，楼盘编号为：" . $post['community_no'] . ",楼盘名称为：" . $post['community_name'] . "。";
+        Message::sendMessage($company_id, $message);
 
         $this->redirect("/admin/community/manager");
     }
@@ -247,7 +268,7 @@ class CommunityController extends \yii\web\Controller
     public function actionDownloadimage()
     {
         $file = \Yii::$app->request->get('file', null);
-        FileTools::downloadFile($file,"community");
+        FileTools::downloadFile($file, "community");
     }
 
     public function actionDownloadppt()
