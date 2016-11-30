@@ -172,6 +172,7 @@ class CommunityController extends \yii\web\Controller
         //图片信息保持至图片附件表
         if ($_FILES['community_image1']['error'] <= 0) {
             $image = new PImage();
+            $image->image_name=basename($communityImage);
             $image->image_path = $communityImage;
             $image->image_source = 0;     //0为community表
             $image->source_id = $communityID;
@@ -246,9 +247,7 @@ class CommunityController extends \yii\web\Controller
     public function actionDownloadimage()
     {
         $file = \Yii::$app->request->get('file', null);
-        //echo $file;
         FileTools::downloadFile($file,"community");
-        //FileTools::downloadFile($file);
     }
 
     public function actionDownloadppt()

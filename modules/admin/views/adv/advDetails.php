@@ -86,6 +86,12 @@
                             <?php echo $data->adv_pic_status == "3"?"<label class='control-label'>待下刊</label>":""?>
                             <?php echo $data->adv_pic_status == "4"?"<label class='control-label'>已下刊</label>":""?>
                         </div>
+                        <div class="form-group">
+                            <label class="control-label">历史图片：</label>
+                            <label class="control-label"><a href="javascript:;" adv_id="<?= $data->id ?>"
+                                                            class="showDetails">查看</a></label>
+                            <div id="details"></div>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -108,3 +114,27 @@
         line-height:34px;
     }
 </style>
+
+<script type="text/javascript">
+    $(window).ready(function () {
+        //查看历史图片
+        $('.showDetails').bind("click", function () {
+            var adv_id = $(this).attr('adv_id');
+            $.ajax({
+                "type": "POST",
+                "contentType": "application/x-www-form-urlencoded",
+                "url": "/admin/adv/ajaxhistoryimage?adv_id=" + adv_id,
+                "dataType": "json",
+                "success": function (data) {
+                    var imgString = "";
+                    for (var i = 0; i < data.length; i++) {
+                        imgString += "<img src='" + data[i].image_path + "' style='width:500px; width:500px;padding-bottom: 5px;'/>" +
+                            "&nbsp;<a href='/admin/adv/downloadimage?file="+data[i].image_name+"'>图片下载...</a><br/>";
+                    }
+                    $('#details').html(imgString);
+                }
+            });
+        });
+
+    });
+</script>

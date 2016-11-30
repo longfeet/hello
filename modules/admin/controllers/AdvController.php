@@ -7,6 +7,8 @@ use app\modules\admin\models\PAdv;
 use app\modules\admin\models\DataTools;
 use app\modules\admin\models\PCommunity;
 use app\modules\admin\models\PModel;
+use app\modules\admin\models\PImage;
+
 use app\modules\admin\models\ExcelTools;
 use app\modules\admin\models\PStaff;
 use app\modules\admin\models\PStaffRole;
@@ -243,6 +245,21 @@ class AdvController extends \yii\web\Controller
             $adv->adv_image = FileTools::uploadFile($_FILES['adv_image'], 'adv');
         }
         $adv->save();
+
+        $advID = $adv->attributes['id'];
+        $advImage = $adv->attributes['adv_image'];
+        //图片信息保持至图片附件表
+        if ($_FILES['adv_image']['error'] <= 0) {
+            $image = new PImage();
+            $image->image_name=basename($advImage);
+            $image->image_path = $advImage;
+            $image->image_source = 1;     //1为adv表
+            $image->source_id = $advID;
+            $image->create_time = $now;
+            $image->creator = \Yii::$app->session['loginUser']->id;
+            $image->save();
+        }
+
         $this->redirect("/admin/adv/manager");
     }
 
@@ -271,7 +288,41 @@ class AdvController extends \yii\web\Controller
             $adv->adv_image = FileTools::uploadFile($_FILES['adv_image'], 'adv');
         }
         $adv->save();
+
+        $advID = $adv->attributes['id'];
+        $advImage = $adv->attributes['adv_image'];
+        //图片信息保持至图片附件表
+        if ($_FILES['adv_image']['error'] <= 0) {
+            $image = new PImage();
+            $image->image_name=basename($advImage);
+            $image->image_path = $advImage;
+            $image->image_source = 1;     //1为adv表
+            $image->source_id = $advID;
+            $image->create_time = $now;
+            $image->creator = \Yii::$app->session['loginUser']->id;
+            $image->save();
+        }
+
         $this->redirect("/admin/adv/manager");
+    }
+
+    /*
+     * ajax返回历史图片
+     */
+    public function actionAjaxhistoryimage()
+    {
+        $adv_id = \Yii::$app->request->get('adv_id', '0');
+        $imageList = PImage::find()->select("image_name,image_path")->where('source_id=' . $adv_id . ' and image_source = 1')->orderBy("create_time desc")->asArray()->all();
+        DataTools::jsonEncodeResponse($imageList);
+    }
+
+    /*
+     * 图片下载
+     */
+    public function actionDownloadimage()
+    {
+        $file = \Yii::$app->request->get('file', null);
+        FileTools::downloadFile($file,"adv");
     }
 
     /*
