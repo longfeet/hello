@@ -14,6 +14,7 @@ use app\modules\admin\models\PStaff;
 use app\modules\admin\models\PStaffRole;
 use app\modules\admin\models\PAdvStaff;
 use app\modules\admin\models\FileTools;
+use app\modules\admin\models\Message;
 
 
 /**
@@ -260,6 +261,12 @@ class AdvController extends \yii\web\Controller
             $image->save();
         }
 
+        //设置message消息
+        $staff_name = \Yii::$app->session['loginUser']->staff_name;
+        $company_id = \Yii::$app->session['loginUser']->company_id;
+        $message = $staff_name . "于" . $now . "添加了1条广告位信息，广告位编号为：" . $post['adv_no'] . ",广告位名称为：" . $post['adv_name'] . "。";
+        Message::sendMessage($company_id, $message);
+
         $this->redirect("/admin/adv/manager");
     }
 
@@ -302,6 +309,12 @@ class AdvController extends \yii\web\Controller
             $image->creator = \Yii::$app->session['loginUser']->id;
             $image->save();
         }
+
+        //设置message消息
+        $staff_name = \Yii::$app->session['loginUser']->staff_name;
+        $company_id = \Yii::$app->session['loginUser']->company_id;
+        $message = $staff_name . "于" . $now . "修改了1条广告位信息，广告位编号为：" . $post['adv_no'] . ",广告位名称为：" . $post['adv_name'] . "。";
+        Message::sendMessage($company_id, $message);
 
         $this->redirect("/admin/adv/manager");
     }
@@ -415,6 +428,15 @@ class AdvController extends \yii\web\Controller
         $command = $connection->createCommand($sql);
         $result = $command->execute();
 
+        //设置message消息
+        $now = date("Y-m-d H:i:s");
+        $staff_name = \Yii::$app->session['loginUser']->staff_name;
+        $company_id = \Yii::$app->session['loginUser']->company_id;
+
+        $message = $staff_name . "于" . $now . "修改了1条广告位信息，广告位编号为：" . $post['adv_no'] . ",广告位名称为：" . $post['adv_name'] . "。";
+        Message::sendMessage($company_id, $message);
+
+
         //操作是否需要记录 p_adv_staff
         if (in_array($adv_install_status, array(0, 1)) || in_array($adv_pic_status, array(1, 3))) {
             $values_map = array();
@@ -431,6 +453,7 @@ class AdvController extends \yii\web\Controller
             $command = $connection->createCommand($sql);
             $result = $command->execute();
         }
+
         exit(json_encode($result));
     }
 
