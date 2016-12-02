@@ -19,12 +19,17 @@
                 </div>
                 <div class="panel-body">
                     <div class="table-responsive">
+                        <div class="panel-heading" id="statusFix">
+                            <a href="javascript:;" class="btn btn-info" id="read">标记为已读</a>
+                            <a href="javascript:;" class="btn btn-info" id="readAll">全部设为已读</a>
+                        </div>
                         <table class="table table-striped table-bordered table-hover" id="dataTables-example">
                             <thead>
                             <tr>
-                                <th width="8%">序号</th>
-                                <th >消息内容</th>
+                                <th width="8%"><input type="checkbox" id="checkAll"/>&nbsp;&nbsp;序号</th>
+                                <th >内容</th>
                                 <th width="30%">发布时间</th>
+                                <th >状态</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -48,10 +53,21 @@
 <link rel="stylesheet" href="/assets/adminTemplate/js/jstree/dist/themes/default-dark/style.min.css">
 <!-- JsTree Js-->
 <script src="/assets/adminTemplate/js/jstree/dist/jstree.min.js"></script>
+<style type="text/css">
+
+</style>
+
+
 <script type="text/javascript">
     var tree;
     var search = null;
     $(document).ready(function () {
+        //checkbox全选和全不选
+        $("#checkAll").click(function () {
+            for (var key in $("input[name='messageLog']")) {
+                $("input[name='messageLog']")[key].checked = this.checked;
+            }
+        })
 
         var table = $('#dataTables-example').dataTable({
                 "ordering": false,
@@ -75,5 +91,61 @@
                 'columns' : <?=$columns?>
             }
         ).api();
+
+        //标记为已读
+        $("#read").click(function () {
+            var ids = getCheckValue('messageLog');
+            if (ids.length < 1) {
+                alert("请选择至少一条记录！");
+                return false;
+            }
+
+            $.ajax( {
+                "type": "POST",
+                "contentType": "application/x-www-form-urlencoded",
+                "url": "/admin/message/doread",
+                "dataType": "json",
+                "data": {
+                    ids:ids
+                }, //以json格式传递
+                "success": function(data) {
+                    if(data > 0){
+                        window.location.reload();
+                    }else{
+                        alert("设置失败！");
+                    }
+                }
+            });
+        })
+
+        //全部标记为已读
+        $("#readAll").click(function () {
+            $.ajax( {
+                "type": "POST",
+                "contentType": "application/x-www-form-urlencoded",
+                "url": "/admin/message/doreadall",
+                "dataType": "json",
+                "success": function(data) {
+                    if(data > 0){
+                        window.location.reload();
+                    }else{
+                        alert("设置失败！");
+                    }
+                }
+            });
+        })
+
+
+        //获得选中的消息（message_log）的id
+        function getCheckValue(nameId) {
+            var arr = [];
+            for (var i = 0; i < $("input[name='" + nameId + "']").length; i++) {
+                if ($("input[name='" + nameId + "']")[i].checked) {
+                    arr.push($("input[name='" + nameId + "']")[i].value);
+                }
+            }
+            return arr;
+        }
+
     });
 </script>
