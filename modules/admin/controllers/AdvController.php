@@ -242,7 +242,7 @@ class AdvController extends \yii\web\Controller
         $adv->creator = \Yii::$app->session['loginUser']->id;
         $adv->create_time = $now;
         $adv->update_time = $now;
-        if($_FILES['adv_image']['error'] <= 0) {
+        if ($_FILES['adv_image']['error'] <= 0) {
             $adv->adv_image = FileTools::uploadFile($_FILES['adv_image'], 'adv');
         }
         $adv->save();
@@ -252,7 +252,7 @@ class AdvController extends \yii\web\Controller
         //图片信息保持至图片附件表
         if ($_FILES['adv_image']['error'] <= 0) {
             $image = new PImage();
-            $image->image_name=basename($advImage);
+            $image->image_name = basename($advImage);
             $image->image_path = $advImage;
             $image->image_source = 1;     //1为adv表
             $image->source_id = $advID;
@@ -291,7 +291,7 @@ class AdvController extends \yii\web\Controller
         $adv->company_id = \Yii::$app->session['loginUser']->company_id;
         $adv->updater = \Yii::$app->session['loginUser']->id;
         $adv->update_time = $now;
-        if($_FILES['adv_image']['error'] <= 0) {
+        if ($_FILES['adv_image']['error'] <= 0) {
             $adv->adv_image = FileTools::uploadFile($_FILES['adv_image'], 'adv');
         }
         $adv->save();
@@ -301,7 +301,7 @@ class AdvController extends \yii\web\Controller
         //图片信息保持至图片附件表
         if ($_FILES['adv_image']['error'] <= 0) {
             $image = new PImage();
-            $image->image_name=basename($advImage);
+            $image->image_name = basename($advImage);
             $image->image_path = $advImage;
             $image->image_source = 1;     //1为adv表
             $image->source_id = $advID;
@@ -335,7 +335,7 @@ class AdvController extends \yii\web\Controller
     public function actionDownloadimage()
     {
         $file = \Yii::$app->request->get('file', null);
-        FileTools::downloadFile($file,"adv");
+        FileTools::downloadFile($file, "adv");
     }
 
     /*
@@ -429,11 +429,44 @@ class AdvController extends \yii\web\Controller
         $result = $command->execute();
 
         //设置message消息
+        $id_count = count($ids);
         $now = date("Y-m-d H:i:s");
         $staff_name = \Yii::$app->session['loginUser']->staff_name;
         $company_id = \Yii::$app->session['loginUser']->company_id;
-
-        $message = $staff_name . "于" . $now . "修改了1条广告位信息，广告位编号为：" . $post['adv_no'] . ",广告位名称为：" . $post['adv_name'] . "。";
+        $info_status = "";   //提醒类型
+        if ($adv_install_status > -1) {
+            switch ($adv_install_status) {
+                case 0:
+                    $info_status = '待安装';
+                    break;
+                case 1:
+                    $info_status = '维修';
+                    break;
+                case 2:
+                    $info_status = '正常使用';
+                    break;
+            }
+        }
+        if ($adv_pic_status > -1) {
+            switch ($adv_pic_status) {
+                case 1:
+                    $info_status = '预定';
+                    break;
+                case 1:
+                    $info_status = '待上刊';
+                    break;
+                case 1:
+                    $info_status = '已上刊';
+                    break;
+                case 3:
+                    $info_status = '待下刊';
+                    break;
+                case 1:
+                    $info_status = '已下刊';
+                    break;
+            }
+        }
+        $message = $staff_name . "于" . $now . "设置" . $id_count . "条广告位信息为" . $info_status . "。";
         Message::sendMessage($company_id, $message);
 
 

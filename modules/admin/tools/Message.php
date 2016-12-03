@@ -23,7 +23,8 @@ class Message
      */
     public static function sendMessage($company_id, $message)
     {
-        $sql = "INSERT INTO p_message (company_id,message_content,create_time) VALUES($company_id,'" . $message . "'," . time() . "); ";
+        $now = date("Y-m-d H:i:s");
+        $sql = "INSERT INTO p_message (company_id,message_content,create_time) VALUES($company_id,'" . $message . "','" . $now . "'); ";
         $connection = \Yii::$app->db;
         $command = $connection->createCommand($sql);
         $result = $command->execute();

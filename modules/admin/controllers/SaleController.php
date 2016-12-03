@@ -3,14 +3,17 @@
 namespace app\modules\admin\controllers;
 
 use app\modules\admin\models\PAdv;
-use app\modules\admin\models\DataTools;
 use app\modules\admin\models\PCommunity;
+use app\modules\admin\models\PCompany;
 use app\modules\admin\models\PCustomer;
 use app\modules\admin\models\PModel;
 use app\modules\admin\models\ExcelTools;
 use app\modules\admin\models\PSales;
 use app\modules\admin\models\PStaff;
 use app\modules\admin\models\PStaffRole;
+
+use app\modules\admin\models\DataTools;
+use app\modules\admin\models\Message;
 
 /**
  * 销售管理
@@ -89,20 +92,18 @@ class SaleController extends \yii\web\Controller
         foreach ($ids as $key => $value) {
             $advInfo = new PAdv();
             $advInfo = PAdv::find()->where("id=" . $value)->one();
-            if($advInfo!=null)
-            {
+            if ($advInfo != null) {
                 $communityInfo = PCommunity::find()->where("id=" . $advInfo->adv_community_id)->one();
-                if($communityInfo!=null)
-                {
+                if ($communityInfo != null) {
                     //设置销售信息
                     $sales = new PSales();
                     $sales->community_no = $communityInfo->community_no;
-                    $sales->community_name=$communityInfo->community_name;
-                    $sales->community_position=$communityInfo->community_position;
+                    $sales->community_name = $communityInfo->community_name;
+                    $sales->community_position = $communityInfo->community_position;
                     $sales->adv_id = $value;
-                    $sales->adv_no=$advInfo->adv_no;
-                    $sales->adv_name=$advInfo->adv_name;
-                    $sales->company_id=$advInfo->company_id;
+                    $sales->adv_no = $advInfo->adv_no;
+                    $sales->adv_name = $advInfo->adv_name;
+                    $sales->company_id = $advInfo->company_id;
                     $sales->sales_customer = $sales_customer;
                     $sales->sales_company = $sales_company;
                     $sales->sales_starttime = $sales_starttime;
@@ -124,10 +125,33 @@ class SaleController extends \yii\web\Controller
                     }
                 }
             }
-
-
             $result++;
         }
+
+        //设置message消息
+        $staff_name = \Yii::$app->session['loginUser']->staff_name;
+        $company_id = \Yii::$app->session['loginUser']->company_id;
+        $info_status = "";  //销售状态
+        if ($sales_status > -1) {
+            switch ($sales_status) {
+                case 0:
+                    $info_status = '销售';
+                    break;
+                case 1:
+                    $info_status = '赠送';
+                    break;
+                case 2:
+                    $info_status = '置换';
+                    break;
+            }
+        }
+        $customer_company = "";    //客户公司
+        $customer = PCustomer::find()->where("id=" . $sales_company)->one();
+        if ($customer != null)
+            $customer_company = $customer->customer_company;
+        $message = $staff_name . "于" . $date . "将" . $result . "个广告位" . $info_status . "给" . $customer_company . "，销售人员为：" . $sales_person . "。";
+        Message::sendMessage($company_id, $message);
+
         echo json_encode($result);
     }
 

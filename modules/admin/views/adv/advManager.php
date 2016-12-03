@@ -85,7 +85,7 @@
                         <select class="form-control" style="width:40%;float:right;margin-right:50%;" name="adv_install_status">
                             <option value="-1">不修改</option>
                             <option value="0">待安装</option>
-                            <option value="1">维修(损坏)</option>
+                            <option value="1">维修</option>
                             <option value="2">正常使用</option>
                         </select>
                     </div>
