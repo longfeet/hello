@@ -12,6 +12,7 @@
                 <div class="panel-heading">
                     广告位列表
                     <!--a href="javascript:;" class="btn btn-info" id="showMap" style="float:right;margin-top:-0.5rem;">楼盘地图</a-->
+                    <a href="javascript:;" class="btn btn-info" id="exportExcel" style="float:right;margin-top:-0.5rem;margin-right:1rem;">广告位导出</a>
                     <a href="javascript:;" class="btn btn-info" id="addAdv" style="float:right;margin-top:-0.5rem;margin-right:1rem;">添加广告位</a>
                     <a href="javascript:;" class="btn btn-info" id="addExcel" style="float:right;margin-top:-0.5rem;margin-right:1rem;">EXCEL上传</a>
                 </div>
@@ -231,6 +232,10 @@ $(window).ready(function(){
 
     $("#addAdv").click(function(){
         window.location.href = "/admin/adv/add";
+    });
+
+    $("#exportExcel").click(function(){
+        window.location.href = "/admin/adv/exportexcel";
     });
     
     $("#fenyeHtml").on('click','a',function(e){

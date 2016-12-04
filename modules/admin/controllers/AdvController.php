@@ -15,6 +15,7 @@ use app\modules\admin\models\PStaffRole;
 use app\modules\admin\models\PAdvStaff;
 use app\modules\admin\models\FileTools;
 use app\modules\admin\models\Message;
+use app\modules\admin\tools\HelperTools;
 
 
 /**
@@ -366,6 +367,159 @@ class AdvController extends \yii\web\Controller
             }
         }
         $this->redirect("/admin/adv/manager");
+    }
+
+    /*
+     * 广告位信息导出
+     */
+    public function actionExportexcel()
+    {
+        $post = \Yii::$app->request->post();
+        $name = $post['name'];
+        $adv_no = $post['adv_no'];
+        $postion = $post['postion'];
+        $com_no = $post['com_no'];
+        $value = $post['value'];
+        $thisVal = $post['thisVal'];
+        $where = array(
+            ' 1=1 '
+        );
+        $company_id = \Yii::$app->session['loginUser']->company_id;
+        $where[] = " adv.creator IN ( select id from p_staff where company_id = $company_id ) ";   //只能选取本公司
+        if (!empty($name)) {
+            $where[] = " com.community_name like '%$name%' ";
+        }
+        if (!empty($adv_no)) {
+            $where[] = " adv.adv_no = $adv_no ";
+        }
+        if (!empty($postion)) {
+            $where[] = " com.community_position = '$postion' ";
+        }
+        if (!empty($postion)) {
+            $where[] = " com.community_no = $com_no ";
+        }
+        $st_where = array(
+            ' adv.id = st.adv_id '
+        );
+        if (!empty($value)) {
+            $where[] = " adv." . $value . " in ( " . $thisVal . " ) ";
+            if ($value == 'adv_install_status') {
+                $st_where[] = " st.type = 'install' ";
+            } else {
+                $st_where[] = " st.type = 'pic' ";
+            }
+            $st_where[] = " st.point_status = " . $thisVal;
+        }
+        $sql = "SELECT adv.*,com.community_name,cpy.company_name,count(st.id) people_num,st.id stid FROM p_adv adv "
+            . " LEFT JOIN p_community com ON adv.adv_community_id = com.id "
+            . " LEFT JOIN p_company cpy ON adv.company_id = cpy.id "
+            . " LEFT JOIN p_adv_staff st ON ( " . implode(" AND ", $st_where) . " ) "
+            . " WHERE " . implode(" AND ", $where)
+            . " GROUP BY adv.id "
+            . " ORDER BY  adv.id desc";
+        //exit(json_encode($sql));
+        //输出的sql为；
+//        SELECT adv.*,com.community_name,cpy.company_name,count(st.id) people_num,st.id stid
+//        FROM p_adv adv LEFT JOIN p_community com ON adv.adv_community_id = com.id
+//        LEFT JOIN p_company cpy ON adv.company_id = cpy.id
+//        LEFT JOIN p_adv_staff st ON ( adv.id = st.adv_id )
+//        WHERE 1=1 AND adv.creator IN ( select id from p_staff where company_id = 1 )
+//        GROUP BY adv.id ORDER BY adv.id desc
+
+        $connection = \Yii::$app->db;
+        $command = $connection->createCommand($sql);
+        $list = $command->queryAll();
+
+        foreach ($list as $key => $value) {
+            foreach ($value as $k => $v) {
+                //使用状态
+//                if($k=="adv_use_status"){
+//                    switch ($v) {
+//                        case 0:
+//                            $list[$key][$k] = "新增";
+//                            break;
+//                        case 1:
+//                            $list[$key][$k] = "未使用";
+//                            break;
+//                        case 2:
+//                            $list[$key][$k] = "已使用";
+//                            break;
+//                        default :
+//                            break;
+//                    }
+//                }
+                //安装状态
+                if ($k == "adv_install_staus") {
+                    switch ($v) {
+                        case 0:
+                            $list[$key][$k] = "未安装";
+                            break;
+                        case 1:
+                            $list[$key][$k] = "待维修";
+                            break;
+                        case 2:
+                            $list[$key][$k] = "正常使用";
+                            break;
+                        default :
+                            break;
+                    }
+                }
+                //销售状态
+                if ($k == "adv_sales_status") {
+                    switch ($v) {
+                        case 0:
+                            $list[$key][$k] = "销售";
+                            break;
+                        case 1:
+                            $list[$key][$k] = "赠送";
+                            break;
+                        case 2:
+                            $list[$key][$k] = "置换";
+                            break;
+                        default :
+                            break;
+                    }
+                }
+                //画面状态
+                if ($k == "adv_pic_status") {
+                    switch ($v) {
+                        case 0:
+                            $list[$key][$k] = "预定";
+                            break;
+                        case 1:
+                            $list[$key][$k] = "待上刊";
+                            break;
+                        case 2:
+                            $list[$key][$k] = "已上刊";
+                            break;
+                        case 3:
+                            $list[$key][$k] = "待下刊";
+                            break;
+                        case 4:
+                            $list[$key][$k] = "已下刊";
+                            break;
+                        default :
+                            break;
+                    }
+                }
+            }
+        }
+
+        //输出测试
+//        foreach($list as $key=>$value) {
+//            foreach ($value as $k => $v) {
+//                echo $k.":".$v.";";
+//            }
+//            echo "<br/>";
+//        }
+
+        $filename = iconv("utf-8", "gb2312", "广告位信息.csv");
+        $head = array("community_name", "adv_no", "adv_name", "adv_position", "adv_install_status", "adv_sales_status", "adv_pic_status");
+        $alias = array("community_name" => "所属楼盘", "adv_no" => "广告位编号", "adv_name" => "广告位名称", "adv_position" => "广告位位置", "adv_install_status" => "安装状态", "adv_sales_status" => "销售状态", "adv_pic_status" => "画面状态");
+        $send_back = HelperTools::arrayToString($list, $head, $alias);
+        $download_size = strlen($send_back);
+
+        return $this->renderPartial('advExport', array("fileName" => $filename, 'downloadSize' => $download_size, 'sendBack' => $send_back));
     }
 
     public function actionProcess()
