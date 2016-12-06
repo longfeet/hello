@@ -505,12 +505,12 @@ class AdvController extends \yii\web\Controller
         }
 
         //输出测试
-//        foreach($list as $key=>$value) {
-//            foreach ($value as $k => $v) {
-//                echo $k.":".$v.";";
-//            }
-//            echo "<br/>";
-//        }
+        foreach($list as $key=>$value) {
+            foreach ($value as $k => $v) {
+                echo $k.":".$v.";";
+            }
+            echo "<br/>";
+        }
 
         $filename = iconv("utf-8", "gb2312", "广告位信息.xlsx");
         $head = array("community_name", "adv_no", "adv_name", "adv_position", "adv_install_status", "adv_sales_status", "adv_pic_status");
@@ -518,7 +518,7 @@ class AdvController extends \yii\web\Controller
 //        $send_back = HelperTools::arrayToString($list, $head, $alias);
 //        $download_size = strlen($send_back);
 
-        ExcelTools::getExcel($filename,$head,$list);
+        //ExcelTools::getExcel($filename,$head,$list);
         //ExcelTools::advExport($filename,$list);
         //exit;
         //return $this->renderPartial('advExport', array("fileName" => $filename, 'downloadSize' => $download_size, 'sendBack' => $send_back));

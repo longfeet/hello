@@ -291,8 +291,8 @@ class ExcelTools
         if(empty($fileName)){
             exit;
         }
-//        $date = date("Y_m_d",time());
-//        $fileName .= "_{$date}.xlsx";
+        $date = date("Y_m_d",time());
+        //$fileName .= "_{$date}.xlsx";
 
         //创建新的PHPExcel对象
         $objPHPExcel = new \PHPExcel();
@@ -308,15 +308,15 @@ class ExcelTools
 
         $column = 2;
         $objActSheet = $objPHPExcel->getActiveSheet();
-//        foreach($data as $key => $rows){ //行写入
-//            $span = ord("A");
-//            foreach($rows as $keyName=>$value){// 列写入
-//                $j = chr($span);
-//                $objActSheet->setCellValue($j.$column, $value);
-//                $span++;
-//            }
-//            $column++;
-//        }
+        foreach($data as $key => $rows){ //行写入
+            $span = ord("A");
+            foreach($rows as $keyName=>$value){// 列写入
+                $j = chr($span);
+                $objActSheet->setCellValue($j.$column, $value);
+                $span++;
+            }
+            $column++;
+        }
 
         //$fileName = iconv("utf-8", "gb2312", $fileName);
         //重命名表
