@@ -284,14 +284,66 @@ class ExcelTools
         \Yii::$app->db->createCommand($sql)->execute();
     }
 
+    public static function  getExcel($fileName,$headArr,$data){
+        if(empty($data) || !is_array($data)){
+            die("data must be a array");
+        }
+        if(empty($fileName)){
+            exit;
+        }
+//        $date = date("Y_m_d",time());
+//        $fileName .= "_{$date}.xlsx";
+
+        //创建新的PHPExcel对象
+        $objPHPExcel = new \PHPExcel();
+        $objProps = $objPHPExcel->getProperties();
+
+        //设置表头
+        $key = ord("A");
+        foreach($headArr as $v){
+            $colum = chr($key);
+            $objPHPExcel->setActiveSheetIndex(0) ->setCellValue($colum.'1', $v);
+            $key += 1;
+        }
+
+        $column = 2;
+        $objActSheet = $objPHPExcel->getActiveSheet();
+//        foreach($data as $key => $rows){ //行写入
+//            $span = ord("A");
+//            foreach($rows as $keyName=>$value){// 列写入
+//                $j = chr($span);
+//                $objActSheet->setCellValue($j.$column, $value);
+//                $span++;
+//            }
+//            $column++;
+//        }
+
+        //$fileName = iconv("utf-8", "gb2312", $fileName);
+        //重命名表
+        $objPHPExcel->getActiveSheet()->setTitle('Simple');
+        //设置活动单指数到第一个表,所以Excel打开这是第一个表
+        $objPHPExcel->setActiveSheetIndex(0);
+        //将输出重定向到一个客户端web浏览器(Excel2007)
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header("Content-Disposition: attachment; filename=\"$fileName\"");
+        header('Cache-Control: max-age=0');
+        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        if(!empty($_GET['excel'])){
+            $objWriter->save('php://output'); //文件通过浏览器下载
+        }else{
+            $objWriter->save($fileName); //脚本方式运行，保存在当前目录
+        }
+        exit;
+    }
+
     /*
      * 参考：http://blog.csdn.net/samxx8/article/details/8138072
      * 广告位信息导出
      */
     public static function advExport($fileName,$data)
     {
-        $objExcel = new PHPExcel();  // 创建一个处理对象实例
-        $objWriter = new PHPExcel_Writer_Excel5($objExcel);     // 用于其他版本格式
+        $objExcel = new \PHPExcel();  // 创建一个处理对象实例
+        $objWriter = new \PHPExcel_Writer_Excel5($objExcel);     // 用于其他版本格式
         //$objWriter = new PHPExcel_Writer_Excel2007($objExcel); // 用于 2007 格式
 
 
