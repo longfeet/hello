@@ -2,6 +2,9 @@
 namespace app\modules\admin\models;
 
 include '/../vendor/phpexcel/Classes/PHPExcel/IOFactory.php';
+include '/../vendor/phpexcel/Classes/PHPExcel.php';
+include '/../vendor/phpexcel/Classes/PHPExcel/Writer/Excel5.php';     // 用于其他低版本xls
+include '/../vendor/phpexcel/Classes/PHPExcel/Writer/Excel2007.php'; // 用于 excel-2007 格式
 
 class ExcelTools
 {
@@ -281,7 +284,37 @@ class ExcelTools
         \Yii::$app->db->createCommand($sql)->execute();
     }
 
+    /*
+     * 参考：http://blog.csdn.net/samxx8/article/details/8138072
+     * 广告位信息导出
+     */
+    public static function advExport($fileName,$data)
+    {
+        $objExcel = new PHPExcel();  // 创建一个处理对象实例
+        $objWriter = new PHPExcel_Writer_Excel5($objExcel);     // 用于其他版本格式
+        //$objWriter = new PHPExcel_Writer_Excel2007($objExcel); // 用于 2007 格式
 
 
+        //设置当前的sheet索引，用于后续的内容操作。
+        //一般只有在使用多个sheet的时候才需要显示调用。
+        //缺省情况下，PHPExcel会自动创建第一个sheet被设置SheetIndex=0
+        $objExcel->setActiveSheetIndex(0);
+        $objActSheet = $objExcel->getActiveSheet();
+
+        $num = 1;
+        foreach($data as $key=>$value)
+        {
+            $objActSheet->setCellValue('A'.$num, $value["community_name"]);
+            $objActSheet->setCellValue('B'.$num, $value["adv_no"]);
+            $objActSheet->setCellValue('C'.$num, $value["adv_name"]);
+            $objActSheet->setCellValue('D'.$num, $value["adv_position"]);
+            $objActSheet->setCellValue('E'.$num, $value["adv_install_status"]);
+            $objActSheet->setCellValue('F'.$num, $value["adv_sales_status"]);
+            $objActSheet->setCellValue('G'.$num, $value["adv_pic_status"]);
+            $num++;
+        }
+
+        $objWriter->save($fileName);
+    }
 
 }

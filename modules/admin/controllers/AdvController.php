@@ -516,10 +516,12 @@ class AdvController extends \yii\web\Controller
         $filename = iconv("utf-8", "gb2312", "广告位信息.csv");
         $head = array("community_name", "adv_no", "adv_name", "adv_position", "adv_install_status", "adv_sales_status", "adv_pic_status");
         $alias = array("community_name" => "所属楼盘", "adv_no" => "广告位编号", "adv_name" => "广告位名称", "adv_position" => "广告位位置", "adv_install_status" => "安装状态", "adv_sales_status" => "销售状态", "adv_pic_status" => "画面状态");
-        $send_back = HelperTools::arrayToString($list, $head, $alias);
-        $download_size = strlen($send_back);
+//        $send_back = HelperTools::arrayToString($list, $head, $alias);
+//        $download_size = strlen($send_back);
 
-        return $this->renderPartial('advExport', array("fileName" => $filename, 'downloadSize' => $download_size, 'sendBack' => $send_back));
+        ExcelTools::advExport($filename,$list);
+        exit;
+        //return $this->renderPartial('advExport', array("fileName" => $filename, 'downloadSize' => $download_size, 'sendBack' => $send_back));
     }
 
     public function actionProcess()
