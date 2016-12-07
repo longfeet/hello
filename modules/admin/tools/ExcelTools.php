@@ -291,7 +291,7 @@ class ExcelTools
         if(empty($fileName)){
             exit;
         }
-        $date = date("Y_m_d",time());
+        //$date = date("Y_m_d",time());
         //$fileName .= "_{$date}.xlsx";
 
         //创建新的PHPExcel对象
@@ -302,21 +302,21 @@ class ExcelTools
         $key = ord("A");
         foreach($headArr as $v){
             $colum = chr($key);
-            $objPHPExcel->setActiveSheetIndex(0) ->setCellValue($colum.'1', $v);
+            $objPHPExcel->setActiveSheetIndex(0) ->setCellValue($colum.$key, $v);
             $key += 1;
         }
 
-        $column = 2;
-        $objActSheet = $objPHPExcel->getActiveSheet();
-        foreach($data as $key => $rows){ //行写入
-            $span = ord("A");
-            foreach($rows as $keyName=>$value){// 列写入
-                $j = chr($span);
-                $objActSheet->setCellValue($j.$column, $value);
-                $span++;
-            }
-            $column++;
-        }
+//        $column = 2;
+//        $objActSheet = $objPHPExcel->getActiveSheet();
+//        foreach($data as $key => $rows){ //行写入
+//            $span = ord("A");
+//            foreach($rows as $keyName=>$value){// 列写入
+//                $j = chr($span);
+//                $objActSheet->setCellValue($j.$column, $value);
+//                $span++;
+//            }
+//            $column++;
+//        }
 
         //$fileName = iconv("utf-8", "gb2312", $fileName);
         //重命名表
@@ -337,36 +337,59 @@ class ExcelTools
     }
 
     /*
-     * 参考：http://blog.csdn.net/samxx8/article/details/8138072
+     * 参考：http://blog.csdn.net/molaifeng/article/details/12527947
      * 广告位信息导出
      */
     public static function advExport($fileName,$data)
     {
-        $objExcel = new \PHPExcel();  // 创建一个处理对象实例
-        $objWriter = new \PHPExcel_Writer_Excel5($objExcel);     // 用于其他版本格式
-        //$objWriter = new PHPExcel_Writer_Excel2007($objExcel); // 用于 2007 格式
+        $objPHPExcel = new \PHPExcel();
+        // 字体和样式
+        $objPHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('B1')->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('C1')->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('D1')->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('E1')->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('F1')->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('G1')->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('H1')->getFont()->setBold(true);
+        // 表头
+        $objPHPExcel->setActiveSheetIndex(0)
+            ->setCellValue('A1', '序号')
+            ->setCellValue('B1', '所属楼盘')
+            ->setCellValue('C1', '广告位编号')
+            ->setCellValue('D1', '广告位名称')
+            ->setCellValue('E1', '广告位位置')
+            ->setCellValue('F1', '安装状态')
+            ->setCellValue('G1', '销售状态')
+            ->setCellValue('H1', '画面状态');
 
-
-        //设置当前的sheet索引，用于后续的内容操作。
-        //一般只有在使用多个sheet的时候才需要显示调用。
-        //缺省情况下，PHPExcel会自动创建第一个sheet被设置SheetIndex=0
-        $objExcel->setActiveSheetIndex(0);
-        $objActSheet = $objExcel->getActiveSheet();
-
-        $num = 1;
+        // 内容
+        $num=1;   //序号
+        $i=2;
         foreach($data as $key=>$value)
         {
-            $objActSheet->setCellValue('A'.$num, $value["community_name"]);
-            $objActSheet->setCellValue('B'.$num, $value["adv_no"]);
-            $objActSheet->setCellValue('C'.$num, $value["adv_name"]);
-            $objActSheet->setCellValue('D'.$num, $value["adv_position"]);
-            $objActSheet->setCellValue('E'.$num, $value["adv_install_status"]);
-            $objActSheet->setCellValue('F'.$num, $value["adv_sales_status"]);
-            $objActSheet->setCellValue('G'.$num, $value["adv_pic_status"]);
+            $objPHPExcel->getActiveSheet(0)->setCellValue('A' . $i, $num);
+            $objPHPExcel->getActiveSheet(0)->setCellValue('B' . $i, $value['community_name']);
+            $objPHPExcel->getActiveSheet(0)->setCellValue('C' . $i, $value['adv_no']);
+            $objPHPExcel->getActiveSheet(0)->setCellValue('D' . $i, $value['adv_name']);
+            $objPHPExcel->getActiveSheet(0)->setCellValue('E' . $i, $value['adv_position']);
+            $objPHPExcel->getActiveSheet(0)->setCellValue('F' . $i, $value['adv_install_status']);
+            $objPHPExcel->getActiveSheet(0)->setCellValue('G' . $i, $value['adv_sales_status']);
+            $objPHPExcel->getActiveSheet(0)->setCellValue('H' . $i, $value['adv_pic_status']);
             $num++;
+            $i++;
         }
 
-        $objWriter->save($fileName);
+        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+        $objPHPExcel->setActiveSheetIndex(0);
+
+        // 输出
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $fileName);
+        header('Cache-Control: max-age=0');
+
+        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+        $objWriter->save('php://output');
     }
 
 }

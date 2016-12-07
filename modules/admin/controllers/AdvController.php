@@ -431,24 +431,8 @@ class AdvController extends \yii\web\Controller
 
         foreach ($list as $key => $value) {
             foreach ($value as $k => $v) {
-                //使用状态
-//                if($k=="adv_use_status"){
-//                    switch ($v) {
-//                        case 0:
-//                            $list[$key][$k] = "新增";
-//                            break;
-//                        case 1:
-//                            $list[$key][$k] = "未使用";
-//                            break;
-//                        case 2:
-//                            $list[$key][$k] = "已使用";
-//                            break;
-//                        default :
-//                            break;
-//                    }
-//                }
                 //安装状态
-                if ($k == "adv_install_staus") {
+                if ($k == "adv_install_status") {
                     switch ($v) {
                         case 0:
                             $list[$key][$k] = "未安装";
@@ -505,23 +489,18 @@ class AdvController extends \yii\web\Controller
         }
 
         //输出测试
-        foreach($list as $key=>$value) {
-            foreach ($value as $k => $v) {
-                echo $k.":".$v.";";
-            }
-            echo "<br/>";
-        }
+//        foreach($list as $key=>$value) {
+//            foreach ($value as $k => $v) {
+//                echo $k.":".$v.";";
+//            }
+//            echo "<br/>";
+//        }
 
-        $filename = iconv("utf-8", "gb2312", "广告位信息.xlsx");
-        $head = array("community_name", "adv_no", "adv_name", "adv_position", "adv_install_status", "adv_sales_status", "adv_pic_status");
-        $alias = array("community_name" => "所属楼盘", "adv_no" => "广告位编号", "adv_name" => "广告位名称", "adv_position" => "广告位位置", "adv_install_status" => "安装状态", "adv_sales_status" => "销售状态", "adv_pic_status" => "画面状态");
-//        $send_back = HelperTools::arrayToString($list, $head, $alias);
-//        $download_size = strlen($send_back);
+        $filename = iconv("utf-8", "gb2312", "广告位信息.xls");
+        //$head = array("community_name", "adv_no", "adv_name", "adv_position", "adv_install_status", "adv_sales_status", "adv_pic_status");
+        //$alias = array("community_name" => "所属楼盘", "adv_no" => "广告位编号", "adv_name" => "广告位名称", "adv_position" => "广告位位置", "adv_install_status" => "安装状态", "adv_sales_status" => "销售状态", "adv_pic_status" => "画面状态");
 
-        //ExcelTools::getExcel($filename,$head,$list);
-        //ExcelTools::advExport($filename,$list);
-        //exit;
-        //return $this->renderPartial('advExport', array("fileName" => $filename, 'downloadSize' => $download_size, 'sendBack' => $send_back));
+        ExcelTools::advExport($filename,$list);
     }
 
     public function actionProcess()
