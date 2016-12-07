@@ -39,7 +39,7 @@ class AdvController extends \yii\web\Controller
     public $advColumnsVal = array("id", "adv_name", array("community", "community_name"), array("company", "company_name"), "<bindadv,edit,delete>");
 
     /**
-     *
+     * 广告位管理画面（总）
      * @return string
      */
     public function actionManager()
@@ -56,6 +56,64 @@ class AdvController extends \yii\web\Controller
             'advlist' => $advList, "staff" => $staff
         ));
     }
+
+    /**
+     * 广告位管理画面（安装）
+     * @return string
+     */
+    public function actionInstall()
+    {
+        $advList = PAdv::find()->all();
+        //$column = DataTools::getDataTablesColumns($this->advColumns);
+        //$jsonDataUrl = '/admin/adv/managerjson';
+        $company_id = \Yii::$app->session['loginUser']->company_id;
+        $staff = PStaff::find()->where('company_id = "' . $company_id . '"')->select('staff_name,id')->all();
+        return $this->render('advFlowInstall',array('advlist' => $advList, "staff" => $staff));
+    }
+
+    /**
+     * 广告位管理画面（维修）
+     * @return string
+     */
+    public function actionRepair()
+    {
+        $advList = PAdv::find()->all();
+        //$column = DataTools::getDataTablesColumns($this->advColumns);
+        //$jsonDataUrl = '/admin/adv/managerjson';
+        $company_id = \Yii::$app->session['loginUser']->company_id;
+        $staff = PStaff::find()->where('company_id = "' . $company_id . '"')->select('staff_name,id')->all();
+        return $this->render('advFlowRepair',array('advlist' => $advList, "staff" => $staff));
+    }
+
+    /**
+     * 广告位管理画面（上刊）
+     * @return string
+     */
+    public function actionOn()
+    {
+        $advList = PAdv::find()->all();
+        //$column = DataTools::getDataTablesColumns($this->advColumns);
+        //$jsonDataUrl = '/admin/adv/managerjson';
+        $company_id = \Yii::$app->session['loginUser']->company_id;
+        $staff = PStaff::find()->where('company_id = "' . $company_id . '"')->select('staff_name,id')->all();
+        return $this->render('advFlowOn',array('advlist' => $advList, "staff" => $staff));
+    }
+
+    /**
+     * 广告位管理画面（下刊）
+     * @return string
+     */
+    public function actionDown()
+    {
+        $advList = PAdv::find()->all();
+        //$column = DataTools::getDataTablesColumns($this->advColumns);
+        //$jsonDataUrl = '/admin/adv/managerjson';
+        $company_id = \Yii::$app->session['loginUser']->company_id;
+        $staff = PStaff::find()->where('company_id = "' . $company_id . '"')->select('staff_name,id')->all();
+        return $this->render('advFlowDown',array('advlist' => $advList, "staff" => $staff));
+    }
+
+
 
     public function actionAjaxmamger()
     {
