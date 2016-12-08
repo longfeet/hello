@@ -12,9 +12,6 @@
                 <div class="panel-heading">
                     上刊列表
                 </div>
-                <div class="panel-heading" id="statusFix">
-                    <a href="javascript:;" class="btn btn-info" value="adv_pic_status" thisVal="1">上刊</a>
-                </div>
                 <div class="panel-heading">
                     <form class="form-inline" role="form">
                         <div class="form-group">
@@ -28,11 +25,6 @@
                         </div>
                         <div class="form-group">
                           <input type="email" class="form-control" id="adv_no" placeholder="请输入广告位编号">
-                        </div>
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" name="just_see" id="just_see"> 浏览模式
-                            </label>
                         </div>
                         <button type="button" id="searchBtn" class="btn btn-default">搜索</button>
                   </form>
@@ -48,42 +40,22 @@
                                 <th width="15%">广告名称</th>
                                 <th width="15%">楼盘名称</th>
                                 <th width="15%">公司名称</th>
-                                <th width="10%">人员分配</th>
+                                <th width="15%">人员分配</th>
                                 <th width="15%">安装状态</th>
                                 <th width="15%">显示状态</th>
-                                <th width="20%">编辑</th>
+                                <th width="15%">编辑</th>
                             </tr>
                             </thead>
                             <tbody id="table_content">
                             </tbody>
                         </table>
                         <div class="dataTables_paginate paging_simple_numbers" id="fenyeHtml">
-<!--                            <ul class="pagination">
-                                <li class="paginate_button previous disabled">
-                                    <a href="#">前一页</a></li>
-                                <li class="paginate_button active" ><a href="#">1</a></li>
-                                <li class="paginate_button "><a href="#">2</a></li>
-                                <li class="paginate_button "><a href="#">3</a></li>
-                                <li class="paginate_button "><a href="#">4</a></li>
-                                <li class="paginate_button next">
-                                    <a href="#">后一页</a></li>
-                            </ul>-->
                         </div>
                     </div>
                 </div>
             </div>
             <div>
                 <div id="fix_status">
-                    <div class="form-group install_status">
-                        <label class="control-label">修改状态：</label>
-                        <select class="form-control" style="width:40%;float:right;margin-right:50%;" name="adv_install_status">
-                            <option value="-1">不修改</option>
-                            <option value="0">待安装</option>
-                            <option value="1">维修</option>
-                            <option value="2">正常使用</option>
-                        </select>
-                    </div>
-
                     <div class="form-group pic_status">
                         <label class="control-label">画面状态</label>
                         <select class="form-control" style="width:40%;float:right;margin-right:50%;" name="adv_pic_status">
@@ -91,8 +63,6 @@
                             <option value="0">预定</option>
                             <option value="1">待上刊</option>
                             <option value="2">已上刊</option>
-                            <option value="3">待下刊</option>
-                            <option value="4">已下刊</option>
                         </select>
                     </div>
 
@@ -104,7 +74,7 @@
                         ?>
                     </div>
                     <div>
-                        <input type="hidden" id="typeValue" value="install" />
+                        <input type="hidden" id="typeValue" value="pic" />
                         <input type="button" id="editStatus" class="btn btn-info" value="修改" />
                     </div>
                 </div>
@@ -124,7 +94,7 @@
 <script type="text/javascript">
 var search = null;
 
-var install_status = ['未安装','待维修（损坏）','正常使用','安装中','维修中'];
+var install_status = ['未安装','待维修','正常使用','安装中','维修中'];
 var pic_status = ['预定','待上刊','已上刊','待下刊','已下刊'];
 
 var status_search = {};
@@ -165,14 +135,10 @@ function buildHtml(data){
     for(var key in data.list_data){
         var item = data.list_data[key];
 
-        var hasPeople= "";
-        if(item.people_num>0)
-            hasPeople="已分配"
-
         var control_html = "";
         if(data.range == "mine")
-            control_html= '<div class="advEdit"><a href="/admin/adv/details?id='+item.id+'">详情</a> | <a href="/admin/adv/edit?id='+item.id+'">编辑</a></div>';
-        html += '<tr><td><input type="checkbox" value="'+item.id+'" name="adv_id" />'+(parseInt(key)+1)+'</td><td>'+item.adv_name+'</td><td>'+item.community_name+'</td><td>'+item.company_name+'</td><td><a href="javascript:;" class="showPeople" adv_staff_id="'+item.stid+'">'+hasPeople+'</a></td><td>'+install_status[item.adv_install_status]+'</td><td>'+pic_status[item.adv_pic_status]+'</td><td>'+control_html+'</td></tr>';
+            control_html= '<div class="advEdit"><a href="/admin/adv/details?id='+item.id+'">详情</a></div>';
+        html += '<tr><td><input type="checkbox" value="'+item.id+'" name="adv_id" />'+(parseInt(key)+1)+'</td><td>'+item.adv_name+'</td><td>'+item.community_name+'</td><td>'+item.company_name+'</td><td>'+item.people_num+'</td><td>'+install_status[item.adv_install_status]+'</td><td>'+pic_status[item.adv_pic_status]+'</td><td>'+control_html+'</td></tr>';
     }
     document.getElementById("table_content").innerHTML = html;
     buildPage(data.page_data);
@@ -218,18 +184,10 @@ function buildPage(page_data){
 }
 
 $(window).ready(function(){
+    status_search.value = "adv_pic_status";
+    status_search.thisVal = 1;    //上刊
     getList();
-    $("#addExcel").click(function(){
-        window.location.href = "/admin/adv/addexcel";
-    });
-
-    $("#addAdv").click(function(){
-        window.location.href = "/admin/adv/add";
-    });
-
-    $("#exportExcel").click(function(){
-        window.location.href = "/admin/adv/exportexcel";
-    });
+    $("#fix_status").show();
     
     $("#fenyeHtml").on('click','a',function(e){
         var a = e||window.event;
@@ -239,90 +197,7 @@ $(window).ready(function(){
         if(page > 0){
             getList(page);
         }
-        
-    });
-    
-    $("input[name='just_see']").change(function(){
-        console.log(this.checked);
-        if(this.checked){
-            status_search = {range:'all'};
-            getList();
-            $("#fix_status").hide();
-            $("#statusFix a").hide();
-        }else{
-            status_search = {range:'mine'};
-            getList();
-            $("#statusFix a").show();
-        }
-    })
-    
-    
-    
-    $("#statusFix a").click(function(e){
-        var a = e||window.event;
-        a.preventDefault();
-        a.stopPropagation();
-        $("#statusFix a").remove("btn-success");
-        $("#statusFix a").addClass("btn-info");
-        $(this).removeClass("btn-info");
-        $(this).addClass("btn-success");
-        
-        var value = $(this).attr("value");
-        var thisVal = $(this).attr("thisVal");
-        
-        status_search.value = value;
-        status_search.thisVal = thisVal;
-        getList();
-        $("#fix_status").show();
-        $(".pic_status select").val(-1);
-        $(".install_status select").val(-1);
-        $("#staff").hide();
-        if(value == 'adv_install_status'){
-            $(".pic_status").hide();
-            $(".install_status").show();
-            $("#typeValue").val("install");  //设置提交按钮的值，从而指定相应adv_staff表中point_status
-        }
-        if(value == 'adv_pic_status'){
-            $(".install_status").hide();
-            $(".pic_status").show();
-            $("#typeValue").val("pic"); //设置提交按钮的值，从而指定相应adv_staff表中point_status
-        }
     });
 
-//    var table = $('#dataTables-example').dataTable({
-//            "ordering" : false,
-//            "language": {
-//                "url": "/assets/adminTemplate/js/dataTables/zh-cn.txt"
-//            },
-//            "aLengthMenu" : [10,20,50,100],
-//            "serverSide": true,
-//            "fnServerData": function(sSource, aoData, fnCallback) {
-//                $.ajax( {
-//                    "type": "GET",
-//                    "contentType": "application/json",
-//                    "url": "<?=$jsonurl?>",
-//                    "dataType": "json",
-//                    "data": aoData, //以json格式传递
-//                    "success": function(data) {
-//                        fnCallback(data);
-//                        $('.roleDetails').click(function(){
-//                            window.location.href = "/admin/adv/details?id=" + $(this).attr("role_id");
-//                        });
-//                        $('.roleEdit').click(function(){
-//                            window.location.href = "/admin/adv/edit?id=" + $(this).attr("role_id");
-//                        });
-//                        $('.advBind').click(function(){
-//                            window.location.href = "/admin/adv/flow?id=" + $(this).attr("adv_id")
-//                        });
-//                        if(search == null) {
-//                            search =  $('input[type=search]');
-//                            search.before("(广告位名称)&nbsp;");
-//                        }
-//                    }
-//                });
-//            },
-//            'columns' : <?=$columns?>
-//        }
-//    ).api(); 
 });
 </script>

@@ -55,9 +55,9 @@
                                 <th width="15%">广告名称</th>
                                 <th width="15%">楼盘名称</th>
                                 <th width="15%">公司名称</th>
-                                <th width="10%">人员分配</th>
+                                <th width="15%">人员分配</th>
                                 <th width="15%">安装状态</th>
-                                <th width="15%">显示状态</th>
+                                <th width="10%">显示状态</th>
                                 <th width="20%">编辑</th>
                             </tr>
                             </thead>
@@ -131,7 +131,7 @@
 <script type="text/javascript">
 var search = null;
 
-var install_status = ['未安装','待维修（损坏）','正常使用','安装中','维修中'];
+var install_status = ['未安装','待维修','正常使用','安装中','维修中'];
 var pic_status = ['预定','待上刊','已上刊','待下刊','已下刊'];
 
 var status_search = {};
@@ -172,14 +172,10 @@ function buildHtml(data){
     for(var key in data.list_data){
         var item = data.list_data[key];
 
-        var hasPeople= "";
-        if(item.people_num>0)
-            hasPeople="已分配"
-
         var control_html = "";
         if(data.range == "mine")
             control_html= '<div class="advEdit"><a href="/admin/adv/details?id='+item.id+'">详情</a> | <a href="/admin/adv/edit?id='+item.id+'">编辑</a></div>';
-        html += '<tr><td><input type="checkbox" value="'+item.id+'" name="adv_id" />'+(parseInt(key)+1)+'</td><td>'+item.adv_name+'</td><td>'+item.community_name+'</td><td>'+item.company_name+'</td><td><a href="javascript:;" class="showPeople" adv_staff_id="'+item.stid+'">'+hasPeople+'</a></td><td>'+install_status[item.adv_install_status]+'</td><td>'+pic_status[item.adv_pic_status]+'</td><td>'+control_html+'</td></tr>';
+        html += '<tr><td><input type="checkbox" value="'+item.id+'" name="adv_id" />'+(parseInt(key)+1)+'</td><td>'+item.adv_name+'</td><td>'+item.community_name+'</td><td>'+item.company_name+'</td><td>'+item.people_num+'</td><td>'+install_status[item.adv_install_status]+'</td><td>'+pic_status[item.adv_pic_status]+'</td><td>'+control_html+'</td></tr>';
     }
     document.getElementById("table_content").innerHTML = html;
     buildPage(data.page_data);
