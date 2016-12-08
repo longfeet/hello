@@ -42,6 +42,16 @@
     <script src="/assets/adminTemplate/js/custom-scripts.js"></script>
     <style>
         html body {font-family: 微软雅黑}
+        .message{
+            display:block;
+            background:#f00;
+            border-radius:50%;
+            width:15px;
+            height:15px;
+            top:16px;
+            right:23px;
+            position:absolute;
+        }
     </style>
 </head>
 
@@ -251,7 +261,7 @@
                 <!-- /.dropdown -->
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
-                        <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                        <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i><?php if($this->params['hasMessage']) echo "<i class='message'></i>"; ?>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
                         <!--<li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>

@@ -2,6 +2,7 @@
 
 namespace app\modules\admin;
 use app\modules\admin\models\PMenu;
+use app\modules\admin\models\PMessageLog;
 
 /**
  * admin module definition class
@@ -37,10 +38,17 @@ class AdminModule extends \yii\base\Module
                 if (!in_array($_SERVER['REQUEST_URI'], $donotneedlogin)) {
                     $userLogin = $session['loginUser'];
                     $menulists = PMenu::getrolemenulist($userLogin->roleId->role_id, $_SERVER['REQUEST_URI']);
+                    $hasMessage=false;  //是否有未读消息
+                    $message = PMessageLog::find()->where("user_id = ".$userLogin->id." and status=0")->one();
+                    if ($message != null) {
+                        $hasMessage = true;
+                    }
+
                     $view = \Yii::$app->view;
                     $view->params['staffName'] = $userLogin->staff_name;
                     $view->params['menuList'] = $menulists['roleMenu'];
                     $view->params['menuAuth'] = $menulists['token'];
+                    $view->params['hasMessage'] = $hasMessage;
                     if($menulists['token']['is_auth'] === false) {
                         //header('Content-Type:text/html;charset=utf-8');
                         //echo "你没有该权限，请联系你的管理员!";exit;
