@@ -1,0 +1,89 @@
+.picMessage {
+  width:80px;
+  height:100px;
+  background: url("../images/message.png") no-repeat;
+  text-align:center;
+  margin:0 auto;
+  padding-top: 10px;
+}
+
+.picCommunity {
+  width:80px;
+  height:100px;
+  background: url("../images/community.png") no-repeat;
+  text-align:center;
+  margin:0 auto;
+  padding-top: 10px;
+}
+
+.picAdv{
+  width:80px;
+  height:100px;
+  background: url("../images/adv.png") no-repeat;
+  text-align:center;
+  margin:0 auto;
+  padding-top: 10px;
+}
+
+.picInstall{
+  width:80px;
+  height:100px;
+  background: url("../images/install.png") no-repeat;
+  text-align:center;
+  margin:0 auto;
+  padding-top: 10px;
+}
+
+.picRepair{
+  width:80px;
+  height:100px;
+  background: url("../images/repair.png") no-repeat;
+  text-align:center;
+  margin:0 auto;
+  padding-top: 10px;
+}
+
+.picOn{
+  width:80px;
+  height:100px;
+  background: url("../images/on.png") no-repeat;
+  text-align:center;
+  margin:0 auto;
+  padding-top: 10px;
+}
+
+.picDown{
+  width:80px;
+  height:100px;
+  background: url("../images/down.png") no-repeat;
+  text-align:center;
+  margin:0 auto;
+  padding-top: 10px;
+}
+
+.picModel{
+  width:80px;
+  height:100px;
+  background: url("../images/model.png") no-repeat;
+  text-align:center;
+  margin:0 auto;
+  padding-top: 10px;
+}
+
+.picCustomer{
+  width:80px;
+  height:100px;
+  background: url("../images/customer.png") no-repeat;
+  text-align:center;
+  margin:0 auto;
+  padding-top: 10px;
+}
+
+.picSale{
+  width:80px;
+  height:100px;
+  background: url("../images/sale.png") no-repeat;
+  text-align:center;
+  margin:0 auto;
+  padding-top: 10px;
+}
