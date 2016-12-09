@@ -23,7 +23,7 @@
     <link href="/assets/adminTemplate/css/custom-styles.css" rel="stylesheet" />
     <!-- dateTables Styles-->
     <link href="/assets/adminTemplate/js/dataTables/dataTables.bootstrap.css" rel="stylesheet" />
-
+    <link href="/assets/adminTemplate/css/common.css" rel="stylesheet" />
     <!-- /. WRAPPER  -->
     <!-- JS Scripts-->
     <!-- jQuery Js -->

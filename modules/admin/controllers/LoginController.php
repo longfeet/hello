@@ -1,13 +1,13 @@
 <?php
 
-namespace app\modules\admin\controllers;
-use app\modules\admin\models\PStaff;
+    namespace app\modules\admin\controllers;
+    use app\modules\admin\models\PStaff;
 
-/**
- * 广告点管理
- * Class AdvController
- * @package app\modules\admin\controllers
- */
+    /**
+     * 广告点管理
+     * Class AdvController
+     * @package app\modules\admin\controllers
+     */
 class LoginController extends \yii\web\Controller
 {
 

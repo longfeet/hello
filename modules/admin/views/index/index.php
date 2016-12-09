@@ -17,40 +17,104 @@
                     <i class="fa fa-bar-chart-o fa-5x"></i>
                 </div>
                 <div class="panel-footer back-footer-green">
-                    <a href="/admin/community/manager" style="color: #FFFFFF;text-decoration:none;">小区管理</a>
+                    <a href="/admin/community/manager" style="color: #FFFFFF;text-decoration:none;">图形化界面测试</a>
                 </div>
             </div>
         </div>
+
+
         <div class="col-md-3 col-sm-12 col-xs-12">
-            <div class="panel panel-primary text-center no-boder bg-color-blue">
-                <div class="panel-body">
-                    <i class="fa fa-shopping-cart fa-5x"></i>
+            <div class="panel panel-primary text-center no-boder bg-color-brown">
+                <div class="picCommunity">
                 </div>
-                <div class="panel-footer back-footer-blue">
-                    <a href="/admin/model/manager" style="color: #FFFFFF;text-decoration:none;">设备管理</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-12 col-xs-12">
-            <div class="panel panel-primary text-center no-boder bg-color-red">
-                <div class="panel-body">
-                    <i class="fa fa fa-comments fa-5x"></i>
-                </div>
-                <div class="panel-footer back-footer-red">
-                    <a href="/admin/message/messagemanager" style="color: #FFFFFF;text-decoration:none;">消息提醒</a>
+                <div class="panel-footer back-footer-brown" style="background-color:#1DB8D1;">
+                    <a href="/admin/user/staffmanager" style="color: #FFFFFF;text-decoration:none;">小区管理</a>
                 </div>
             </div>
         </div>
         <div class="col-md-3 col-sm-12 col-xs-12">
             <div class="panel panel-primary text-center no-boder bg-color-brown">
-                <div class="panel-body">
-                    <i class="fa fa-users fa-5x"></i>
+                <div class="picAdv">
                 </div>
-                <div class="panel-footer back-footer-brown">
+                <div class="panel-footer back-footer-brown" style="background-color:#DFB48E;">
+                    <a href="/admin/user/staffmanager" style="color: #FFFFFF;text-decoration:none;">广告位管理</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-12 col-xs-12">
+            <div class="panel panel-primary text-center no-boder bg-color-brown">
+                <div class="picInstall">
+                </div>
+                <div class="panel-footer back-footer-brown" style="background-color:#FDAFD9;">
+                    <a href="/admin/user/staffmanager" style="color: #FFFFFF;text-decoration:none;">安装管理</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-12 col-xs-12">
+            <div class="panel panel-primary text-center no-boder bg-color-brown">
+                <div class="picRepair">
+                </div>
+                <div class="panel-footer back-footer-brown" style="background-color:#7595FE;">
+                    <a href="/admin/user/staffmanager" style="color: #FFFFFF;text-decoration:none;">维修管理</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-12 col-xs-12">
+            <div class="panel panel-primary text-center no-boder bg-color-brown">
+                <div class="picOn">
+                </div>
+                <div class="panel-footer back-footer-brown" style="background-color:#56C390;">
+                    <a href="/admin/user/staffmanager" style="color: #FFFFFF;text-decoration:none;">上刊管理</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-12 col-xs-12">
+            <div class="panel panel-primary text-center no-boder bg-color-brown">
+                <div class="picDown">
+                </div>
+                <div class="panel-footer back-footer-brown" style="background-color:#9A9A9A;">
+                    <a href="/admin/user/staffmanager" style="color: #FFFFFF;text-decoration:none;">下刊管理</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-12 col-xs-12">
+            <div class="panel panel-primary text-center no-boder bg-color-brown">
+                <div class="picModel">
+                </div>
+                <div class="panel-footer back-footer-brown" style="background-color:#E09226;">
+                    <a href="/admin/user/staffmanager" style="color: #FFFFFF;text-decoration:none;">设备管理</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-12 col-xs-12">
+            <div class="panel panel-primary text-center no-boder bg-color-brown">
+                <div class="picSale">
+                </div>
+                <div class="panel-footer back-footer-brown" style="background-color:#DF6DB7;">
+                    <a href="/admin/user/staffmanager" style="color: #FFFFFF;text-decoration:none;">销售管理</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-12 col-xs-12">
+            <div class="panel panel-primary text-center no-boder bg-color-brown">
+                <div class="picCustomer">
+                </div>
+                <div class="panel-footer back-footer-brown" style="background-color:#D82E2E;">
+                    <a href="/admin/user/staffmanager" style="color: #FFFFFF;text-decoration:none;">客户管理</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-12 col-xs-12">
+            <div class="panel panel-primary text-center no-boder bg-color-brown">
+                <div class="picMessage">
+                </div>
+                <div class="panel-footer back-footer-brown" style="background-color:#EC681F;">
                     <a href="/admin/user/staffmanager" style="color: #FFFFFF;text-decoration:none;">消息提醒</a>
                 </div>
             </div>
         </div>
+
+
     </div>
 </div>
 <!-- /. PAGE INNER  -->
