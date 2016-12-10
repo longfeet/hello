@@ -6,6 +6,7 @@
 var save_list_data = {};
 $("#fix_status").hide();
 $("#staff").hide();
+$("#sector").hide();
 $("#checkAll").click(function(){
         
     for(var key in $("input[name='adv_id']")){
@@ -17,8 +18,10 @@ $("select[name='adv_install_status']").change(function(){
     var value = this.value;
     if(value == 0 || value == 1){
         $("#staff").show();
+        $("#sector").show();
     }else{
         $("#staff").hide();
+        $("#sector").hide();
         for(var i = 0 ; i < $("#staff input[name='staff']").length ; i++){
             $("#staff input[name='staff']")[i].checked = false;
         }
@@ -29,8 +32,10 @@ $("select[name='adv_pic_status']").change(function(){
     var value = this.value;
     if(value == 1 || value == 3){
         $("#staff").show();
+        $("#sector").show();
     }else{
         $("#staff").hide();
+        $("#sector").hide();
         for(var i = 0 ; i < $("#staff input[name='staff']").length ; i++){
             $("#staff input[name='staff']")[i].checked = false;
         }
