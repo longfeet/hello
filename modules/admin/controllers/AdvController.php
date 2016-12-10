@@ -8,6 +8,7 @@ use app\modules\admin\models\DataTools;
 use app\modules\admin\models\PCommunity;
 use app\modules\admin\models\PModel;
 use app\modules\admin\models\PImage;
+use app\modules\admin\models\PSector;
 
 use app\modules\admin\models\ExcelTools;
 use app\modules\admin\models\PStaff;
@@ -44,16 +45,19 @@ class AdvController extends \yii\web\Controller
      */
     public function actionManager()
     {
+        $session = \Yii::$app->session;
+        $staffInfo = $session['loginUser'];
+
         $advList = PAdv::find()->all();
         //$column = DataTools::getDataTablesColumns($this->advColumns);
         //$jsonDataUrl = '/admin/adv/managerjson';
-        $company_id = \Yii::$app->session['loginUser']->company_id;
-        $staff = PStaff::find()->where('company_id = "' . $company_id . '"')->select('staff_name,id')->all();
+        $staff = PStaff::find()->where('company_id = "' . $staffInfo->company_id . '"')->select('staff_name,id')->all();
+        $sectorList = PSector::find()->where("company_id = " . $staffInfo->company_id)->all();
 
         //获取列表数据
 
         return $this->render('advManager', array("columns" => $column, 'jsonurl' => $jsonDataUrl,
-            'advlist' => $advList, "staff" => $staff
+            'advlist' => $advList, "staff" => $staff, "sectorList" => $sectorList
         ));
     }
 
@@ -63,12 +67,14 @@ class AdvController extends \yii\web\Controller
      */
     public function actionInstall()
     {
+        $session = \Yii::$app->session;
+        $staffInfo = $session['loginUser'];
+
         $advList = PAdv::find()->all();
-        //$column = DataTools::getDataTablesColumns($this->advColumns);
-        //$jsonDataUrl = '/admin/adv/managerjson';
-        $company_id = \Yii::$app->session['loginUser']->company_id;
-        $staff = PStaff::find()->where('company_id = "' . $company_id . '"')->select('staff_name,id')->all();
-        return $this->render('advFlowInstall',array('advlist' => $advList, "staff" => $staff));
+        $staff = PStaff::find()->where('company_id = "' . $staffInfo->company_id . '"')->select('staff_name,id')->all();
+        $sectorList = PSector::find()->where("company_id = " . $staffInfo->company_id)->all();
+
+        return $this->render('advFlowInstall', array('advlist' => $advList, "staff" => $staff, "sectorList" => $sectorList));
     }
 
     /**
@@ -77,12 +83,13 @@ class AdvController extends \yii\web\Controller
      */
     public function actionRepair()
     {
+        $session = \Yii::$app->session;
+        $staffInfo = $session['loginUser'];
+
         $advList = PAdv::find()->all();
-        //$column = DataTools::getDataTablesColumns($this->advColumns);
-        //$jsonDataUrl = '/admin/adv/managerjson';
-        $company_id = \Yii::$app->session['loginUser']->company_id;
-        $staff = PStaff::find()->where('company_id = "' . $company_id . '"')->select('staff_name,id')->all();
-        return $this->render('advFlowRepair',array('advlist' => $advList, "staff" => $staff));
+        $staff = PStaff::find()->where('company_id = "' . $staffInfo->company_id . '"')->select('staff_name,id')->all();
+        $sectorList = PSector::find()->where("company_id = " . $staffInfo->company_id)->all();
+        return $this->render('advFlowRepair', array('advlist' => $advList, "staff" => $staff, "sectorList" => $sectorList));
     }
 
     /**
@@ -91,12 +98,13 @@ class AdvController extends \yii\web\Controller
      */
     public function actionOn()
     {
+        $session = \Yii::$app->session;
+        $staffInfo = $session['loginUser'];
+
         $advList = PAdv::find()->all();
-        //$column = DataTools::getDataTablesColumns($this->advColumns);
-        //$jsonDataUrl = '/admin/adv/managerjson';
-        $company_id = \Yii::$app->session['loginUser']->company_id;
-        $staff = PStaff::find()->where('company_id = "' . $company_id . '"')->select('staff_name,id')->all();
-        return $this->render('advFlowOn',array('advlist' => $advList, "staff" => $staff));
+        $staff = PStaff::find()->where('company_id = "' . $staffInfo->company_id . '"')->select('staff_name,id')->all();
+        $sectorList = PSector::find()->where("company_id = " . $staffInfo->company_id)->all();
+        return $this->render('advFlowOn', array('advlist' => $advList, "staff" => $staff, "sectorList" => $sectorList));
     }
 
     /**
@@ -105,14 +113,14 @@ class AdvController extends \yii\web\Controller
      */
     public function actionDown()
     {
-        $advList = PAdv::find()->all();
-        //$column = DataTools::getDataTablesColumns($this->advColumns);
-        //$jsonDataUrl = '/admin/adv/managerjson';
-        $company_id = \Yii::$app->session['loginUser']->company_id;
-        $staff = PStaff::find()->where('company_id = "' . $company_id . '"')->select('staff_name,id')->all();
-        return $this->render('advFlowDown',array('advlist' => $advList, "staff" => $staff));
-    }
+        $session = \Yii::$app->session;
+        $staffInfo = $session['loginUser'];
 
+        $advList = PAdv::find()->all();
+        $staff = PStaff::find()->where('company_id = "' . $staffInfo->company_id . '"')->select('staff_name,id')->all();
+        $sectorList = PSector::find()->where("company_id = " . $staffInfo->company_id)->all();
+        return $this->render('advFlowDown', array('advlist' => $advList, "staff" => $staff, "sectorList" => $sectorList));
+    }
 
 
     public function actionAjaxmamger()
@@ -193,23 +201,20 @@ class AdvController extends \yii\web\Controller
         $list = $command->queryAll();
 
         //将people_num中存放分配的人员名字
-        foreach($list as $key=>$value)
-        {
+        foreach ($list as $key => $value) {
             $staffNames = "";
 
             //安装状态为：待安装、维修。显示状态为：待上刊，待下刊；的显示安装人员
-            if($value[adv_install_status] == 0 || $value[adv_install_status] == 1 || $value[adv_pic_status] == 1 || $value[adv_pic_status] == 3)
-            {
-                if($value["people_num"]>0)
-                {
+            if ($value[adv_install_status] == 0 || $value[adv_install_status] == 1 || $value[adv_pic_status] == 1 || $value[adv_pic_status] == 3) {
+                if ($value["people_num"] > 0) {
                     $staff_ids = explode(",", $list[$key]["staffids"]);
                     foreach ($staff_ids as $staff_id) {
                         $staff = PStaff::find()->where("id=" . $staff_id)->one();
                         $staffNames = $staffNames . $staff->staff_name . ",";
                     }
                 }
-                if($staffNames !="")
-                    $staffNames =  rtrim($staffNames, ',');
+                if ($staffNames != "")
+                    $staffNames = rtrim($staffNames, ',');
             }
             $list[$key]["people_num"] = $staffNames;
         }
@@ -232,6 +237,16 @@ class AdvController extends \yii\web\Controller
             'sql' => $sql
         );
         exit(json_encode(array('list_data' => $list, 'page_data' => $page_data, 'range' => $range)));
+    }
+
+    /*
+     * 根据部门id获得该部门下面人员信息
+     */
+    public function actionAjaxgetstaff()
+    {
+        $sector_id = \Yii::$app->request->get('sector_id', '0');
+        $staffList = PStaff::find()->select("id,staff_name")->where("staff_sector=" . $sector_id . " and is_delete=0")->asArray()->all();
+        DataTools::jsonEncodeResponse($staffList);
     }
 
     public function actionShowpeople()
@@ -580,7 +595,7 @@ class AdvController extends \yii\web\Controller
         //$head = array("community_name", "adv_no", "adv_name", "adv_position", "adv_install_status", "adv_sales_status", "adv_pic_status");
         //$alias = array("community_name" => "所属楼盘", "adv_no" => "广告位编号", "adv_name" => "广告位名称", "adv_position" => "广告位位置", "adv_install_status" => "安装状态", "adv_sales_status" => "销售状态", "adv_pic_status" => "画面状态");
 
-        ExcelTools::advExport($filename,$list);
+        ExcelTools::advExport($filename, $list);
     }
 
     public function actionProcess()
@@ -664,19 +679,19 @@ class AdvController extends \yii\web\Controller
         }
         if ($adv_pic_status > -1) {
             switch ($adv_pic_status) {
-                case 1:
+                case 0:
                     $info_status = '预定';
                     break;
                 case 1:
                     $info_status = '待上刊';
                     break;
-                case 1:
+                case 2:
                     $info_status = '已上刊';
                     break;
                 case 3:
                     $info_status = '待下刊';
                     break;
-                case 1:
+                case 4:
                     $info_status = '已下刊';
                     break;
             }

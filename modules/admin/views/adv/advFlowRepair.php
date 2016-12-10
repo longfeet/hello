@@ -57,7 +57,7 @@
             <div>
                 <div id="fix_status">
                     <div class="form-group install_status">
-                        <label class="control-label">修改状态：</label>
+                        <label class="control-label" style="height: 28px;padding-top:5px;">修改状态：</label>
                         <select class="form-control" style="width:40%;float:right;margin-right:50%;" name="adv_install_status">
                             <option value="-1">不修改</option>
                             <option value="1">维修</option>
@@ -65,13 +65,19 @@
                         </select>
                     </div>
 
-                    <div id="staff">
-                        <label class="control-label">人员分配：</label>
-                        <?php foreach($staff as $key=>$value) {
-                                echo '<span style = " margin:0 10px;" ><input type = "checkbox" name="staff" value = "'.$value->id.'" />'.$value->staff_name.'</span>';
-                            }
-                        ?>
+                    <div id="sector">
+                        <label class="control-label" style="height: 28px;padding-top:5px;">所属部门：</label>
+                        <select class="form-control" style="width:40%;float:right;margin-right:50%;" name="sector">
+                            <option value="0">----请选择部门----</option>
+                            <?php foreach ($sectorList as $sector) { ?>
+                                <option value="<?= $sector->id ?>"><?= $sector->sector_name ?></option>
+                            <?php } ?>
+                        </select>
                     </div>
+                    <div id="staff" class="row">
+                        <div id="staffName" class="col-md-9"></div>
+                    </div>
+
                     <div>
                         <input type="hidden" id="typeValue" value="install" />
                         <input type="button" id="editStatus" class="btn btn-info" value="修改" />
@@ -198,6 +204,25 @@ $(window).ready(function(){
             getList(page);
         }
     });
+
+    //根据部门动态修改相应人员
+    $('select[name=sector]').change(function () {
+        var sector_id = $('select[name=sector] option:selected').val();
+        $.ajax({
+            "type": "POST",
+            "contentType": "application/x-www-form-urlencoded",
+            "url": "/admin/adv/ajaxgetstaff?sector_id=" + sector_id,
+            "dataType": "json",
+            "success": function (data) {
+                var optionstring = '<label class="control-label" style="height: 28px;padding-top:5px;">人员分配：</label>';
+                for (var i = 0; i < data.length; i++) {
+                    optionstring += '<span style = " margin:0 10px;" >&nbsp;<input type = "checkbox" name="staff" value = "' + data[i].id + '" />' + data[i].staff_name + '</span>';
+                }
+                $('#staffName').html(optionstring);
+                $("#staff").show();
+            }
+        });
+    })
 
 });
 </script>
