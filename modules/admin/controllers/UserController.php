@@ -6,6 +6,8 @@
 namespace app\modules\admin\controllers;
 
 use app\modules\admin\models\DataTools;
+use app\modules\admin\models\ExcelTools;
+
 use app\modules\admin\models\PCompany;
 use app\modules\admin\models\PMenu;
 use app\modules\admin\models\PRole;
@@ -13,7 +15,8 @@ use app\modules\admin\models\PRoleMenu;
 use app\modules\admin\models\PSector;
 use app\modules\admin\models\PStaff;
 use app\modules\admin\models\PStaffRole;
-use app\modules\admin\models\ExcelTools;
+use app\modules\admin\models\PCheckControl;
+
 
 class UserController extends \yii\web\Controller
 {
@@ -77,6 +80,16 @@ class UserController extends \yii\web\Controller
                 $company->create_time = $date;
                 $company->update_time = $date;
                 $company->save();
+
+                //添加公司信息后，设置审核信息，默认均不需要审核
+                $companyID = $company->attributes['id'];   //获得刚添加的公司id
+                $checkControl = new PCheckControl();
+                $checkControl->company_id = $companyID;
+                $checkControl->control_community = 0;
+                $checkControl->control_adv = 0;
+                $checkControl->control_model = 0;
+                $checkControl->control_customer = 0;
+                $checkControl->save();
 
                 echo "1";  //添加成功
             }
@@ -490,5 +503,42 @@ class UserController extends \yii\web\Controller
             echo "-1"; //该id不存在
         }
         exit;
+    }
+
+    /*
+     * 审核控制
+     * 控制楼盘信息、广告位信息、设备信息、客户备注信息是否需要审核
+     */
+    public function actionCheckcontrol()
+    {
+        $session = \Yii::$app->session;
+        $staff = $session['loginUser'];
+
+        $checkControl = PCheckControl::find()->where("company_id=".$staff->company_id)->one();
+
+        return $this->render('checkControl',array('checkControl' => $checkControl));
+    }
+
+    /*
+     * 更改审核控制
+     */
+    public function actionEditcheckcontrol()
+    {
+        $session = \Yii::$app->session;
+        $staff = $session['loginUser'];
+        $now = date("Y-m-d H:i:s");
+        $post = \Yii::$app->request->post();
+
+        $checkControlNew = PCheckControl::find()->where('id = "' . $post['id'] . '"')->one();
+        $checkControlNew->control_community = $post["community"];
+        $checkControlNew->control_adv = $post["adv"];
+        $checkControlNew->control_model =  $post["model"];
+        $checkControlNew->control_customer = $post["customer"];
+        $checkControlNew->updater=$staff->id;
+        $checkControlNew->update_time=$now;
+        $checkControlNew->save();
+
+        $checkControl = PCheckControl::find()->where('id = "' . $post['id'] . '"')->one();
+        return $this->render('checkControl',array('checkControl' => $checkControl));
     }
 }
