@@ -2,6 +2,7 @@
 
     namespace app\modules\admin\controllers;
     use app\modules\admin\models\PStaff;
+    use app\modules\admin\models\PCheckControl;
 
     /**
      * 广告点管理
@@ -45,8 +46,11 @@ class LoginController extends \yii\web\Controller
         if($staff->password !== md5($password)) {
             exit('-4');//密码不正确
         } else {
+            $checkControl = PCheckControl::find()->where("company_id=".$staff->company_id)->one();
+
             $session = \Yii::$app->session;
             $session->set('loginUser', $staff);
+            $session->set('check', $checkControl);
         }
         exit('1');
     }

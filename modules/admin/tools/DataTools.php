@@ -155,6 +155,131 @@ class DataTools
 
     /**
      * DataTables要求的Ajax Json数据
+     * @param $request 请求
+     * @param $order   排序
+     * @param $columns 列
+     * @param $columnVals 列值字段名
+     * @param $checkbox 有值标示 id 旁增加 checkbox 值 等于 checkbox name
+     * @param $staff 传入session中的user
+     * @param $checkWhere 审核条件
+     */
+    public static function getJsonDataCommunity($request, $order, $columns, $columnVals, $object, $searchField, $checkbox = '', $staff = '', $checkWhere)
+    {
+        $seach = $request->get('search', "");
+        $data = $object::find();
+        $ar = $data;
+        if (isset($seach['value'])) {
+            //权限控制
+            if ($staff != '') {
+                if ($staff->staff_level == 1)
+                    $ar = $data->where("company_id =" . $staff->company_id . " and creator = " . $staff->id . " and $searchField like \"%" . $seach['value'] . "%\"" . $checkWhere);
+                else if ($staff->staff_level == 2)
+                    $ar = $data->where("company_id =" . $staff->company_id . " and creator in (select id from p_staff where staff_sector ='" . $staff->staff_sector . "')" . " and $searchField like \"%" . $seach['value'] . "%\"" . $checkWhere);
+                else if ($staff->staff_level == 3)
+                    $ar = $data->where("company_id =" . $staff->company_id . " and $searchField like \"%" . $seach['value'] . "%\"" . $checkWhere);
+                else if ($staff->staff_level == 4)
+                    $ar = $data->where("$searchField like \"%" . $seach['value'] . "%\"" . $checkWhere);
+            } else {
+                $ar = $data->where("$searchField like \"%" . $seach['value'] . "%\"" . $checkWhere);
+            }
+        } else {
+            //权限控制
+            if ($staff != '') {
+                if ($staff->staff_level == 1)
+                    $ar = $data->where("company_id =" . $staff->company_id . " and creator = " . $staff->id . $checkWhere);
+                else if ($staff->staff_level == 2)
+                    $ar = $data->where("company_id =" . $staff->company_id . " and creator in (select id from p_staff where staff_sector ='" . $staff->staff_sector . "')" . $checkWhere);
+                else if ($staff->staff_level == 3)
+                    $ar = $data->where("company_id =" . $staff->company_id . $checkWhere);
+            }
+
+        }
+        $length = $request->get('length') ? $request->get('length') : "10";
+        $start = $request->get('start') ? $request->get('start') : "0";
+        $data = $ar->limit($length)->offset($start)->orderBy("id asc")->all();
+        $count = $ar->count();
+        $jsonArray = array(
+            'draw' => $request->get('draw') ? $request->get('draw') : "0",
+            'recordsTotal' => $object::find()->count(),
+            'recordsFiltered' => $count
+        );
+        if (count($data) == 0) {
+            $jsonArray['data'] = [];
+        }
+        $count = 10;
+        $num = $start + 1;   //自定义自增长;
+        foreach ($data as $key => $val) {
+            foreach ($columns as $k => $v) {
+                if (is_array($columnVals[$k])) {
+                    $tempV = $val;
+                    for ($temp = 0; $temp < count($columnVals[$k]); $temp++) {
+                        if ($tempV != null) {
+                            if (is_array($columnVals[$k][$temp])) {
+                                foreach ($columnVals[$k][$temp] as $kkk => $vvv) {
+                                    $tempV = $tempV->$kkk->$vvv;
+                                }
+                            } else {
+                                $tempV = $tempV->$columnVals[$k][$temp];
+                            }
+                        } else {
+                            $tempV = "";
+                        }
+                    }
+                    $array[$v] = $tempV;
+                    continue;
+                }
+                if (isset($columnVals[$k]) && trim($columnVals[$k]) != "" && strpos($columnVals[$k], '<') !== 0) {
+                    if ($k == "id")      //序号自增长
+                    {
+                        if ($checkbox) {
+                            $array[$v] = "<input type='checkbox' value='" . $val->id . "' name='" . $checkbox . "' />" . $num;
+                        } else {
+                            $array[$v] = $num;
+                        }
+
+                        $num++;
+                    } else
+                        $array[$v] = $val->$columnVals[$k];
+                    //$array[$v] = $val->$columnVals[$k];
+                } else {
+                    $array[$v] = "";
+                    $bindRoleHtml = "<a href='javascript:;' staff_id='" . $val->id . "' class='btn btn-success btn-xs bindRole'>关联角色</a>";
+                    $editRoleHtml = "<a href='javascript:;' role_id='" . $val->id . "' class='btn btn-success btn-xs roleEditName'>更新权限名</a>";
+                    $editHtml = "<a href='javascript:;' role_id='" . $val->id . "' class='btn btn-success btn-xs roleEdit'>编辑</a>";
+                    $deleteHtml = '<a href=\'javascript:;\' role_id=\'' . $val->id . '\' class=\'btn btn-danger btn-xs roleDelete\'>删除</a>';
+                    $bindadv = '<a href=\'javascript:;\' adv_id=\'' . $val->id . '\' class=\'btn btn-success btn-xs advBind\'>流程状态</a>';
+                    $detailsHtml = '<a href=\'javascript:;\' role_id=\'' . $val->id . '\' class=\'btn btn-info btn-xs roleDetails\'>详情</a>';    //增加了详情页面
+                    $nbsp = "&nbsp;&nbsp;";
+                    if (strpos($columnVals[$k], '<') === 0) {
+                        $html = substr($columnVals[$k], 1);
+                        $html = substr($html, 0, strlen($html) - 1);
+                        $htmlArray = explode(',', $html);
+                        foreach ($htmlArray as $element) {
+                            if ($element == 'details')
+                                $array[$v] .= $detailsHtml . $nbsp;
+                            if ($element == 'editrole')
+                                $array[$v] .= $editRoleHtml . $nbsp;
+                            if ($element == 'edit')
+                                $array[$v] .= $editHtml . $nbsp;
+                            if ($element == 'delete')
+                                $array[$v] .= $deleteHtml . $nbsp;
+                            if ($element == 'bindrole')
+                                $array[$v] .= $bindRoleHtml . $nbsp;
+                            if ($element == 'bindadv')
+                                $array[$v] .= $bindadv . $nbsp;
+                        }
+                    } else {
+                        $array[$v] = $detailsHtml . $nbsp . $editHtml . $nbsp . $deleteHtml;
+                    }
+                }
+            }
+            $jsonArray['data'][] = $array;
+        }
+        DataTools::jsonEncodeResponse($jsonArray);
+    }
+
+    /**
+     * DataTables要求的Ajax Json数据
      * 用于sale销售显示
      * author breeze
      * @param $request 请求
@@ -684,31 +809,29 @@ class DataTools
                 if (isset($columnVals[$k]) && trim($columnVals[$k]) != "" && strpos($columnVals[$k], '<') !== 0) {
                     if ($k == "id")      //序号自增长
                     {
-                        $array[$v] =  "<input type='checkbox' value='" . $val->id . "' name='" . $name . "' />&nbsp;&nbsp;" .$num;
+                        $array[$v] = "<input type='checkbox' value='" . $val->id . "' name='" . $name . "' />&nbsp;&nbsp;" . $num;
                         $num++;
-                    } else
-                    {
+                    } else {
                         $array[$v] = $val->$columnVals[$k];
                         //根据消息id加工获得消息内容
                         if ($columns[$k] == "message_id") {
-                            $message=PMessage::find()->where("id=" . $val->$columnVals[$k])->one();
-                            if ($message != null){
+                            $message = PMessage::find()->where("id=" . $val->$columnVals[$k])->one();
+                            if ($message != null) {
                                 $array[$v] = $message->message_content;
-                                $create_time= $message->create_time;
+                                $create_time = $message->create_time;
                             } else
                                 $array[$v] = "";
                         }
                         //设置已读、未读
                         if ($columns[$k] == "status") {
-                            if($val->$columnVals[$k] == 0)
+                            if ($val->$columnVals[$k] == 0)
                                 $array[$v] = "待阅读";
                             else
                                 $array[$v] = "已读";
                         }
                         //设置发布时间
-                        if($columns[$k] == "read_time")
-                        {
-                            $array[$v] =$create_time;
+                        if ($columns[$k] == "read_time") {
+                            $array[$v] = $create_time;
                         }
                     }
 
