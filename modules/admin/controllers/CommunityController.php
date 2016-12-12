@@ -26,13 +26,15 @@ class CommunityController extends \yii\web\Controller
      * @var array 显示的数据列
      */
     public $communityColumns = array("id", "community_no", "community_name", "community_position", "community_category", "community_cbd", "company_name", "edit");
+    public $communityCheckColumns = array("id", "community_no", "community_name", "community_position", "community_category", "community_cbd", "community_status", "edit");
 
     /**
      * relation 关联的字段做成数组,支持多relation的深层字段属性(最多三层)
      * @var array
      */
     public $communityColumnsVal = array("id", "community_no", "community_name", "community_position", "community_category", "community_cbd", array("company", "company_name"), "");
-    public $communityCheckColumnsVal = array("id", "community_no", "community_name", "community_position", "community_category", "community_cbd", array("company", "company_name"), "<details>");
+    public $communityCheckShowColumnsVal = array("id", "community_no", "community_name", "community_position", "community_category", "community_cbd", "community_status", "<edit,delete>");
+    public $communityCheckColumnsVal = array("id", "community_no", "community_name", "community_position", "community_category", "community_cbd", "community_status", "<details>");
 
     /**
      * 楼盘列表
@@ -61,13 +63,36 @@ class CommunityController extends \yii\web\Controller
     }
 
     /**
+     *楼盘审核列表（所有待审核信息）
+     * @return string
+     */
+    public function actionCheck()
+    {
+        $communityList = PCommunity::find()->all();
+        $column = DataTools::getDataTablesColumns($this->communityCheckColumns);
+        $jsonDataUrl = '/admin/community/checkjson';
+        return $this->render('communityCheck', array("columns" => $column, 'jsonurl' => $jsonDataUrl,
+            'rolelist' => $communityList
+        ));
+    }
+
+    public function actionCheckjson()
+    {
+        $staff = \Yii::$app->session['loginUser'];
+        $checkWhere = " and (community_status=1 or community_status=2 or community_status=3)";
+        //请求,排序,展示字段,展示字段的字段名(支持relation字段),主表实例,搜索字段
+        DataTools::getJsonDataCommunity(\Yii::$app->request, "id desc", $this->communityCheckColumns, $this->communityCheckShowColumnsVal,
+            new PCommunity(), "community_name", "", $staff, $checkWhere);
+    }
+
+    /**
      *楼盘审核列表（添加）
      * @return string
      */
     public function actionCheckadd()
     {
         $communityList = PCommunity::find()->all();
-        $column = DataTools::getDataTablesColumns($this->communityColumns);
+        $column = DataTools::getDataTablesColumns($this->communityCheckColumns);
         $jsonDataUrl = '/admin/community/checkaddjson';
         return $this->render('communityCheckAdd', array("columns" => $column, 'jsonurl' => $jsonDataUrl,
             'rolelist' => $communityList
@@ -77,14 +102,60 @@ class CommunityController extends \yii\web\Controller
     public function actionCheckaddjson()
     {
         $staff = \Yii::$app->session['loginUser'];
-        $checkWhere = " and community_status=1";
+        $checkWhere = " and (community_status=1)";
         //请求,排序,展示字段,展示字段的字段名(支持relation字段),主表实例,搜索字段
-        DataTools::getJsonDataCommunity(\Yii::$app->request, "id desc", $this->communityColumns, $this->communityCheckColumnsVal,
+        DataTools::getJsonDataCommunity(\Yii::$app->request, "id desc", $this->communityCheckColumns, $this->communityCheckColumnsVal,
+            new PCommunity(), "community_name", "community_id", $staff, $checkWhere);
+    }
+
+    /**
+     *楼盘审核列表（修改）
+     * @return string
+     */
+    public function actionCheckedit()
+    {
+        $communityList = PCommunity::find()->all();
+        $column = DataTools::getDataTablesColumns($this->communityCheckColumns);
+        $jsonDataUrl = '/admin/community/checkeditjson';
+        return $this->render('communityCheckEdit', array("columns" => $column, 'jsonurl' => $jsonDataUrl,
+            'rolelist' => $communityList
+        ));
+    }
+
+    public function actionCheckeditjson()
+    {
+        $staff = \Yii::$app->session['loginUser'];
+        $checkWhere = " and (community_status=2)";
+        //请求,排序,展示字段,展示字段的字段名(支持relation字段),主表实例,搜索字段
+        DataTools::getJsonDataCommunity(\Yii::$app->request, "id desc", $this->communityCheckColumns, $this->communityCheckColumnsVal,
+            new PCommunity(), "community_name", "community_id", $staff, $checkWhere);
+    }
+
+    /**
+     *楼盘审核列表（删除）
+     * @return string
+     */
+    public function actionCheckdelete()
+    {
+        $communityList = PCommunity::find()->all();
+        $column = DataTools::getDataTablesColumns($this->communityCheckColumns);
+        $jsonDataUrl = '/admin/community/checkdeletejson';
+        return $this->render('communityCheckEdit', array("columns" => $column, 'jsonurl' => $jsonDataUrl,
+            'rolelist' => $communityList
+        ));
+    }
+
+    public function actionCheckdeletejson()
+    {
+        $staff = \Yii::$app->session['loginUser'];
+        $checkWhere = " and (community_status=3)";
+        //请求,排序,展示字段,展示字段的字段名(支持relation字段),主表实例,搜索字段
+        DataTools::getJsonDataCommunity(\Yii::$app->request, "id desc", $this->communityCheckColumns, $this->communityCheckColumnsVal,
             new PCommunity(), "community_name", "community_id", $staff, $checkWhere);
     }
 
     /*
-     * 处理审核（添加）
+     * 处理审核（添加、修改）
      */
     public function actionDocheck()
     {
@@ -164,25 +235,37 @@ class CommunityController extends \yii\web\Controller
      */
     public function actionDeleteajax($id)
     {
-        $community = PCommunity::find()->where('id = "' . $id . '"')->one();
-        if (empty($community)) {
-            echo "0";
-            exit;
-        }
-        $advCount = PAdv::find()->where('adv_community_id = "' . $id . '"')->count();
-        if ($advCount > 0) {
-            echo "-1";
-            exit;
-        }
-        $community->delete();
-        echo "1";
+        $check = \Yii::$app->session['check'];   //待审核信息
 
-        //设置message消息
-        $now = date("Y-m-d H:i:s");
-        $staff_name = \Yii::$app->session['loginUser']->staff_name;
-        $company_id = \Yii::$app->session['loginUser']->company_id;
-        $message = $staff_name . "于" . $now . "删除了1条楼盘信息，楼盘编号为：" . $community->community_no . ",楼盘名称为：" . $community->community_name . "。";
-        Message::sendMessage($company_id, $message);
+        if ($check->control_community == 0)   //添加楼盘信息是否需要审核,0为无须审核
+        {
+            $community = PCommunity::find()->where('id = "' . $id . '"')->one();
+            if (empty($community)) {
+                echo "0";
+                exit;
+            }
+            $advCount = PAdv::find()->where('adv_community_id = "' . $id . '"')->count();
+            if ($advCount > 0) {
+                echo "-1";
+                exit;
+            }
+            $community->delete();
+            echo "1";
+
+            //设置message消息
+            $now = date("Y-m-d H:i:s");
+            $staff_name = \Yii::$app->session['loginUser']->staff_name;
+            $company_id = \Yii::$app->session['loginUser']->company_id;
+            $message = $staff_name . "于" . $now . "删除了1条楼盘信息，楼盘编号为：" . $community->community_no . ",楼盘名称为：" . $community->community_name . "。";
+            Message::sendMessage($company_id, $message);
+        } else {
+            $sql = "UPDATE p_community SET community_status=3 where id =" . $id;
+            $connection = \Yii::$app->db;
+            $command = $connection->createCommand($sql);
+            $result = $command->execute();
+
+            echo 1;
+        }
 
         exit;
     }
@@ -259,6 +342,7 @@ class CommunityController extends \yii\web\Controller
 
     public function actionDoedit()
     {
+        $check = \Yii::$app->session['check'];   //待审核信息
         $now = date("Y-m-d H:i:s");
 
         $post = \Yii::$app->request->post();
@@ -277,6 +361,10 @@ class CommunityController extends \yii\web\Controller
         $communityMap = explode(",", $post['community_map']);
         $community->community_longitudex = $communityMap[0];
         $community->community_latitudey = $communityMap[1];
+        if ($check->control_community == 0)   //添加楼盘信息是否需要审核
+            $community->community_status = 0; //0为无须审核
+        else
+            $community->community_status = 2;  //1为待审核（增）
         $community->company_id = \Yii::$app->session['loginUser']['company_id'];
         $community->updater = \Yii::$app->session['loginUser']['id'];
         $community->update_time = date("Y-m-d H:i:s");

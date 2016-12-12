@@ -1,7 +1,7 @@
 <div id="page-inner">
     <div class="row">
         <div class="col-md-12">
-            <h1 class="page-header">楼盘管理/ <small>新增楼盘信息审核</small></h1>
+            <h1 class="page-header">楼盘管理/ <small>待修改楼盘信息审核</small></h1>
         </div>
     </div>
     <!-- /. ROW  -->

@@ -238,7 +238,33 @@ class DataTools
                         }
 
                         $num++;
-                    } else
+                    } else if($v == "community_status"){
+                        switch ($val->community_status) {
+                            case 0:
+                                $array[$v] = "审核通过";
+                                break;
+                            case 1:
+                                $array[$v] = "新增";
+                                break;
+                            case 2:
+                                $array[$v] = "修改";;
+                                break;
+                            case 3:
+                                $array[$v] = "删除";
+                                break;
+                            case 4:
+                                $array[$v] = "驳回（新增）";
+                                break;
+                            case 5:
+                                $array[$v] = "驳回（修改）";
+                                break;
+                            case 6:
+                                $array[$v] = "驳回（删除）";
+                                break;
+                            default :
+                                break;
+                        }
+                    }else
                         $array[$v] = $val->$columnVals[$k];
                     //$array[$v] = $val->$columnVals[$k];
                 } else {
