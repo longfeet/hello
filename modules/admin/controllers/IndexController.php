@@ -6,8 +6,23 @@ class IndexController extends \yii\web\Controller
 {
     public function actionIndex()
     {
+        $session = \Yii::$app->session;
+        $staffInfo = $session['loginUser'];
+
+        $sql = "select menu_url from p_menu where id in (select menu_id from p_role_menu where role_id=(select role_id from p_staff_role where staff_id=".$staffInfo->id."))";
+        //exit(json_encode($sql));
+        $connection = \Yii::$app->db;
+        $command = $connection->createCommand($sql);
+        $list = $command->queryAll();    //获得该用户对应的menu
+
+        $menuList = array();
+        foreach($list as $key=>$value)
+        {
+            $list[]=$value["menu_url"];
+        }
+
         $this->actionChecktask();
-        return $this->render('index');
+        return $this->render('index',array('list' => $list));
     }
     
     public function actionChecktask(){

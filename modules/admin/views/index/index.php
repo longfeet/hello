@@ -11,18 +11,7 @@
     <!-- /. ROW  -->
 
     <div class="row">
-        <div class="col-md-3 col-sm-12 col-xs-12">
-            <div class="panel panel-primary text-center no-boder bg-color-green">
-                <div class="panel-body">
-                    <i class="fa fa-bar-chart-o fa-5x"></i>
-                </div>
-                <div class="panel-footer back-footer-green">
-                    <a href="/admin/community/manager" style="color: #FFFFFF;text-decoration:none;">图形化界面测试</a>
-                </div>
-            </div>
-        </div>
-
-
+        <?php if(in_array("/admin/community/manager", $list)){?>
         <div class="col-md-3 col-sm-12 col-xs-12">
             <div class="panel panel-primary text-center no-boder bg-color-brown">
                 <div class="picCommunity">
@@ -32,6 +21,10 @@
                 </div>
             </div>
         </div>
+        <?php
+        }
+        if(in_array("/admin/adv/manager", $list)){
+        ?>
         <div class="col-md-3 col-sm-12 col-xs-12">
             <div class="panel panel-primary text-center no-boder bg-color-brown">
                 <div class="picAdv">
@@ -41,6 +34,10 @@
                 </div>
             </div>
         </div>
+        <?php
+        }
+        if(in_array("/admin/adv/install", $list)){
+        ?>
         <div class="col-md-3 col-sm-12 col-xs-12">
             <div class="panel panel-primary text-center no-boder bg-color-brown">
                 <div class="picInstall">
@@ -50,6 +47,10 @@
                 </div>
             </div>
         </div>
+        <?php
+        }
+        if(in_array("/admin/adv/repair", $list)){
+        ?>
         <div class="col-md-3 col-sm-12 col-xs-12">
             <div class="panel panel-primary text-center no-boder bg-color-brown">
                 <div class="picRepair">
@@ -59,6 +60,10 @@
                 </div>
             </div>
         </div>
+        <?php
+        }
+        if(in_array("/admin/adv/on", $list)){
+        ?>
         <div class="col-md-3 col-sm-12 col-xs-12">
             <div class="panel panel-primary text-center no-boder bg-color-brown">
                 <div class="picOn">
@@ -68,6 +73,10 @@
                 </div>
             </div>
         </div>
+        <?php
+        }
+        if(in_array("/admin/adv/down", $list)){
+        ?>
         <div class="col-md-3 col-sm-12 col-xs-12">
             <div class="panel panel-primary text-center no-boder bg-color-brown">
                 <div class="picDown">
@@ -77,6 +86,10 @@
                 </div>
             </div>
         </div>
+        <?php
+        }
+        if(in_array("/admin/model/manager", $list)){
+        ?>
         <div class="col-md-3 col-sm-12 col-xs-12">
             <div class="panel panel-primary text-center no-boder bg-color-brown">
                 <div class="picModel">
@@ -86,6 +99,10 @@
                 </div>
             </div>
         </div>
+        <?php
+        }
+        if(in_array("/admin/sale/manager", $list)){
+        ?>
         <div class="col-md-3 col-sm-12 col-xs-12">
             <div class="panel panel-primary text-center no-boder bg-color-brown">
                 <div class="picSale">
@@ -95,6 +112,10 @@
                 </div>
             </div>
         </div>
+        <?php
+        }
+        if(in_array("/admin/sale/manager", $list)){
+        ?>
         <div class="col-md-3 col-sm-12 col-xs-12">
             <div class="panel panel-primary text-center no-boder bg-color-brown">
                 <div class="picCustomer">
@@ -104,6 +125,9 @@
                 </div>
             </div>
         </div>
+        <?php
+        }
+        ?>
         <div class="col-md-3 col-sm-12 col-xs-12">
             <div class="panel panel-primary text-center no-boder bg-color-brown">
                 <div class="picMessage">
@@ -113,7 +137,6 @@
                 </div>
             </div>
         </div>
-
 
     </div>
 </div>
