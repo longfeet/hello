@@ -126,12 +126,12 @@
         arrow.style.overflow = "hidden";
         div.appendChild(arrow);
 
-        div.onmouseover = function(){
-            this.style.backgroundColor = "#6BADCA";
-            this.style.borderColor = "#6BADCA";
-            this.getElementsByTagName("span")[0].innerHTML = "广告数: {count}";
-            arrow.style.backgroundPosition = "0px -20px";
-        }
+//        div.onmouseover = function(){
+//            this.style.backgroundColor = "#6BADCA";
+//            this.style.borderColor = "#6BADCA";
+//            this.getElementsByTagName("span")[0].innerHTML = "广告位数: {count}";
+//            arrow.style.backgroundPosition = "0px -20px";
+//        }
             
             
         var pointData = this._point;

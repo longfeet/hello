@@ -77,7 +77,7 @@ $(window).ready(function() {
 <body id="login">
 <div class="login-logo">
 </div>
-<h2 class="form-heading">传媒发布管理系统</h2>
+<h2 class="form-heading" style="font-size:48px;">传媒发布管理系统</h2>
 <div class="app-cam">
     <input type="text" class="text" placeholder="用户名" name="username" />
     <input type="password" placeholder="密码" name="password" />
@@ -100,7 +100,7 @@ $(window).ready(function() {
     </ul>
 </div>
 <div class="copy_layout login">
-    <p>Copyright &copy; 2016
+    <p>Copyright &copy; 2016 - 2026
     </p>
 </div>
 </body>
