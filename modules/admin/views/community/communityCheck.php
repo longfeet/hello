@@ -67,6 +67,24 @@ $(window).ready(function(){
                         $('.roleDetails').click(function(){
                             window.location.href = "/admin/community/details?id=" + $(this).attr("role_id");
                         });
+                        $('.roleEdit').click(function(){
+                            window.location.href = "/admin/community/edit?id=" + $(this).attr("role_id");
+                        });
+                        $('.roleDelete').click(function(){
+                            if(confirm("确定要删除该楼盘吗？")) {
+                                $.ajax({
+                                    "type": "GET",
+                                    "contentType": "application/json",
+                                    "url": "/admin/community/deleteajax",
+                                    "dataType": "json",
+                                    "data": {id: $(this).attr("role_id")}, //以json格式传递
+                                    "success": function (data) {
+                                        console.log(data);
+                                        table.page(table.page()).draw(false);
+                                    }
+                                });
+                            }
+                        });
 
                         if(search == null) {
                             search =  $('input[type=search]');

@@ -141,7 +141,7 @@ $(window).ready(function(){
                 "contentType": "application/x-www-form-urlencoded",
                 "url": "/admin/community/docheck",
                 "dataType": "json",
-                "data": {ids:ids,community_status:4,status:"审核驳回"}, //community_status审核状态，默认审核通过
+                "data": {ids:ids,community_status:5,status:"审核驳回"}, //community_status审核状态，默认审核通过
                 "success": function(data) {
                     console.log(data);
                     if(data > 0){

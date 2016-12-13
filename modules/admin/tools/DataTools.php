@@ -244,13 +244,13 @@ class DataTools
                                 $array[$v] = "审核通过";
                                 break;
                             case 1:
-                                $array[$v] = "新增";
+                                $array[$v] = "待审核(新增)";
                                 break;
                             case 2:
-                                $array[$v] = "修改";;
+                                $array[$v] = "待审核(修改)";;
                                 break;
                             case 3:
-                                $array[$v] = "删除";
+                                $array[$v] = "待审核(删除)";
                                 break;
                             case 4:
                                 $array[$v] = "驳回（新增）";

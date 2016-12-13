@@ -33,7 +33,7 @@ class CommunityController extends \yii\web\Controller
      * @var array
      */
     public $communityColumnsVal = array("id", "community_no", "community_name", "community_position", "community_category", "community_cbd", array("company", "company_name"), "");
-    public $communityCheckShowColumnsVal = array("id", "community_no", "community_name", "community_position", "community_category", "community_cbd", "community_status", "<edit,delete>");
+    public $communityCheckShowColumnsVal = array("id", "community_no", "community_name", "community_position", "community_category", "community_cbd", "community_status", "<details,edit,delete>");
     public $communityCheckColumnsVal = array("id", "community_no", "community_name", "community_position", "community_category", "community_cbd", "community_status", "<details>");
 
     /**
@@ -79,7 +79,7 @@ class CommunityController extends \yii\web\Controller
     public function actionCheckjson()
     {
         $staff = \Yii::$app->session['loginUser'];
-        $checkWhere = " and (community_status=1 or community_status=2 or community_status=3)";
+        $checkWhere = " and community_status in (1,2,3,4,5,6)";
         //请求,排序,展示字段,展示字段的字段名(支持relation字段),主表实例,搜索字段
         DataTools::getJsonDataCommunity(\Yii::$app->request, "id desc", $this->communityCheckColumns, $this->communityCheckShowColumnsVal,
             new PCommunity(), "community_name", "", $staff, $checkWhere);
@@ -140,7 +140,7 @@ class CommunityController extends \yii\web\Controller
         $communityList = PCommunity::find()->all();
         $column = DataTools::getDataTablesColumns($this->communityCheckColumns);
         $jsonDataUrl = '/admin/community/checkdeletejson';
-        return $this->render('communityCheckEdit', array("columns" => $column, 'jsonurl' => $jsonDataUrl,
+        return $this->render('communityCheckDelete', array("columns" => $column, 'jsonurl' => $jsonDataUrl,
             'rolelist' => $communityList
         ));
     }
@@ -165,6 +165,32 @@ class CommunityController extends \yii\web\Controller
         $status = $post['status'];
 
         $sql = "UPDATE p_community SET community_status=" . $community_status . " where id IN (" . implode(",", $ids) . ")";
+        $connection = \Yii::$app->db;
+        $command = $connection->createCommand($sql);
+        $result = $command->execute();
+
+        //设置message消息
+        $id_count = count($ids);
+        $now = date("Y-m-d H:i:s");
+        $staff_name = \Yii::$app->session['loginUser']->staff_name;
+        $company_id = \Yii::$app->session['loginUser']->company_id;
+        $message = $staff_name . "于" . $now . $status . $id_count . "条楼盘信息为。";
+        Message::sendMessage($company_id, $message);
+
+        exit(json_encode($result));
+    }
+
+    /*
+     * 处理审核（删除）
+     */
+    public function actionDocheckdelete()
+    {
+        $post = \Yii::$app->request->post();
+        $ids = $post['ids'];
+        $community_status = $post['community_status'];
+        $status = $post['status'];
+
+        $sql = "Delete From p_community where id IN (" . implode(",", $ids) . ")";
         $connection = \Yii::$app->db;
         $command = $connection->createCommand($sql);
         $result = $command->execute();
