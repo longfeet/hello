@@ -56,9 +56,9 @@
                                 <th width="15%">楼盘名称</th>
                                 <th width="15%">公司名称</th>
                                 <th width="15%">人员分配</th>
-                                <th width="15%">安装状态</th>
+                                <th width="10%">安装状态</th>
                                 <th width="10%">显示状态</th>
-                                <th width="20%">编辑</th>
+                                <th width="25%">编辑</th>
                             </tr>
                             </thead>
                             <tbody id="table_content">
@@ -151,6 +151,7 @@ function jsonPost(data,cb){
         "contentType": "application/x-www-form-urlencoded",
         "url": "/admin/adv/ajaxmamger",
         "dataType": "json",
+        "async":false,      //ajax异步
         "data": data, //以json格式传递
         "success": cb
     });
@@ -180,7 +181,7 @@ function buildHtml(data){
 
         var control_html = "";
         if(data.range == "mine")
-            control_html= '<div class="advEdit"><a href="/admin/adv/details?id='+item.id+'">详情</a> | <a href="/admin/adv/edit?id='+item.id+'">编辑</a></div>';
+            control_html= '<div class="advEdit"><a href="/admin/adv/details?id='+item.id+'">详情</a> | <a href="/admin/adv/edit?id='+item.id+'">编辑</a> | <a href="javascript:;" adv_id="'+item.id+'" class="advDelete">删除</a></div>';
         html += '<tr><td><input type="checkbox" value="'+item.id+'" name="adv_id" />'+(parseInt(key)+1)+'</td><td>'+item.adv_name+'</td><td>'+item.community_name+'</td><td>'+item.company_name+'</td><td>'+item.people_num+'</td><td>'+install_status[item.adv_install_status]+'</td><td>'+pic_status[item.adv_pic_status]+'</td><td>'+control_html+'</td></tr>';
     }
     document.getElementById("table_content").innerHTML = html;
@@ -321,6 +322,24 @@ $(window).ready(function(){
         });
     })
 
+    //删除
+    $('.advDelete').click(function(){
+        adv_id =$(this).attr("adv_id");
+        if(confirm("确定要删除该广告位信息吗？")) {
+            $.ajax({
+                "type": "GET",
+                "contentType": "application/json",
+                "url": "/admin/adv/deleteajax",
+                "dataType": "json",
+                "data": {id: adv_id}, //以json格式传递
+                "success": function (data) {
+                    console.log(data);
+                    window.location.reload();
+                }
+            });
+        }
+    });
+
 //    var table = $('#dataTables-example').dataTable({
 //            "ordering" : false,
 //            "language": {
@@ -357,4 +376,5 @@ $(window).ready(function(){
 //        }
 //    ).api(); 
 });
+
 </script>

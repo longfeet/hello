@@ -122,10 +122,71 @@ class AdvController extends \yii\web\Controller
         return $this->render('advFlowDown', array('advlist' => $advList, "staff" => $staff, "sectorList" => $sectorList));
     }
 
+    /**
+     * 广告位审核列表（所有待审核信息）
+     * @return string
+     */
+    public function actionCheck()
+    {
+        $session = \Yii::$app->session;
+        $staffInfo = $session['loginUser'];
+
+        $advList = PAdv::find()->all();
+        $staff = PStaff::find()->where('company_id = "' . $staffInfo->company_id . '"')->select('staff_name,id')->all();
+        $sectorList = PSector::find()->where("company_id = " . $staffInfo->company_id)->all();
+        return $this->render('advCheck', array('advlist' => $advList, "staff" => $staff, "sectorList" => $sectorList));
+    }
+
+    /**
+     * 广告位审核列表（所有待审核信息：添加）
+     * @return string
+     */
+    public function actionCheckadd()
+    {
+        $session = \Yii::$app->session;
+        $staffInfo = $session['loginUser'];
+
+        $advList = PAdv::find()->all();
+        $staff = PStaff::find()->where('company_id = "' . $staffInfo->company_id . '"')->select('staff_name,id')->all();
+        $sectorList = PSector::find()->where("company_id = " . $staffInfo->company_id)->all();
+        return $this->render('advCheckAdd', array('advlist' => $advList, "staff" => $staff, "sectorList" => $sectorList));
+    }
+
+    /**
+     * 广告位审核列表（所有待审核信息：修改）
+     * @return string
+     */
+    public function actionCheckedit()
+    {
+        $session = \Yii::$app->session;
+        $staffInfo = $session['loginUser'];
+
+        $advList = PAdv::find()->all();
+        $staff = PStaff::find()->where('company_id = "' . $staffInfo->company_id . '"')->select('staff_name,id')->all();
+        $sectorList = PSector::find()->where("company_id = " . $staffInfo->company_id)->all();
+        return $this->render('advCheckEdit', array('advlist' => $advList, "staff" => $staff, "sectorList" => $sectorList));
+    }
+
+    /**
+     * 广告位审核列表（所有待审核信息：删除）
+     * @return string
+     */
+    public function actionCheckdelete()
+    {
+        $session = \Yii::$app->session;
+        $staffInfo = $session['loginUser'];
+
+        $advList = PAdv::find()->all();
+        $staff = PStaff::find()->where('company_id = "' . $staffInfo->company_id . '"')->select('staff_name,id')->all();
+        $sectorList = PSector::find()->where("company_id = " . $staffInfo->company_id)->all();
+        return $this->render('advCheckDelete', array('advlist' => $advList, "staff" => $staff, "sectorList" => $sectorList));
+    }
 
     public function actionAjaxmamger()
     {
+        $check = \Yii::$app->session['check'];   //待审核信息
         $post = \Yii::$app->request->post();
+        $adv_status = \Yii::$app->request->post('adv_status', '0,7');  //审核状态
         $page = $post['page'] ? $post['page'] : 1;
         $count = 20;
         $name = $post['name'];
@@ -174,6 +235,12 @@ class AdvController extends \yii\web\Controller
         if (!empty($postion)) {
             $where[] = " com.community_no = $com_no ";
         }
+
+        if ($check->control_adv == 0)   //添加楼盘信息是否需要审核
+            $where[] = " adv.adv_status in (0,7)";   //审核字段，0为无须审核，7为审核通过。
+        else
+            $where[] = " adv.adv_status in (" . $adv_status . ")";  //1为待审核（增）
+
         $st_where = array(
             ' adv.id = st.adv_id '
         );
@@ -196,6 +263,7 @@ class AdvController extends \yii\web\Controller
             . " ORDER BY  adv.id desc"
             . " LIMIT " . $limit;
         //exit(json_encode($sql));
+
         $connection = \Yii::$app->db;
         $command = $connection->createCommand($sql);
         $list = $command->queryAll();
@@ -272,7 +340,7 @@ class AdvController extends \yii\web\Controller
     {
         $company_id = \Yii::$app->session['loginUser']->company_id;
         $models = PModel::find()->where('company_id = ' . $company_id)->all();
-        $community = PCommunity::find()->all();
+        $community = PCommunity::find()->where("company_id=" . $company_id . " and community_status in (0,7)")->all();
         return $this->render('advAdd', array('list' => $community, 'model' => $models));
     }
 
@@ -288,6 +356,42 @@ class AdvController extends \yii\web\Controller
         $models = PModel::find()->where('company_id = "' . $company_id . '"')->all();
         $community = PCommunity::find()->all();
         return $this->render('advEdit', array('data' => $adv, 'list' => $community, 'model' => $models));
+    }
+
+    /**
+     * 广告位编辑
+     * @param $id
+     * @return string
+     */
+    public function actionDeleteajax($id)
+    {
+        $check = \Yii::$app->session['check'];   //待审核信息
+
+        if ($check->control_adv == 0)   //删除广告位信息是否需要审核,0为无须审核
+        {
+            $adv = PAdv::find()->where('id = "' . $id . '"')->one();
+            if (empty($adv)) {
+                echo "0";
+                exit;
+            }
+            $adv->delete();
+            echo "1";
+
+            //设置message消息
+            $now = date("Y-m-d H:i:s");
+            $staff_name = \Yii::$app->session['loginUser']->staff_name;
+            $company_id = \Yii::$app->session['loginUser']->company_id;
+            $message = $staff_name . "于" . $now . "删除了1条广告位信息信息，广告位编号为：" . $adv->adv_no . ",广告位名称为：" . $adv->adv_name . "。";
+            Message::sendMessage($company_id, $message);
+        } else {
+            $sql = "UPDATE p_adv SET adv_status=3 where id =" . $id;
+            $connection = \Yii::$app->db;
+            $command = $connection->createCommand($sql);
+            $result = $command->execute();
+
+            echo 1;
+        }
+        exit;
     }
 
     /**
@@ -316,6 +420,7 @@ class AdvController extends \yii\web\Controller
 
     public function actionDoadd()
     {
+        $check = \Yii::$app->session['check'];   //待审核信息
         $now = date("Y-m-d H:i:s");
         $post = \Yii::$app->request->post();
         $adv = new PAdv();
@@ -332,6 +437,10 @@ class AdvController extends \yii\web\Controller
         $adv->adv_use_status = $post['adv_use_status'];
         $adv->adv_sales_status = $post['adv_sales_status'];
         $adv->adv_pic_status = $post['adv_pic_status'];
+        if ($check->control_adv == 0)   //添加楼盘信息是否需要审核
+            $adv->adv_status = 0; //0为无须审核
+        else
+            $adv->adv_status = 1;  //1为待审核（增）
         $adv->company_id = \Yii::$app->session['loginUser']->company_id;
         $adv->is_delete = "0";
         $adv->creator = \Yii::$app->session['loginUser']->id;
@@ -367,6 +476,7 @@ class AdvController extends \yii\web\Controller
 
     public function actionDoedit()
     {
+        $check = \Yii::$app->session['check'];   //待审核信息
         $now = date("Y-m-d H:i:s");
         $post = \Yii::$app->request->post();
         $adv = PAdv::find()->where('id = "' . $post['id'] . '"')->one();
@@ -383,6 +493,10 @@ class AdvController extends \yii\web\Controller
         $adv->adv_use_status = $post['adv_use_status'];
         $adv->adv_sales_status = $post['adv_sales_status'];
         $adv->adv_pic_status = $post['adv_pic_status'];
+        if ($check->control_adv == 0)   //添加楼盘信息是否需要审核
+            $adv->adv_status = 0; //0为无须审核
+        else
+            $adv->adv_status = 2;  //2为待审核（改）
         $adv->company_id = \Yii::$app->session['loginUser']->company_id;
         $adv->updater = \Yii::$app->session['loginUser']->id;
         $adv->update_time = $now;
@@ -468,6 +582,7 @@ class AdvController extends \yii\web\Controller
      */
     public function actionExportexcel()
     {
+        $check = \Yii::$app->session['check'];   //待审核信息
         $post = \Yii::$app->request->post();
         $name = $post['name'];
         $adv_no = $post['adv_no'];
@@ -492,6 +607,7 @@ class AdvController extends \yii\web\Controller
         if (!empty($postion)) {
             $where[] = " com.community_no = $com_no ";
         }
+        $where[] = " adv.adv_status in (0,7)";   //审核字段，0为无须审核，7为审核通过。
         $st_where = array(
             ' adv.id = st.adv_id '
         );
@@ -727,4 +843,57 @@ class AdvController extends \yii\web\Controller
         $staff = PStaff::find()->where('company_id = "' . $company_id . '"')->all();
         return $this->render('advMap', array("data" => $community, "datajson" => json_encode($community), "staff" => $staff));
     }
+
+    /*
+     * 处理审核（添加、修改）
+     */
+    public function actionDocheck()
+    {
+        $post = \Yii::$app->request->post();
+        $ids = $post['ids'];
+        $adv_status = $post['adv_status'];
+        $status = $post['status'];
+
+        $sql = "UPDATE p_adv SET adv_status=" . $adv_status . " where id IN (" . implode(",", $ids) . ")";
+        $connection = \Yii::$app->db;
+        $command = $connection->createCommand($sql);
+        $result = $command->execute();
+
+        //设置message消息
+        $id_count = count($ids);
+        $now = date("Y-m-d H:i:s");
+        $staff_name = \Yii::$app->session['loginUser']->staff_name;
+        $company_id = \Yii::$app->session['loginUser']->company_id;
+        $message = $staff_name . "于" . $now . $status . $id_count . "条广告位信息。";
+        Message::sendMessage($company_id, $message);
+
+        exit(json_encode($result));
+    }
+
+    /*
+     * 处理审核（删除）
+     */
+    public function actionDocheckdelete()
+    {
+        $post = \Yii::$app->request->post();
+        $ids = $post['ids'];
+        $community_status = $post['community_status'];
+        $status = $post['status'];
+
+        $sql = "Delete From p_adv where id IN (" . implode(",", $ids) . ")";
+        $connection = \Yii::$app->db;
+        $command = $connection->createCommand($sql);
+        $result = $command->execute();
+
+        //设置message消息
+        $id_count = count($ids);
+        $now = date("Y-m-d H:i:s");
+        $staff_name = \Yii::$app->session['loginUser']->staff_name;
+        $company_id = \Yii::$app->session['loginUser']->company_id;
+        $message = $staff_name . "于" . $now . $status . $id_count . "条广告位信息。";
+        Message::sendMessage($company_id, $message);
+
+        exit(json_encode($result));
+    }
+
 }

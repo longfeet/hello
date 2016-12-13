@@ -174,7 +174,7 @@ class CommunityController extends \yii\web\Controller
         $now = date("Y-m-d H:i:s");
         $staff_name = \Yii::$app->session['loginUser']->staff_name;
         $company_id = \Yii::$app->session['loginUser']->company_id;
-        $message = $staff_name . "于" . $now . $status . $id_count . "条楼盘信息为。";
+        $message = $staff_name . "于" . $now . $status . $id_count . "条楼盘信息。";
         Message::sendMessage($company_id, $message);
 
         exit(json_encode($result));
@@ -200,7 +200,7 @@ class CommunityController extends \yii\web\Controller
         $now = date("Y-m-d H:i:s");
         $staff_name = \Yii::$app->session['loginUser']->staff_name;
         $company_id = \Yii::$app->session['loginUser']->company_id;
-        $message = $staff_name . "于" . $now . $status . $id_count . "条楼盘信息为。";
+        $message = $staff_name . "于" . $now . $status . $id_count . "条楼盘信息。";
         Message::sendMessage($company_id, $message);
 
         exit(json_encode($result));
