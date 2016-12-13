@@ -390,7 +390,7 @@ class CommunityController extends \yii\web\Controller
         if ($check->control_community == 0)   //添加楼盘信息是否需要审核
             $community->community_status = 0; //0为无须审核
         else
-            $community->community_status = 2;  //1为待审核（增）
+            $community->community_status = 2;  //1为待审核（改）
         $community->company_id = \Yii::$app->session['loginUser']['company_id'];
         $community->updater = \Yii::$app->session['loginUser']['id'];
         $community->update_time = date("Y-m-d H:i:s");
