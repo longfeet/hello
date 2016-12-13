@@ -301,7 +301,16 @@ class CommunityController extends \yii\web\Controller
      */
     public function actionMap()
     {
-        $community = PCommunity::find()->asArray()->all();
+        $staff = \Yii::$app->session['loginUser'];
+
+        $community = PCommunity::find()->where("company_id=".$staff->company_id." and community_status in (0,7)")->asArray()->all();
+        //获得每个楼盘下面广告位数量
+        foreach($community as $key=>$value)
+        {
+            $advCount = PAdv::find()->where('adv_community_id = "' . $value["id"] . '"')->count();
+            $community[$key]["adv_num"] = $advCount;
+        }
+
         return $this->render('communityMap', array("data" => $community, "datajson" => json_encode($community)));
     }
 

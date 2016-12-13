@@ -137,7 +137,8 @@
         var pointData = this._point;
         var pointSource = this._data;
         div.onclick = function(){
-            var html = "<div style='font-size:12px;'>楼盘编号："+pointSource.community_no+"</br>楼盘名称："+pointSource.community_name+"</br>详细地址："+pointSource.community_position+"</br>所属商圈："+pointSource.community_cbd;
+            var html = "<div style='font-size:14px;'>楼盘编号："+pointSource.community_no+"</br>楼盘名称："+pointSource.community_name+
+                "<br/>广告位数量："+pointSource.adv_num+"</br>详细地址："+pointSource.community_position+"</br>所属商圈："+pointSource.community_cbd;
             var infoWindow = new BMap.InfoWindow(html);    // 创建信息窗口对象
             console.log(pointData);
             map.openInfoWindow(infoWindow,pointData);
