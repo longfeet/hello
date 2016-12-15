@@ -27,7 +27,7 @@
                                     <th>楼盘地址</th>
                                     <th>类型</th>
                                     <th>楼盘商圈</th>
-                                    <th>所属公司</th>
+                                    <th>备注</th>
                                     <th>编辑</th>
                                 </tr>
                             </thead>

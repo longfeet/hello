@@ -25,14 +25,14 @@ class CommunityController extends \yii\web\Controller
     /**
      * @var array 显示的数据列
      */
-    public $communityColumns = array("id", "community_no", "community_name", "community_position", "community_category", "community_cbd", "company_name", "edit");
+    public $communityColumns = array("id", "community_no", "community_name", "community_position", "community_category", "community_cbd", "community_note", "edit");
     public $communityCheckColumns = array("id", "community_no", "community_name", "community_position", "community_category", "community_cbd", "community_status", "edit");
 
     /**
      * relation 关联的字段做成数组,支持多relation的深层字段属性(最多三层)
      * @var array
      */
-    public $communityColumnsVal = array("id", "community_no", "community_name", "community_position", "community_category", "community_cbd", array("company", "company_name"), "");
+    public $communityColumnsVal = array("id", "community_no", "community_name", "community_position", "community_category", "community_cbd", "community_note", "");
     public $communityCheckShowColumnsVal = array("id", "community_no", "community_name", "community_position", "community_category", "community_cbd", "community_status", "<details,edit,delete>");
     public $communityCheckColumnsVal = array("id", "community_no", "community_name", "community_position", "community_category", "community_cbd", "community_status", "<details>");
 
