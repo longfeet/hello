@@ -2905,10 +2905,10 @@
 				lang.sInfo :
 				lang.sInfoEmpty;
 	
-		if ( total !== max ) {
-			/* Record set after filtering */
-			out += ' ' + lang.sInfoFiltered;
-		}
+		//if ( total !== max ) {
+		//	/* Record set after filtering */
+		//	out += ' ' + lang.sInfoFiltered;
+		//}
 	
 		// Convert the macros
 		out += lang.sInfoPostFix;
