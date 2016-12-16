@@ -25,11 +25,12 @@
                             <thead>
                             <tr>
                                 <th width="8%">序号</th>
+                                <th width="10%">工号</th>
                                 <th width="10%">姓名</th>
                                 <th width="15%">手机号</th>
                                 <th width="15%">邮箱</th>
-                                <th width="15%">公司</th>
-                                <th width="15%">所属部门</th>
+                                <th width="12%">所属部门</th>
+                                <th width="15%">操作权限</th>
                                 <th width="15%">编辑</th>
                             </tr>
                             </thead>
@@ -87,6 +88,16 @@
             <div class="col-md-9"><input class="form-control" type="text" name="new_staff_position" /></div>
         </div>
         <div class="row">
+            <div class="col-md-3"><label class="help-block">操作权限：</label></div>
+            <div class="col-md-9">
+                <select class="form-control" name="new_staff_level">
+                    <option value="1">普通管理员</option>
+                    <option value="2">部门管理员</option>
+                    <option value="3">总经办</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
             <div id="addstaffinfo" style="display:none;margin-top:10px;margin-left:12px;">
                 <label></label>
             </div>
@@ -135,6 +146,16 @@
         <div class="row">
             <div class="col-md-3"><label class="help-block">职务：</label></div>
             <div class="col-md-9"><input class="form-control" type="text" name="staff_position" /></div>
+        </div>
+        <div class="row">
+            <div class="col-md-3"><label class="help-block">操作权限：</label></div>
+            <div class="col-md-9">
+                <select class="form-control" name="staff_level">
+                    <option value="1">普通管理员</option>
+                    <option value="2">部门管理员</option>
+                    <option value="3">总经办</option>
+                </select>
+            </div>
         </div>
         <div class="row">
             <input name="staff_id" type="hidden" />
@@ -224,6 +245,7 @@
                 var companyId = $('select[name=new_company_id]').val();
                 var staffSector = $('select[name=new_staff_sector]').val();
                 var staffPosition = $('input[name=new_staff_position]').val();
+                var staffLevel = $('select[name=new_staff_level]').val();
 
                 if(staffName == '') {
                     $('#addstaffinfo').html('姓名不能为空!');
@@ -240,7 +262,8 @@
                         'staffEmail' : staffEmail,
                         'companyId' : companyId,
                         'staffSector' : staffSector,
-                        'staffPosition' : staffPosition
+                        'staffPosition' : staffPosition,
+                        'staffLevel':staffLevel
                     },
                     "dataType": "json",
                     "success": function (data) {
@@ -282,6 +305,7 @@
                 var companyId = $('select[name=company_id]').val();
                 var staffSector = $('select[name=staff_sector]').val();
                 var staffPosition = $('input[name=staff_position]').val();
+                var staffLevel = $('select[name=staff_level]').val();
                 var staffId=$('input[name=staff_id]').val();
 //alert(staffName+";"+staffNo+";"+staffPhone+";"+staffEmail+";"+companyId+";"+staffSector+";"+staffPosition+";"+staffId);
                 if(staffName == '') {
@@ -301,7 +325,8 @@
                         'staffEmail' : staffEmail,
                         'companyId' : companyId,
                         'staffSector' : staffSector,
-                        'staffPosition' : staffPosition
+                        'staffPosition' : staffPosition,
+                        'staffLevel' : staffLevel
                     },
                     "dataType": "json",
                     "success": function (data) {
@@ -381,6 +406,7 @@
                                 var editCompanyId = $('select[name=company_id]');
                                 var editStaffSector = $('select[name=staff_sector]');
                                 var editStaffPosition = $('input[name=staff_position]');
+                                var editStaffLevel = $('select[name=staff_level]');
                                 if(editStaffName.hasClass('alert-danger')) {
                                     $('#editstaffinfo').hide();
                                     $('input[name=new_staff_name]').removeClass('alert-danger');
@@ -415,6 +441,7 @@
                                                         editCompanyId.val(data1.company_id);
                                                         editStaffSector.val(data1.staff_sector);
                                                         editStaffPosition.val(data1.staff_position);
+                                                        editStaffLevel.val(data1.staff_level);
                                                     } else {
                                                         alert("获取人员信息失败,请刷新页面重试!");
                                                     }

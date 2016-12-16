@@ -9,7 +9,7 @@
     <div class="row">
         <div class="col-md-12">
             <!-- Advanced Tables -->
-            <div class="panel panel-default">
+            <div class="panel panel-default" style="padding-bottom: 5px;">
                 <div class="panel-heading" style="font-size: 18px;">
                     公司：<?php echo $company->company_name; ?><input type="hidden" id="companyID" value="<?php echo $company->id; ?>">
                 </div>
@@ -22,18 +22,12 @@
                         </div>
                         <div id="sectorInfo" style="margin-top:10px;margin-left:12px;color:red;"></div>
                     </div>
-                    <div class="row" style="padding-top: 5px;"  class="row">
-                        <div class="col-md-1" style="width:60px;padding-left: 20px;padding-bottom: 5px;">
-                            <a href="javascript:;" class="btn btn-info" id="addSector" style="width:5rem;text-align:center;margin-right:50%;">添&nbsp;加</a>
-                        </div>
-                        <div class="col-md-1" style="width:60px;padding-bottom: 5px;">
-                            <a href="javascript:;" class="btn btn-info" id="updateSector" style="width:5rem;text-align:center;margin-right:50%;">更&nbsp;新</a>
-                        </div>
-                        <div class="col-md-1" style="width:50px;padding-bottom: 5px;">
-                            <a href="javascript:;" class="btn btn-info" id="deleteSector" style="width:5rem;text-align:center;margin-right:50%;">删&nbsp;除</a>
-                        </div>
-                    </div>
                 </div>
+            </div>
+            <div style="display:inline;">
+                <span style="display:inline;float:left;"><a href="javascript:;" class="btn btn-primary" id="addSector" style="width:5rem;text-align:center;margin-right:50%;">添&nbsp;加</a>&nbsp;&nbsp;</span>
+                <span style="display:inline;float:left;"><a href="javascript:;" class="btn btn-info" id="updateSector" style="width:5rem;text-align:center;margin-right:50%;">更&nbsp;新</a>&nbsp;&nbsp;</span>
+                <span style="display:inline;float:left;"><a href="javascript:;" class="btn btn-danger" id="deleteSector" style="width:5rem;text-align:center;margin-right:50%;">删&nbsp;除</a></span>
             </div>
             <!--End Advanced Tables -->
         </div>

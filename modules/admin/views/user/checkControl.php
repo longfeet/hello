@@ -28,14 +28,14 @@
                                 <label><input name="adv" type="radio" value="1" <?=$checkControl->control_adv==1?"checked='true'":"" ?> />开启 </label>
                             </div>
                         </div>
-                        <div class="row" style="padding-top: 5px;">
+                        <div class="row" style="padding-top: 5px;display: none;">
                             <div class="col-md-3" style="width:150px;height: 35px;line-height:35px;">设备信息审核：</div>
                             <div class="col-md-5" style="height: 35px;line-height:35px;">
                                 <label><input name="model" type="radio" value="0" <?=$checkControl->control_model==0?"checked='true'":"" ?> />关闭 </label>&nbsp;&nbsp;&nbsp;
                                 <label><input name="model" type="radio" value="1" <?=$checkControl->control_model==1?"checked='true'":"" ?> />开启 </label>
                             </div>
                         </div>
-                        <div class="row" style="padding-top: 5px;">
+                        <div class="row" style="padding-top: 5px;display: none;">
                             <div class="col-md-3" style="width:150px;height: 35px;line-height:35px;">客户信息审核：</div>
                             <div class="col-md-5" style="height: 35px;line-height:35px;">
                                 <label><input name="customer" type="radio" value="0" <?=$checkControl->control_customer==0?"checked='true'":"" ?> />关闭 </label>&nbsp;&nbsp;&nbsp;

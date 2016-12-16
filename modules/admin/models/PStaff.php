@@ -37,23 +37,13 @@ class PStaff extends \yii\db\ActiveRecord
         return 'p_staff';
     }
 
-    public function getSector()
-    {
-        return $this->hasOne(PSector::className(), ['id' => 'staff_sector']);
-    }
-
-    public function getRoleId()
-    {
-        return $this->hasOne(PStaffRole::className(), ['staff_id' => 'id']);
-    }
-
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['staff_name', 'password', 'staff_no', 'company_id', 'create_time', 'update_time'], 'required'],
+            [['staff_name', 'password', 'company_id', 'create_time', 'update_time'], 'required'],
             [['staff_level', 'staff_aids_id', 'staff_no', 'company_id', 'staff_sector', 'staff_phone', 'is_super', 'is_delete'], 'integer'],
             [['staff_in', 'staff_lastlogin', 'staff_logintime', 'create_time', 'update_time'], 'safe'],
             [['staff_name'], 'string', 'max' => 20],

@@ -17,13 +17,15 @@ class ExcelTools
     /**
      * 这个方法待完善company_id没写
      * @param $excel
+     * 审核状态全面默认为0，无须审核
      */
     public static function setDataIntoCommunity($excel)
     {
         $company_id = \Yii::$app->session['loginUser']->company_id;
         $user_id = \Yii::$app->session['loginUser']->id;
+
         $sql = 'insert into p_community values ';
-        $array = array('A', 'C', 'V', 'G', 'H', 'W', 'AB', '<1>', 'AA', 'AE', 'O', 'P', 'AH', 'BQ', '<null>', '<null>', '<null>', 'Z', 'AG', 'AK', 'F', '<company>', '<0>', '<userid>', '<now>', '<userid>', '<now>');
+        $array = array('A', 'C', 'V', 'G', 'H', 'W', 'AB', '<1>', 'AA', 'AE', 'O', 'P', 'AH', 'BQ', 'Z', 'AG', '<null>', '<null>', '<null>', 'AK', '<0>', '<company>', '<0>', '<userid>', '<now>', '<userid>', '<now>');
         foreach ($excel as $key => $value) {
             if ($key > 2) {
                 if ($value['A'] == '') {
@@ -121,7 +123,7 @@ class ExcelTools
         $company_id = \Yii::$app->session['loginUser']->company_id;
         $user_id = \Yii::$app->session['loginUser']->id;
         $sql = 'insert into p_staff values ';
-        $array = array('A', 'B', '<null>', '<null>', 'C', '<null>', '<null>', '<company>', 'F', 'G', 'D', 'E', '<now>', '<now>', '<0>', '<0>', '<now>', '<now>');
+        $array = array('A', 'B', '<1>', '<null>', 'C', '<null>', '<null>', '<company>', 'F', 'G', 'D', 'E', '<now>', '<now>', '<0>', '<0>', '<now>', '<now>');
         foreach ($excel as $key => $value) {
             if ($key > 1) {
                 if ($value['A'] == '') {

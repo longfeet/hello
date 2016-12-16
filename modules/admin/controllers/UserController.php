@@ -32,8 +32,8 @@ class UserController extends \yii\web\Controller
     /**
      * Pstaff显示的数据列及相应的信息
      */
-    public $staffcolumns = array("id", "staff_name", "staff_phone", "staff_email", "company_id", "staff_sector", "edit");
-    public $staffcolumnsVal = array("id", "staff_name", "staff_phone", "staff_email", "company_id", "staff_sector", "<edit,delete>");
+    public $staffcolumns = array("id", "staff_no", "staff_name", "staff_phone", "staff_email", "staff_sector", "staff_level", "edit");
+    public $staffcolumnsVal = array("id", "staff_no", "staff_name", "staff_phone", "staff_email", "staff_sector", "staff_level", "<edit,delete>");
 
     /**
      * 公司管理
@@ -343,11 +343,13 @@ class UserController extends \yii\web\Controller
         $company_id = $request->post('companyId', null);
         $staff_sector = $request->post('staffSector', '0');
         $staff_position = $request->post('staffPosition', null);
+        $staff_level = $request->post('staffLevel', 1);
 
         if ($staff_name != null && trim($staff_name) != '') {
             $staff = new PStaff();
             $staff->staff_name = trim($staff_name);
             $staff->password = md5('111111');     //设置初始密码“111111”；
+            $staff->staff_level = $staff_level;
             $staff->staff_no = trim($staff_no);
             $staff->company_id = $company_id;
             $staff->staff_sector = $staff_sector;
@@ -422,6 +424,7 @@ class UserController extends \yii\web\Controller
         $company_id = $request->post('companyId', 0);
         $staff_sector = $request->post('staffSector', '0');
         $staff_position = $request->post('staffPosition', null);
+        $staff_level = $request->post('staffLevel', 1);
 
         $staff = PStaff::find()->where('id=' . $staff_id . ' and is_delete=0')->one();
         if ($staff_name == null) {
@@ -429,6 +432,7 @@ class UserController extends \yii\web\Controller
         } else if ($staff != null) {
             $staff->staff_name = trim($staff_name);
             $staff->staff_no = trim($staff_no);
+            $staff->staff_level = $staff_level;
             $staff->company_id = $company_id;
             $staff->staff_sector = $staff_sector;
             $staff->staff_position = $staff_position;
@@ -514,9 +518,9 @@ class UserController extends \yii\web\Controller
         $session = \Yii::$app->session;
         $staff = $session['loginUser'];
 
-        $checkControl = PCheckControl::find()->where("company_id=".$staff->company_id)->one();
+        $checkControl = PCheckControl::find()->where("company_id=" . $staff->company_id)->one();
 
-        return $this->render('checkControl',array('checkControl' => $checkControl));
+        return $this->render('checkControl', array('checkControl' => $checkControl));
     }
 
     /*
@@ -532,13 +536,13 @@ class UserController extends \yii\web\Controller
         $checkControlNew = PCheckControl::find()->where('id = "' . $post['id'] . '"')->one();
         $checkControlNew->control_community = $post["community"];
         $checkControlNew->control_adv = $post["adv"];
-        $checkControlNew->control_model =  $post["model"];
+        $checkControlNew->control_model = $post["model"];
         $checkControlNew->control_customer = $post["customer"];
-        $checkControlNew->updater=$staff->id;
-        $checkControlNew->update_time=$now;
+        $checkControlNew->updater = $staff->id;
+        $checkControlNew->update_time = $now;
         $checkControlNew->save();
 
         $checkControl = PCheckControl::find()->where('id = "' . $post['id'] . '"')->one();
-        return $this->render('checkControl',array('checkControl' => $checkControl));
+        return $this->render('checkControl', array('checkControl' => $checkControl));
     }
 }
