@@ -754,17 +754,17 @@ class DataTools
                             else
                                 $array[$v] = "";
                         }
-                        //修饰操作权限，1普通管理员，2部门管理员，3总经办，4系统管理员
+                        //修饰操作权限，1一级管理员（普通管理员），2二级管理员（部门管理员），3三级管理员（总经办），4系统管理员
                         if ($columns[$k] == "staff_level") {
                             switch ($val->staff_level) {
                                 case 1:
-                                    $array[$v] = "普通管理员";
+                                    $array[$v] = "一级管理员";
                                     break;
                                 case 2:
-                                    $array[$v] = "部门管理员";;
+                                    $array[$v] = "二级管理员";;
                                     break;
                                 case 3:
-                                    $array[$v] = "总经办";
+                                    $array[$v] = "三级管理员";
                                     break;
                                 case 4:
                                     $array[$v] = "系统管理员";

@@ -91,9 +91,9 @@
             <div class="col-md-3"><label class="help-block">操作权限：</label></div>
             <div class="col-md-9">
                 <select class="form-control" name="new_staff_level">
-                    <option value="1">普通管理员</option>
-                    <option value="2">部门管理员</option>
-                    <option value="3">总经办</option>
+                    <option value="1">一级管理员（小）</option>
+                    <option value="2">二级管理员（中）</option>
+                    <option value="3">三级管理员（大）</option>
                 </select>
             </div>
         </div>
@@ -151,9 +151,9 @@
             <div class="col-md-3"><label class="help-block">操作权限：</label></div>
             <div class="col-md-9">
                 <select class="form-control" name="staff_level">
-                    <option value="1">普通管理员</option>
-                    <option value="2">部门管理员</option>
-                    <option value="3">总经办</option>
+                    <option value="1">一级管理员（小）</option>
+                    <option value="2">二级管理员（中）</option>
+                    <option value="3">三级管理员（大）</option>
                 </select>
             </div>
         </div>
