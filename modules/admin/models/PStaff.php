@@ -37,6 +37,16 @@ class PStaff extends \yii\db\ActiveRecord
         return 'p_staff';
     }
 
+    public function getSector()
+    {
+        return $this->hasOne(PSector::className(), ['id' => 'staff_sector']);
+    }
+
+    public function getRoleId()
+    {
+        return $this->hasOne(PStaffRole::className(), ['staff_id' => 'id']);
+    }
+
     /**
      * @inheritdoc
      */
