@@ -183,7 +183,7 @@ class ExcelTools
         $company_id = \Yii::$app->session['loginUser']->company_id;
         $user_id = \Yii::$app->session['loginUser']->id;
         $sql = 'insert into p_adv values ';
-        $array = array('A', 'B', 'C', 'D', 'E', 'F', '<null>', 'G', 'H', 'I', 'J', 'K', 'L', 'M', '<null>', '<company>', '<0>', '<userid>', '<now>', '<userid>', '<now>');
+        $array = array('A', 'B', 'C', 'D', 'E', 'F', '<null>', 'G', 'H', 'I', 'J', 'K', 'L', 'M', '<0>', '<company>', '<0>', '<userid>', '<now>', '<userid>', '<now>');
         foreach ($excel as $key => $value) {
             if ($key > 1) {
                 if ($value['A'] == '') {
@@ -215,8 +215,8 @@ class ExcelTools
                     } else if ($v == 'H') {  //设备型号
                         $hasModel = 0;  //是否已经设置了设备型号ID，默认否
                         foreach ($modelArray as $mk => $mv) {
-                            if ($cv["model_id"] == trim($value[$v]) || $cv["model_name"] == trim($value[$v])) {
-                                $sql .= $cv["id"] . "," . $value[$v] . ",";
+                            if (trim($mv["model_id"]) == trim($value[$v]) || trim($mv["model_name"]) == trim($value[$v])) {
+                                $sql .= $mv["id"] . ",'" . $value[$v] . "',";
                                 $hasModel = 1;
                             }
                         }
@@ -224,7 +224,7 @@ class ExcelTools
                             if ($value[$v] == "")
                                 $sql .= "0,null,";
                             else
-                                $sql .= "0," . $value[$v] . ",";
+                                $sql .= "0,'" . $value[$v] . "',";
                         }
                     } else if ($v == 'J') {   //安装状态 0.未安装,1.待维修(损坏),2.正常使用
                         if ($value[$v] == "未安装")

@@ -210,7 +210,8 @@ class AdvController extends \yii\web\Controller
                     $where[] = " adv.creator = $user_id ";
                     break;
                 case 2:
-                    $where[] = " adv.creator IN ( select id from p_staff where staff_sector = $staff_sector AND company_id = $company_id ) ";
+                    //$where[] = " adv.creator IN ( select id from p_staff where staff_sector = $staff_sector AND company_id = $company_id ) ";
+                    $where[] = " adv.creator IN ( select id from p_staff where company_id = $company_id ) ";
                     break;
                 case 3:
                     $where[] = " adv.creator IN ( select id from p_staff where company_id = $company_id ) ";

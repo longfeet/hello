@@ -172,9 +172,11 @@ class DataTools
             //权限控制
             if ($staff != '') {
                 if ($staff->staff_level == 1)
-                    $ar = $data->where("company_id =" . $staff->company_id . " and creator = " . $staff->id . " and $searchField like \"%" . $seach['value'] . "%\"" . $checkWhere);
+                    $ar = $data->where("company_id =" . $staff->company_id . " and $searchField like \"%" . $seach['value'] . "%\"" . $checkWhere);
+                    //$ar = $data->where("company_id =" . $staff->company_id . " and creator = " . $staff->id . " and $searchField like \"%" . $seach['value'] . "%\"" . $checkWhere);
                 else if ($staff->staff_level == 2)
-                    $ar = $data->where("company_id =" . $staff->company_id . " and creator in (select id from p_staff where staff_sector ='" . $staff->staff_sector . "')" . " and $searchField like \"%" . $seach['value'] . "%\"" . $checkWhere);
+                    $ar = $data->where("company_id =" . $staff->company_id . " and $searchField like \"%" . $seach['value'] . "%\"" . $checkWhere);
+                    //$ar = $data->where("company_id =" . $staff->company_id . " and creator in (select id from p_staff where staff_sector ='" . $staff->staff_sector . "')" . " and $searchField like \"%" . $seach['value'] . "%\"" . $checkWhere);
                 else if ($staff->staff_level == 3)
                     $ar = $data->where("company_id =" . $staff->company_id . " and $searchField like \"%" . $seach['value'] . "%\"" . $checkWhere);
                 else if ($staff->staff_level == 4)
@@ -186,9 +188,11 @@ class DataTools
             //权限控制
             if ($staff != '') {
                 if ($staff->staff_level == 1)
-                    $ar = $data->where("company_id =" . $staff->company_id . " and creator = " . $staff->id . $checkWhere);
+                    $ar = $data->where("company_id =" . $staff->company_id . $checkWhere);
+                    //$ar = $data->where("company_id =" . $staff->company_id . " and creator = " . $staff->id . $checkWhere);
                 else if ($staff->staff_level == 2)
-                    $ar = $data->where("company_id =" . $staff->company_id . " and creator in (select id from p_staff where staff_sector ='" . $staff->staff_sector . "')" . $checkWhere);
+                    $ar = $data->where("company_id =" . $staff->company_id . $checkWhere);
+                    //$ar = $data->where("company_id =" . $staff->company_id . " and creator in (select id from p_staff where staff_sector ='" . $staff->staff_sector . "')" . $checkWhere);
                 else if ($staff->staff_level == 3)
                     $ar = $data->where("company_id =" . $staff->company_id . $checkWhere);
             }

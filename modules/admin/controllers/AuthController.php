@@ -18,25 +18,25 @@ class AuthController extends \yii\web\Controller
     /**
      * @var array 显示的数据列
      */
-    public $usercolumns = array("id","staff_name","staff_sector_name","staff_in","edit");
+    public $usercolumns = array("id", "staff_name", "staff_sector_name", "staff_in", "edit");
 
     /**
      * relation 关联的字段做成数组,支持多relation的深层字段属性(最多三层)
      * @var array
      */
-    public $usercolumnsVal = array("id","staff_name",array("sector","sector_name"),
-        array("roleId",array("role"=>"role_name")),"<bindrole>");
+    public $usercolumnsVal = array("id", "staff_name", array("sector", "sector_name"),
+        array("roleId", array("role" => "role_name")), "<bindrole>");
 
     /**
      * @var array 显示的数据列
      */
-    public $rolecolumns = array("id","role_name","role_code","create_time","edit");
+    public $rolecolumns = array("id", "role_name", "role_code", "create_time", "edit");
 
     /**
      * relation 关联的字段做成数组,支持多relation的深层字段属性
      * @var array
      */
-    public $rolecolumnsVal = array("id","role_name","role_code","create_time","<editrole,edit,delete>");
+    public $rolecolumnsVal = array("id", "role_name", "role_code", "create_time", "<editrole,edit,delete>");
 
     /**
      * 用户管理
@@ -47,7 +47,7 @@ class AuthController extends \yii\web\Controller
         $roleList = PRole::find()->all();
         $column = DataTools::getDataTablesColumns($this->usercolumns);
         $jsonDataUrl = '/admin/auth/usermanagerjson';
-        return $this->render('userManager', array("columns" => $column, 'jsonurl'=>$jsonDataUrl,
+        return $this->render('userManager', array("columns" => $column, 'jsonurl' => $jsonDataUrl,
             'rolelist' => $roleList
         ));
     }
@@ -57,9 +57,11 @@ class AuthController extends \yii\web\Controller
      */
     public function actionUsermanagerjson()
     {
+        $session = \Yii::$app->session;
+        $staffInfo = $session['loginUser'];
         //请求,排序,展示字段,展示字段的字段名(支持relation字段),主表实例,搜索字段
         DataTools::getJsonData(\Yii::$app->request, "id desc", $this->usercolumns, $this->usercolumnsVal,
-            new PStaff, "staff_name");
+            new PStaff, "staff_name", "", $staffInfo);
     }
 
     /**
@@ -70,7 +72,7 @@ class AuthController extends \yii\web\Controller
     {
         $column = DataTools::getDataTablesColumns($this->rolecolumns);
         $jsonDataUrl = '/admin/auth/rolemanagerjson';
-        return $this->render('roleManager', array("columns" => $column, 'jsonurl'=>$jsonDataUrl));
+        return $this->render('roleManager', array("columns" => $column, 'jsonurl' => $jsonDataUrl));
     }
 
     /**
@@ -98,7 +100,7 @@ class AuthController extends \yii\web\Controller
      */
     public function actionGetmenutreedata()
     {
-        $role_id = \Yii::$app->request->get('role_id','0');
+        $role_id = \Yii::$app->request->get('role_id', '0');
         $roleMenuList = PRoleMenu::find()->select('menu_id')->where('`role_id` = "' . $role_id . '"')->asArray()->all();
         $menuList = PMenu::getTreeMenuList();
         DataTools::jsonEncodeResponse(PMenu::responseTreeJsonData($menuList, DataTools::put2dArrayTo1d($roleMenuList)));
@@ -122,7 +124,7 @@ class AuthController extends \yii\web\Controller
     public function actionUpdatemenuinfo()
     {
         $request = \Yii::$app->request;
-        $menu_id = $request->post('menu_id','0');
+        $menu_id = $request->post('menu_id', '0');
         $menu_name = $request->post('menu_name', null);
         $menu_url = $request->post('menu_url', null);
 
@@ -130,20 +132,20 @@ class AuthController extends \yii\web\Controller
         $sub_menu_url = trim($request->post('sub_menu_url', null)) == "" ? null : trim($request->post('sub_menu_url', null));
 
         $menu = PMenu::find()->where('`id` = ' . $menu_id)->one();
-        if($menu == null || $menu->id < 1) {
+        if ($menu == null || $menu->id < 1) {
             echo '-1';
             exit;
         }
         $childCount = PMenu::find()->where('`parent_id` = ' . $menu_id)->count();
         $menu->menu_name = trim($menu_name) == "" ? null : trim($menu_name);
         $menu->menu_url = trim($menu_url) == "/" ? null : trim($menu_url);
-        if($childCount > 0) {
+        if ($childCount > 0) {
             $menu->menu_url = $menu->menu_url;//有子菜单的虚菜单url不做更新
         }
         $menu->save();
 
         //添加子菜单
-        if($sub_menu_name != null && $sub_menu_url != null) {
+        if ($sub_menu_name != null && $sub_menu_url != null) {
             $subMenu = new PMenu();
             $subMenu->menu_name = $sub_menu_name;
             $subMenu->menu_url = $sub_menu_url;
@@ -166,11 +168,11 @@ class AuthController extends \yii\web\Controller
     public function actionDeletemenu()
     {
         $request = \Yii::$app->request;
-        $menu_id = $request->post('menu_id','0');
+        $menu_id = $request->post('menu_id', '0');
         $menu = PMenu::find()->where('`id` = ' . $menu_id)->one();
-        if($menu != null && $menu->id > 0) {
+        if ($menu != null && $menu->id > 0) {
             $childMenuCounts = PMenu::find()->where('`parent_id` = ' . $menu_id)->count();
-            if($childMenuCounts < 1) {
+            if ($childMenuCounts < 1) {
                 $menu->delete();
                 echo "1";
                 exit;
@@ -191,28 +193,29 @@ class AuthController extends \yii\web\Controller
     public function actionUpdaterolemenu()
     {
         $request = \Yii::$app->request;
-        $menu_ids = $request->post('ids',array());
-        $role_id = $request->post('role_id','0');
+        $menu_ids = $request->post('ids', array());
+        $role_id = $request->post('role_id', '0');
         $menuIds = DataTools::put2dArrayTo1d(PRoleMenu::find()->select('menu_id')->where('`role_id` = "' . $role_id . '"')->asArray()->all());
         $deleteSet = array();//需要删除的id集合
         $insertSet = array();//需要添加的id集合
-        $allSet = array_merge($menu_ids,$menuIds);
+        $allSet = array_merge($menu_ids, $menuIds);
         $insertSet = array_diff($allSet, $menuIds);
         $deleteSet = array_diff($allSet, $menu_ids);
-        $deleteSetString = implode(',',$deleteSet);
-        if(count($deleteSet) > 0) {
+        $deleteSetString = implode(',', $deleteSet);
+        if (count($deleteSet) > 0) {
             \Yii::$app->db->createCommand('delete from p_role_menu where menu_id in (' . $deleteSetString . ') and role_id = "' . $role_id . '"')->execute();
         }
         $insertSql = 'insert into p_role_menu values';
         $date = date('Y-m-d H:i:s');
-        foreach($insertSet as $insertMenuId) {
+        foreach ($insertSet as $insertMenuId) {
             $insertSql .= '(null, "' . $insertMenuId . '", "' . $role_id . '", "' . $date . '"),';
         }
-        $insertSql = substr($insertSql,0,strlen($insertSql) - 1);
-        if(count($insertSet) > 0) {
+        $insertSql = substr($insertSql, 0, strlen($insertSql) - 1);
+        if (count($insertSet) > 0) {
             \Yii::$app->db->createCommand($insertSql)->execute();
         }
-        echo "1";exit;
+        echo "1";
+        exit;
     }
 
     /**
@@ -222,11 +225,12 @@ class AuthController extends \yii\web\Controller
     public function actionDeleterole()
     {
         $request = \Yii::$app->request;
-        $role_id = $request->post('role_id','0');
+        $role_id = $request->post('role_id', '0');
         $role = PRole::find()->where('id = "' . $role_id . '"')->one();
         $role->delete();
         \Yii::$app->db->createCommand('delete from p_role_menu where role_id = "' . $role_id . '"')->execute();
-        echo "1";exit;
+        echo "1";
+        exit;
     }
 
     /**
@@ -239,12 +243,12 @@ class AuthController extends \yii\web\Controller
         $request = \Yii::$app->request;
         $role_name = $request->post('roleName', null);
         $role_code = $request->post('roleCode', null);
-        if($role_name != null && trim($role_name) != '' && $role_code != null && trim($role_code) != '') {
+        if ($role_name != null && trim($role_name) != '' && $role_code != null && trim($role_code) != '') {
             $roleNameExsist = PRole::find()->where('role_name = "' . $role_name . '"')->one();
             $roleCodeExsist = PRole::find()->where('role_code = "' . $role_code . '"')->one();
-            if($roleNameExsist != null) {
+            if ($roleNameExsist != null) {
                 echo "-2";//角色名存在
-            } else if($roleCodeExsist != null) {
+            } else if ($roleCodeExsist != null) {
                 echo "-3";//角色代码存在
             } else {
                 $role = new PRole();
@@ -257,7 +261,7 @@ class AuthController extends \yii\web\Controller
                 echo "1";
             }
         } else {
-            if($role_name == null || trim($role_name) == '')
+            if ($role_name == null || trim($role_name) == '')
                 echo "-1.1";
             else if ($role_code == null || trim($role_code) == '')
                 echo "-1.2";
@@ -319,10 +323,10 @@ class AuthController extends \yii\web\Controller
         $staff_id = $request->post('staff_id', null);
         $staff = PStaff::find()->where('id = "' . $staff_id . '"')->one();
         $role = PRole::find()->where('id = "' . $role_id . '"')->one();
-        if($staff != null && $role != null) {
+        if ($staff != null && $role != null) {
             $staffRoleAr = PStaffRole::find()->where('staff_id = "' . $staff_id . '"');
             $staffRole = null;
-            if($staffRoleAr->count() <= 1) {
+            if ($staffRoleAr->count() <= 1) {
                 $staffRole = $staffRoleAr->one();
             } else {
                 \Yii::$app->db->createCommand('delete from p_staff_role where staff_id = "' . $staff_id . '"')->execute();
@@ -346,7 +350,7 @@ class AuthController extends \yii\web\Controller
     {
         $request = \Yii::$app->request;
         $staff_id = $request->get('staff_id', '0');
-        $role = PStaffRole::find()->where('staff_id = "' .$staff_id. '"')->one();
+        $role = PStaffRole::find()->where('staff_id = "' . $staff_id . '"')->one();
         DataTools::jsonEncodeResponse($role == null ? null : $role->attributes);
     }
 }
