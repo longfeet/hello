@@ -21,10 +21,17 @@
                             <label class="control-label">楼盘编号：</label>
                             <label class="control-label"><?= $data->community_no ?></label>
                         </div>
-
                         <div class="form-group">
                             <label class="control-label">楼盘名称：</label>
                             <label class="control-label"><?= $data->community_name ?></label>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">所在城市：</label>
+                            <label class="control-label"><?= $data->community_city ?></label>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">所属区域：</label>
+                            <label class="control-label"><?= $data->community_area ?></label>
                         </div>
                         <div class="form-group">
                             <label class="control-label">楼盘详细地址：</label>
@@ -41,6 +48,14 @@
                         <div class="form-group">
                             <label class="control-label">楼盘所在商圈：</label>
                             <label class="control-label"><?= $data->community_cbd ?></label>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">交通特征：</label>
+                            <label class="control-label"><?= $data->community_traffic ?></label>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">周边配套：</label>
+                            <label class="control-label"><?= $data->community_facility ?></label>
                         </div>
                         <div class="form-group">
                             <label class="control-label">楼盘性质：</label>

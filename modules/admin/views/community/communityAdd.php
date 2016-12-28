@@ -24,7 +24,15 @@
                             <input type="text" class="form-control" name="community_name" />
                         </div>
                         <div class="form-group">
-                            <label class="control-label">楼盘详细地址</label>
+                            <label class="control-label">所在城市</label>
+                            <input type="text" class="form-control" name="community_city" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">所属区域</label>
+                            <input type="text" class="form-control" name="community_area" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">楼盘详细地址(<span class="mydanger">*</span>)</label>
                             <input type="text" class="form-control" name="community_position" />
                         </div>
                         <div class="form-group">
@@ -38,6 +46,14 @@
                         <div class="form-group">
                             <label class="control-label">楼盘所在商圈</label>
                             <input type="text" class="form-control" name="community_cbd" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">交通特征</label>
+                            <input type="text" class="form-control" name="community_traffic" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">周边配套</label>
+                            <input type="text" class="form-control" name="community_facility" />
                         </div>
                         <div class="form-group">
                             <label class="control-label">楼盘性质</label>
@@ -118,7 +134,7 @@
         map.addOverlay(marker);
     });
 
-    var inputs = ['community_no','community_name','community_opentime','community_staytime','community_units','community_households','community_map'];
+    var inputs = ['community_no','community_name','community_position','community_opentime','community_staytime','community_units','community_households','community_map'];
     $(window).ready(function() {
         $("#addCommunity").click(function(){
             for(var i in inputs) {

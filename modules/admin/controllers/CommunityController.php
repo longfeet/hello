@@ -25,14 +25,14 @@ class CommunityController extends \yii\web\Controller
     /**
      * @var array 显示的数据列
      */
-    public $communityColumns = array("id", "community_no", "community_name", "community_position", "community_category", "community_cbd", "community_note", "edit");
+    public $communityColumns = array("id", "community_no", "community_name","community_city","community_area", "community_position", "community_category", "community_cbd", "community_note", "edit");
     public $communityCheckColumns = array("id", "community_no", "community_name", "community_position", "community_category", "community_cbd", "community_status", "edit");
 
     /**
      * relation 关联的字段做成数组,支持多relation的深层字段属性(最多三层)
      * @var array
      */
-    public $communityColumnsVal = array("id", "community_no", "community_name", "community_position", "community_category", "community_cbd", "community_note", "");
+    public $communityColumnsVal = array("id", "community_no", "community_name","community_city","community_area", "community_position", "community_category", "community_cbd", "community_note", "");
     public $communityCheckShowColumnsVal = array("id", "community_no", "community_name", "community_position", "community_category", "community_cbd", "community_status", "<details,edit,delete>");
     public $communityCheckColumnsVal = array("id", "community_no", "community_name", "community_position", "community_category", "community_cbd", "community_status", "<details>");
 
@@ -327,10 +327,14 @@ class CommunityController extends \yii\web\Controller
         $community = new PCommunity();
         $community->community_no = $post['community_no'];
         $community->community_name = $post['community_name'];
+        $community->community_city = $post['community_city'];
+        $community->community_area = $post['community_area'];
         $community->community_position = $post['community_position'];
         $community->community_category = $post['community_category'];
         $community->community_price = $post['community_price'];
         $community->community_cbd = $post['community_cbd'];
+        $community->community_traffic = $post['community_traffic'];
+        $community->community_facility = $post['community_facility'];
         $community->community_nature = $post['community_nature'];
         $community->community_opentime = $post['community_opentime'];
         $community->community_staytime = $post['community_staytime'];
@@ -384,10 +388,14 @@ class CommunityController extends \yii\web\Controller
         $community = PCommunity::find()->where('id = "' . $post['id'] . '"')->one();
         $community->community_no = $post['community_no'];
         $community->community_name = $post['community_name'];
+        $community->community_city = $post['community_city'];
+        $community->community_area = $post['community_area'];
         $community->community_position = $post['community_position'];
         $community->community_category = $post['community_category'];
         $community->community_price = $post['community_price'];
         $community->community_cbd = $post['community_cbd'];
+        $community->community_traffic = $post['community_traffic'];
+        $community->community_facility = $post['community_facility'];
         $community->community_nature = $post['community_nature'];
         $community->community_opentime = $post['community_opentime'];
         $community->community_staytime = $post['community_staytime'];

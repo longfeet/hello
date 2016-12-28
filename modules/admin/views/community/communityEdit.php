@@ -25,6 +25,14 @@
                             <input type="text" class="form-control" value="<?=$data->community_name?>" name="community_name" />
                         </div>
                         <div class="form-group">
+                            <label class="control-label">所在城市(<span class="mydanger">*</span>)</label>
+                            <input type="text" class="form-control" value="<?=$data->community_city?>" name="community_city" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">所属区域(<span class="mydanger">*</span>)</label>
+                            <input type="text" class="form-control" value="<?=$data->community_area?>" name="community_area" />
+                        </div>
+                        <div class="form-group">
                             <label class="control-label">楼盘详细地址</label>
                             <input type="text" class="form-control" value="<?=$data->community_position?>" name="community_position" />
                         </div>
@@ -39,6 +47,14 @@
                         <div class="form-group">
                             <label class="control-label">楼盘所在商圈</label>
                             <input type="text" class="form-control" value="<?=$data->community_cbd?>" name="community_cbd" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">交通特征</label>
+                            <input type="text" class="form-control" value="<?=$data->community_traffic?>" name="community_traffic" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">周边配套</label>
+                            <input type="text" class="form-control" value="<?=$data->community_facility?>" name="community_facility" />
                         </div>
                         <div class="form-group">
                             <label class="control-label">楼盘性质</label>
@@ -105,6 +121,9 @@
     }
     .form-group label.control-label {
         line-height:34px;
+    }
+    .mydanger {
+        color:red;
     }
 </style>
 <!-- /. PAGE INNER  -->

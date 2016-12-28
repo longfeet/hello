@@ -24,6 +24,8 @@
                                     <th>序号</th>
                                     <th>楼盘编号</th>
                                     <th>楼盘名称</th>
+                                    <th>所在城市</th>
+                                    <th>所属区域</th>
                                     <th>楼盘地址</th>
                                     <th>类型</th>
                                     <th>楼盘商圈</th>
@@ -108,7 +110,7 @@ $(window).ready(function(){
                         });
                         if(search == null) {
                             search =  $('input[type=search]');
-                            search.before("(楼盘名称)&nbsp;");
+                            search.before("(楼盘编号、名称，所在城市，所属区域、详细地址)&nbsp;");
                         }
                     }
                 });

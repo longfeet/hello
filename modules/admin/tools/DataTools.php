@@ -162,6 +162,9 @@ class DataTools
      * @param $checkbox 有值标示 id 旁增加 checkbox 值 等于 checkbox name
      * @param $staff 传入session中的user
      * @param $checkWhere 审核条件
+     *
+     * 为了兼顾能多字段搜索，searchField暂时不起作用，而是直接制定搜索字段。
+     * 搜索字段为：community_no（楼盘编号）、community_name（楼盘名称）、community_city（所在城市）、community_area(所属区域) 、community_position(详细地址)、
      */
     public static function getJsonDataCommunity($request, $order, $columns, $columnVals, $object, $searchField, $checkbox = '', $staff = '', $checkWhere)
     {
@@ -172,27 +175,34 @@ class DataTools
             //权限控制
             if ($staff != '') {
                 if ($staff->staff_level == 1)
-                    $ar = $data->where("company_id =" . $staff->company_id . " and $searchField like \"%" . $seach['value'] . "%\"" . $checkWhere);
-                    //$ar = $data->where("company_id =" . $staff->company_id . " and creator = " . $staff->id . " and $searchField like \"%" . $seach['value'] . "%\"" . $checkWhere);
+                    $ar = $data->where("company_id =" . $staff->company_id . " and (community_no like '%" . $seach['value'] . "%' or community_name like '%"
+                        . $seach['value'] . "%' or community_city like '%" . $seach['value'] . "%' or community_area like '%" . $seach['value'] . "%' or community_position like '%"
+                        . $seach['value'] . "%')" . $checkWhere);
+                //$ar = $data->where("company_id =" . $staff->company_id . " and $searchField like \"%" . $seach['value'] . "%\"" . $checkWhere);
+                //$ar = $data->where("company_id =" . $staff->company_id . " and creator = " . $staff->id . " and $searchField like \"%" . $seach['value'] . "%\"" . $checkWhere);
                 else if ($staff->staff_level == 2)
-                    $ar = $data->where("company_id =" . $staff->company_id . " and $searchField like \"%" . $seach['value'] . "%\"" . $checkWhere);
-                    //$ar = $data->where("company_id =" . $staff->company_id . " and creator in (select id from p_staff where staff_sector ='" . $staff->staff_sector . "')" . " and $searchField like \"%" . $seach['value'] . "%\"" . $checkWhere);
+                    $ar = $data->where("company_id =" . $staff->company_id . " and (community_no like '%" . $seach['value'] . "%' or community_name like '%"
+                        . $seach['value'] . "%' or community_city like '%" . $seach['value'] . "%' or community_area like '%" . $seach['value'] . "%' or community_position like '%"
+                        . $seach['value'] . "%')" . $checkWhere);
+                //$ar = $data->where("company_id =" . $staff->company_id . " and creator in (select id from p_staff where staff_sector ='" . $staff->staff_sector . "')" . " and $searchField like \"%" . $seach['value'] . "%\"" . $checkWhere);
                 else if ($staff->staff_level == 3)
-                    $ar = $data->where("company_id =" . $staff->company_id . " and $searchField like \"%" . $seach['value'] . "%\"" . $checkWhere);
+                    $ar = $data->where("company_id =" . $staff->company_id . " and (community_no like '%" . $seach['value'] . "%' or community_name like '%"
+                        . $seach['value'] . "%' or community_city like '%" . $seach['value'] . "%' or community_area like '%" . $seach['value'] . "%' or community_position like '%"
+                        . $seach['value'] . "%')" . $checkWhere);
                 else if ($staff->staff_level == 4)
-                    $ar = $data->where("$searchField like \"%" . $seach['value'] . "%\"" . $checkWhere);
-            } else {
-                $ar = $data->where("$searchField like \"%" . $seach['value'] . "%\"" . $checkWhere);
+                    $ar = $data->where("(community_no like '%" . $seach['value'] . "%' or community_name like '%"
+                        . $seach['value'] . "%' or community_city like '%" . $seach['value'] . "%' or community_area like '%" . $seach['value'] . "%' or community_position like '%"
+                        . $seach['value'] . "%')" . $checkWhere);
             }
         } else {
             //权限控制
             if ($staff != '') {
                 if ($staff->staff_level == 1)
                     $ar = $data->where("company_id =" . $staff->company_id . $checkWhere);
-                    //$ar = $data->where("company_id =" . $staff->company_id . " and creator = " . $staff->id . $checkWhere);
+                //$ar = $data->where("company_id =" . $staff->company_id . " and creator = " . $staff->id . $checkWhere);
                 else if ($staff->staff_level == 2)
                     $ar = $data->where("company_id =" . $staff->company_id . $checkWhere);
-                    //$ar = $data->where("company_id =" . $staff->company_id . " and creator in (select id from p_staff where staff_sector ='" . $staff->staff_sector . "')" . $checkWhere);
+                //$ar = $data->where("company_id =" . $staff->company_id . " and creator in (select id from p_staff where staff_sector ='" . $staff->staff_sector . "')" . $checkWhere);
                 else if ($staff->staff_level == 3)
                     $ar = $data->where("company_id =" . $staff->company_id . $checkWhere);
             }
@@ -242,7 +252,7 @@ class DataTools
                         }
 
                         $num++;
-                    } else if($v == "community_status"){
+                    } else if ($v == "community_status") {
                         switch ($val->community_status) {
                             case 0:
                                 $array[$v] = "审核通过";
@@ -268,7 +278,7 @@ class DataTools
                             default :
                                 break;
                         }
-                    }else
+                    } else
                         $array[$v] = $val->$columnVals[$k];
                     //$array[$v] = $val->$columnVals[$k];
                 } else {
