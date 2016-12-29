@@ -269,6 +269,27 @@ class AdvController extends \yii\web\Controller
         $command = $connection->createCommand($sql);
         $list = $command->queryAll();
 
+        //测试
+//        SELECT adv.*,com.community_name,cpy.company_name,count(st.id) people_num,st.id stid,st.staff_ids staffids
+//FROM p_adv adv
+//LEFT JOIN p_community com ON adv.adv_community_id = com.id
+//LEFT JOIN p_company cpy ON adv.company_id = cpy.id
+//LEFT JOIN p_adv_staff st ON (  adv.id = st.adv_id  )
+//WHERE  1=1  AND  adv.creator IN ( select id from p_staff where company_id = 18 )
+//AND  adv.adv_status in (0,7)
+//GROUP BY adv.id
+//ORDER BY  adv.id desc
+//LIMIT 0,20
+        $str = "";
+        foreach($list as $key=>$value)
+        {
+            foreach($value as $k=>$v)
+                $str =$str. $k.":".$v.";";
+            $str = $str. "<br/>";
+        }
+        exit(json_encode($str));
+
+
         //将people_num中存放分配的人员名字
         foreach ($list as $key => $value) {
             $staffNames = "";

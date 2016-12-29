@@ -173,7 +173,7 @@ function getList(page){
     console.log(data);
 }
 
-function buildHtml(data){
+function buildHtml(data){alert(data);
     console.log(data);
     var html = '';
     for(var key in data.list_data){
