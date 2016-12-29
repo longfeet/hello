@@ -172,8 +172,7 @@ class SaleController extends \yii\web\Controller
         $staff = $session['loginUser'];
 
         //请求,排序,展示字段,展示字段的字段名(支持relation字段),主表实例,搜索字段
-        DataTools::getJsonSaleSearchData(\Yii::$app->request, "create_time desc", $this->saleColumns, $this->saleColumnsVal,
-            new PSales(), "community_name");
+        DataTools::getJsonSaleSearchData(\Yii::$app->request, "sales_starttime desc", $this->saleColumns, $this->saleColumnsVal,new PSales(), $staff);
     }
 
 }

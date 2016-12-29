@@ -474,30 +474,25 @@ class DataTools
      * @param $columnVals 列值字段名
      * @param $checkbox 有值标示 id 旁增加 checkbox 值 等于 checkbox name
      * @param $staff 传入session中的user
-     * @param $communityList 传入楼宇信息
      */
-    public static function getJsonSaleSearchData($request, $order, $columns, $columnVals, $object, $searchField, $checkbox = '', $staff = '')
+    public static function getJsonSaleSearchData($request, $order, $columns, $columnVals, $object, $staff = '')
     {
         $seach = $request->get('search', "");
         $data = $object::find();
         $ar = $data;
         if (isset($seach['value'])) {
             //权限控制
-            if ($staff != '') {
-                if ($staff->staff_level == 1 || $staff->staff_level == 2 || $staff->staff_level == 3)
-                    $ar = $data->where("company_id =" . $staff->company_id . " and $searchField like \"%" . $seach['value'] . "%\"");
-                else if ($staff->staff_level == 4)
-                    $ar = $data->where(" $searchField like \"%" . $seach['value'] . "%\"");
-            } else {
-                $ar = $data->where("$searchField like \"%" . $seach['value'] . "%\"");
-            }
+            if ($staff->staff_level == 1 || $staff->staff_level == 2 || $staff->staff_level == 3)
+                $ar = $data->where("company_id =" . $staff->company_id . " and (community_name like \"%" . $seach['value'] . "%\" or sales_person like \"%" . $seach['value'] .
+                    "%\" or sales_company in (select id from p_customer where customer_company like \"%" . $seach['value'] . "%\"))");
+                //$ar = $data->where("company_id =" . $staff->company_id . " and $searchField like \"%" . $seach['value'] . "%\"");
+            else if ($staff->staff_level == 4)
+                $ar = $data->where("(community_name like \"%" . $seach['value'] . "%\" or sales_person like \"%" . $seach['value'] .
+                    "%\" or sales_company in (select id from p_customer where customer_company like \"%" . $seach['value'] . "%\"))");
         } else {
             //权限控制
-            if ($staff != '') {
-                if ($staff->staff_level == 1 || $staff->staff_level == 2 || $staff->staff_level == 3)
-                    $ar = $data->where("company_id =" . $staff->company_id);
-            }
-
+            if ($staff->staff_level == 1 || $staff->staff_level == 2 || $staff->staff_level == 3)
+                $ar = $data->where("company_id =" . $staff->company_id);
         }
         $length = $request->get('length') ? $request->get('length') : "10";
         $start = $request->get('start') ? $request->get('start') : "0";
@@ -536,12 +531,7 @@ class DataTools
                 if (isset($columnVals[$k]) && trim($columnVals[$k]) != "" && strpos($columnVals[$k], '<') !== 0) {
                     if ($k == "id")      //序号自增长
                     {
-                        if ($checkbox) {
-                            $array[$v] = "<input type='checkbox' value='" . $val->id . "' name='" . $checkbox . "' />" . $num;
-                        } else {
-                            $array[$v] = $num;
-                        }
-
+                        $array[$v] = $num;
                         $num++;
                     } else if ($v == "sales_company") {
                         $customer = PCustomer::find()->where("id=" . $val->$columnVals[$k])->one();
