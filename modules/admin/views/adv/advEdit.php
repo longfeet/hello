@@ -16,11 +16,11 @@
                     <form role="form" id="editForm" action="/admin/adv/doedit" method="POST" enctype="multipart/form-data">
                         <input name="id" type="hidden" value="<?=$data->id?>" />
                         <div class="form-group">
-                            <label class="control-label">广告位编号</label>
+                            <label class="control-label">广告位编号：</label>
                             <input type="text" class="form-control" value="<?=$data->adv_no?>" name="adv_no" />
                         </div>
                         <div class="form-group">
-                            <label class="control-label">所属楼盘</label>
+                            <label class="control-label">所属楼盘：</label>
                             <select class="form-control" style="width:40%;float:right;margin-right:50%;" name="adv_community_id">
                                 <?php foreach($list as $key=>$value){?>
                                 <option value="<?=$value->id?>" <?php echo $data->adv_community_id == $value->id?"selected=\"selected\"":""?>><?=$value->community_name?></option>
@@ -28,7 +28,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="control-label">广告位名称</label>
+                            <label class="control-label">广告位名称：</label>
                             <input type="text" name="adv_name" class="form-control" value="<?=$data->adv_name?>" />
                         </div>
 <!--                        <div class="form-group">
@@ -40,15 +40,15 @@
                             <input type="text" name="adv_endtime" class="form-control" id="selectDate2" value="<?=substr($data->adv_endtime,0,10)?>" />
                         </div>-->
                         <div class="form-group">
-                            <label class="control-label">广告位画面</label>
+                            <label class="control-label">广告位画面：</label>
                             <input type="file" style="float:right;margin-right:67%;" name="adv_image" />
                         </div>
                         <div class="form-group">
-                            <label class="control-label">原画</label>
-                            <img src="<?=$data->adv_image?>" style="float:right;margin-right:63%;width:400px;padding-bottom: 10px;" />
+                            <label class="control-label" style="vertical-align:middle;">原画：</label>
+                            <label class="control-label"><img id="adv_image" src="<?=$data->adv_image?>" class="smallPic" style="float:right;margin-right:63%;padding-bottom: 10px;" /></label>
                         </div>
                         <div class="form-group">
-                            <label class="control-label">广告位性质</label>
+                            <label class="control-label">广告位性质：</label>
                             <select class="form-control" style="width:40%;float:right;margin-right:50%;" name="adv_property">
                                 <option value="0" <?php echo $data->adv_property == "0"?"selected=\"selected\"":""?>>
                                     电梯广告</option>
@@ -63,11 +63,11 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="control-label">广告位详细地址</label>
+                            <label class="control-label">广告位详细地址：</label>
                             <input type="text" class="form-control" name="adv_position" value="<?=$data->adv_position?>" />
                         </div>
                         <div class="form-group">
-                            <label class="control-label">设备型号</label>
+                            <label class="control-label">设备型号：</label>
                             <select class="form-control" style="width:40%;float:right;margin-right:50%;" name="model_id">
                                 <?php foreach($model as $key=>$value) {?>
                                 <option value="<?=$value->id?>" <?php echo $data->model_id == $value->id?"selected=\"selected\"":""?>>
@@ -76,7 +76,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="control-label">当前状态</label>
+                            <label class="control-label">当前状态：</label>
                             <select class="form-control" style="width:40%;float:right;margin-right:50%;" name="adv_install_status">
                                 <option value="0" <?php echo $data->adv_install_status == "0"?"selected=\"selected\"":""?>>
                                     未安装</option>
@@ -87,7 +87,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="control-label">使用状态</label>
+                            <label class="control-label">使用状态：</label>
                             <select class="form-control" style="width:40%;float:right;margin-right:50%;" name="adv_use_status">
                                 <option value="0" <?php echo $data->adv_use_status == "0"?"selected=\"selected\"":""?>>
                                     新增</option>
@@ -98,7 +98,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="control-label">销售状态</label>
+                            <label class="control-label">销售状态：</label>
                             <select class="form-control" style="width:40%;float:right;margin-right:50%;" name="adv_sales_status">
                                 <option value="0" <?php echo $data->adv_sales_status == "0"?"selected=\"selected\"":""?>>
                                     销售</option>
@@ -109,7 +109,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="control-label">画面状态</label>
+                            <label class="control-label">画面状态：</label>
                             <select class="form-control" style="width:40%;float:right;margin-right:50%;" name="adv_pic_status">
                                 <option value="0" <?php echo $data->adv_pic_status == "0"?"selected=\"selected\"":""?>>
                                     预定</option>
@@ -140,7 +140,6 @@
 <link rel="stylesheet" href="/css/jquery-ui.css">
 <style type="text/css">
     .form-group:after {
-        content:":";
         clear:both;
     }
     .form-group input.form-control {
@@ -149,10 +148,29 @@
     .form-group label.control-label {
         line-height:34px;
     }
+    .smallPic{
+        width:200px;
+        height:100px;
+    }
+
+    .bigPic{
+        width:500px;
+        height:250px;
+    }
 </style>
 <!-- /. PAGE INNER  -->
 <script type="text/javascript">
     $(window).ready(function() {
+        $('#adv_image').click(function(){
+            if($(this).hasClass('smallPic')) {
+                $('#adv_image').removeClass('smallPic');
+                $('#adv_image').addClass('bigPic');
+            } else {
+                $('#adv_image').removeClass('bigPic');
+                $('#adv_image').addClass('smallPic');
+            }
+        });
+
         $("#editAdv").click(function(){
             $("#editForm").submit();
         });

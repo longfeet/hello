@@ -69,6 +69,9 @@
                     "data": aoData, //以json格式传递
                     "success": function (data) {
                         fnCallback(data);
+
+                        search =  $('input[type=search]');
+                        search.before("(楼盘名称、客户公司、销售人员)&nbsp;");
                     }
                 });
             },

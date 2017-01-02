@@ -16,12 +16,12 @@
                     <a href="javascript:;" class="btn btn-info" id="addAdv" style="float:right;margin-top:-0.5rem;margin-right:1rem;">添加广告位</a>
                     <a href="javascript:;" class="btn btn-info" id="addExcel" style="float:right;margin-top:-0.5rem;margin-right:1rem;">EXCEL上传</a>
                 </div>
-                <div class="panel-heading" id="statusFix">
-                    <a href="javascript:;" class="btn btn-info" value="adv_install_status" thisVal="0">安装</a>
-                    <a href="javascript:;" class="btn btn-info" value="adv_install_status" thisVal="1">维修</a>
-                    <a href="javascript:;" class="btn btn-info" value="adv_pic_status" thisVal="1">上刊</a>
-                    <a href="javascript:;" class="btn btn-info" value="adv_pic_status" thisVal="3">下刊</a>
-                </div>
+<!--                <div class="panel-heading" id="statusFix">-->
+<!--                    <a href="javascript:;" class="btn btn-info" value="adv_install_status" thisVal="0">安装</a>-->
+<!--                    <a href="javascript:;" class="btn btn-info" value="adv_install_status" thisVal="1">维修</a>-->
+<!--                    <a href="javascript:;" class="btn btn-info" value="adv_pic_status" thisVal="1">上刊</a>-->
+<!--                    <a href="javascript:;" class="btn btn-info" value="adv_pic_status" thisVal="3">下刊</a>-->
+<!--                </div>-->
                 <div class="panel-heading">
                     <form class="form-inline" role="form">
                         <div class="form-group">

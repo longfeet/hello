@@ -13,6 +13,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     安装列表
+                    <a href="javascript:;" class="btn btn-info" id="exportExcel" style="float:right;margin-top:-0.5rem;margin-right:1rem;">广告位导出</a>
                 </div>
                 <div class="panel-heading">
                     <form class="form-inline" role="form">
@@ -52,16 +53,6 @@
                             </tbody>
                         </table>
                         <div class="dataTables_paginate paging_simple_numbers" id="fenyeHtml">
-                            <!--                            <ul class="pagination">
-                                                            <li class="paginate_button previous disabled">
-                                                                <a href="#">前一页</a></li>
-                                                            <li class="paginate_button active" ><a href="#">1</a></li>
-                                                            <li class="paginate_button "><a href="#">2</a></li>
-                                                            <li class="paginate_button "><a href="#">3</a></li>
-                                                            <li class="paginate_button "><a href="#">4</a></li>
-                                                            <li class="paginate_button next">
-                                                                <a href="#">后一页</a></li>
-                                                        </ul>-->
                         </div>
                     </div>
                 </div>
@@ -206,6 +197,10 @@
         status_search.thisVal = 0;
         getList();
         $("#fix_status").show();
+
+        $("#exportExcel").click(function(){
+            window.location.href = "/admin/adv/exportexcel?value=adv_install_status&thisVal=0";
+        });
 
         $("#fenyeHtml").on('click', 'a', function (e) {
             var a = e || window.event;

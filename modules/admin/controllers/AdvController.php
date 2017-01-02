@@ -612,8 +612,10 @@ class AdvController extends \yii\web\Controller
         $adv_no = $post['adv_no'];
         $postion = $post['postion'];
         $com_no = $post['com_no'];
-        $value = $post['value'];
-        $thisVal = $post['thisVal'];
+
+        $get = \Yii::$app->request->get();
+        $value = $get['value'];
+        $thisVal = $get['thisVal'];
         $where = array(
             ' 1=1 '
         );
@@ -644,7 +646,7 @@ class AdvController extends \yii\web\Controller
             }
             $st_where[] = " st.point_status = " . $thisVal;
         }
-        $sql = "SELECT adv.*,com.community_name,cpy.company_name,count(st.id) people_num,st.id stid FROM p_adv adv "
+        $sql = "SELECT adv.*,com.community_name,cpy.company_name,count(st.id) people_num,st.id stid,st.staff_ids staffids FROM p_adv adv "
             . " LEFT JOIN p_community com ON adv.adv_community_id = com.id "
             . " LEFT JOIN p_company cpy ON adv.company_id = cpy.id "
             . " LEFT JOIN p_adv_staff st ON ( " . implode(" AND ", $st_where) . " ) "
@@ -652,19 +654,28 @@ class AdvController extends \yii\web\Controller
             . " GROUP BY adv.id "
             . " ORDER BY  adv.id desc";
         //exit(json_encode($sql));
-        //输出的sql为；
-//        SELECT adv.*,com.community_name,cpy.company_name,count(st.id) people_num,st.id stid
-//        FROM p_adv adv LEFT JOIN p_community com ON adv.adv_community_id = com.id
-//        LEFT JOIN p_company cpy ON adv.company_id = cpy.id
-//        LEFT JOIN p_adv_staff st ON ( adv.id = st.adv_id )
-//        WHERE 1=1 AND adv.creator IN ( select id from p_staff where company_id = 1 )
-//        GROUP BY adv.id ORDER BY adv.id desc
 
         $connection = \Yii::$app->db;
         $command = $connection->createCommand($sql);
         $list = $command->queryAll();
 
         foreach ($list as $key => $value) {
+            //将people_num中存放分配的人员名字
+            $staffNames = "";
+            //安装状态为：待安装、维修。显示状态为：待上刊，待下刊；的显示安装人员
+            if ($value[adv_install_status] == 0 || $value[adv_install_status] == 1 || $value[adv_pic_status] == 1 || $value[adv_pic_status] == 3) {
+                if ($value["people_num"] > 0) {
+                    $staff_ids = explode(",", $list[$key]["staffids"]);
+                    foreach ($staff_ids as $staff_id) {
+                        $staff = PStaff::find()->where("id=" . $staff_id)->one();
+                        $staffNames = $staffNames . $staff->staff_name . ",";
+                    }
+                }
+                if ($staffNames != "")
+                    $staffNames = rtrim($staffNames, ',');
+            }
+            $list[$key]["people_num"] = $staffNames;
+
             foreach ($value as $k => $v) {
                 //安装状态
                 if ($k == "adv_install_status") {
@@ -732,9 +743,6 @@ class AdvController extends \yii\web\Controller
 //        }
 
         $filename = iconv("utf-8", "gb2312", "广告位信息.xls");
-        //$head = array("community_name", "adv_no", "adv_name", "adv_position", "adv_install_status", "adv_sales_status", "adv_pic_status");
-        //$alias = array("community_name" => "所属楼盘", "adv_no" => "广告位编号", "adv_name" => "广告位名称", "adv_position" => "广告位位置", "adv_install_status" => "安装状态", "adv_sales_status" => "销售状态", "adv_pic_status" => "画面状态");
-
         ExcelTools::advExport($filename, $list);
     }
 

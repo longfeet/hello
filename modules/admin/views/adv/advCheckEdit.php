@@ -199,7 +199,7 @@ $(window).ready(function(){
                 "success": function(data) {
                     console.log(data);
                     if(data > 0){
-                        alert(data+"条记录状态修改成功！");
+                        //alert(data+"条记录状态修改成功！");
                         //刷新页面  目前无法在列表数据中看出状态 预留
                         window.location.reload();
                     }else{

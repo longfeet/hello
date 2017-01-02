@@ -11,6 +11,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     上刊列表
+                    <a href="javascript:;" class="btn btn-info" id="exportExcel" style="float:right;margin-top:-0.5rem;margin-right:1rem;">广告位导出</a>
                 </div>
                 <div class="panel-heading">
                     <form class="form-inline" role="form">
@@ -194,7 +195,11 @@ $(window).ready(function(){
     status_search.thisVal = 1;    //上刊
     getList();
     $("#fix_status").show();
-    
+
+    $("#exportExcel").click(function(){
+        window.location.href = "/admin/adv/exportexcel?value=adv_pic_status&thisVal=1";
+    });
+
     $("#fenyeHtml").on('click','a',function(e){
         var a = e||window.event;
         a.preventDefault();

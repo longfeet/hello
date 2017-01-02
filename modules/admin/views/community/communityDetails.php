@@ -93,12 +93,11 @@
                 </div>
                 <div class="form-group">
                     <label class="control-label">楼盘门头图片：</label>
-                    <img src="<?= $data->community_image1 ?>" style="width:500px; width:500px;"/>
+                    <img id="community_image" src="<?= $data->community_image1 ?>" class="smallPic"/>
                 </div>
                 <div class="form-group">
                     <label class="control-label">历史图片：</label>
-                    <label class="control-label"><a href="javascript:;" community_id="<?= $data->id ?>"
-                                                    class="showDetails">查看</a></label>
+                    <label class="control-label"><a href="javascript:;" community_id="<?= $data->id ?>" class="showDetails">查看</a></label>
                     <div id="details"></div>
                 </div>
                 </form>
@@ -129,6 +128,16 @@
     .form-group label.control-label {
         line-height: 34px;
     }
+
+    .smallPic{
+        width:200px;
+        height:100px;
+    }
+
+    .bigPic{
+        width:500px;
+        height:250px;
+    }
 </style>
 <!-- /. PAGE INNER  -->
 <script type="text/javascript">
@@ -147,6 +156,17 @@
     });
     var inputs = ['community_no', 'community_name', 'community_opentime', 'community_staytime', 'community_units', 'community_households', 'community_map'];
     $(window).ready(function () {
+        $('#community_image').click(function(){
+            if($(this).hasClass('smallPic')) {
+                $('#community_image').removeClass('smallPic');
+                $('#community_image').addClass('bigPic');
+            } else {
+                $('#community_image').removeClass('bigPic');
+                $('#community_image').addClass('smallPic');
+            }
+        });
+
+
         $("#editCommunity").click(function () {
             for (var i in inputs) {
                 if ($("input[name=" + inputs[i] + "]").val() == "") {
@@ -185,8 +205,8 @@
                 "success": function (data) {
                     var imgString = "";
                     for (var i = 0; i < data.length; i++) {
-                        imgString += "<img src='" + data[i].image_path + "' style='width:500px; width:500px;padding-bottom: 5px;'/>" +
-                            "&nbsp;<a href='/admin/community/downloadimage?file="+data[i].image_name+"'>图片下载...</a><br/>";
+                        imgString += "<a href='/admin/community/downloadimage?file="+data[i].image_name+"'><img src='" + data[i].image_path + "' class='smallPic' style='padding-bottom: 5px;'/>" +
+                            "</a>&nbsp;";
                     }
                     $('#details').html(imgString);
                 }

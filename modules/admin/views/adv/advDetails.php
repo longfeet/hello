@@ -39,7 +39,7 @@
                         -->
                         <div class="form-group">
                             <label class="control-label">广告位画面：</label>
-                            <label class="control-label"><img src="<?=$data->adv_image?>" style="width:500px; width:500px;"/></label>
+                            <label class="control-label"><img id="adv_image" src="<?=$data->adv_image?>" class="smallPic"/></label>
 
                         </div>
                         <div class="form-group">
@@ -88,8 +88,7 @@
                         </div>
                         <div class="form-group">
                             <label class="control-label">历史图片：</label>
-                            <label class="control-label"><a href="javascript:;" adv_id="<?= $data->id ?>"
-                                                            class="showDetails">查看</a></label>
+                            <label class="control-label"><a href="javascript:;" adv_id="<?= $data->id ?>" class="showDetails">查看</a></label>
                             <div id="details"></div>
                         </div>
                     </form>
@@ -113,10 +112,30 @@
     .form-group label.control-label {
         line-height:34px;
     }
+
+    .smallPic{
+        width:200px;
+        height:100px;
+    }
+
+    .bigPic{
+        width:500px;
+        height:250px;
+    }
 </style>
 
 <script type="text/javascript">
     $(window).ready(function () {
+        $('#adv_image').click(function(){
+            if($(this).hasClass('smallPic')) {
+                $('#adv_image').removeClass('smallPic');
+                $('#adv_image').addClass('bigPic');
+            } else {
+                $('#adv_image').removeClass('bigPic');
+                $('#adv_image').addClass('smallPic');
+            }
+        });
+
         //查看历史图片
         $('.showDetails').bind("click", function () {
             var adv_id = $(this).attr('adv_id');
@@ -128,8 +147,8 @@
                 "success": function (data) {
                     var imgString = "";
                     for (var i = 0; i < data.length; i++) {
-                        imgString += "<img src='" + data[i].image_path + "' style='width:500px; width:500px;padding-bottom: 5px;'/>" +
-                            "&nbsp;<a href='/admin/adv/downloadimage?file="+data[i].image_name+"'>图片下载...</a><br/>";
+                        imgString += "<a href='/admin/adv/downloadimage?file="+data[i].image_name+"'><img src='" + data[i].image_path + "' class='smallPic' style='padding-bottom: 5px;'/>" +
+                            "</a>&nbsp;";
                     }
                     $('#details').html(imgString);
                 }
