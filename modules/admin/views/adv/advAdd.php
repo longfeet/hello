@@ -22,7 +22,7 @@
                             <label class="control-label">所属楼盘</label>
                             <select class="form-control" name="adv_community_id" style="width:40%;float:right;margin-right:50%;">
                                 <?php foreach($list as $key=>$value){?>
-                                    <option value="<?=$value->id?>"><?=$value->community_name?></option>
+                                    <option value="<?=$value->id?>" <?php echo $community_id == $value->id?"selected=\"selected\"":""?>><?=$value->community_name?></option>
                                 <?php }?>
                             </select>
                         </div>

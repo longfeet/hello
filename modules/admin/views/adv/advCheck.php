@@ -1,7 +1,7 @@
 <div id="page-inner">
     <div class="row">
         <div class="col-md-12">
-            <h1 class="page-header">广告管理/ <small>审核管理</small></h1>
+            <h1 class="page-header">广告管理/ <small>广告位审核信息</small></h1>
         </div>
     </div>
     <!-- /. ROW  -->

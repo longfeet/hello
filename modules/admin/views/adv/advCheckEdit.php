@@ -11,6 +11,9 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     待审核列表
+                    <a href="/admin/adv/checkdelete" class="btn btn-info" style="float:right;margin-top:-0.5rem;margin-right:1rem;">删除审核</a>
+                    <a href="/admin/adv/checkedit" class="btn btn-info" style="float:right;margin-top:-0.5rem;margin-right:1rem;">修改审核</a>
+                    <a href="/admin/adv/checkadd" class="btn btn-info" style="float:right;margin-top:-0.5rem;margin-right:1rem;">新增审核</a>
                 </div>
                 <div class="panel-heading">
                     <form class="form-inline" role="form">

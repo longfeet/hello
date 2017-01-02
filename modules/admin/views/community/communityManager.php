@@ -108,6 +108,10 @@ $(window).ready(function(){
                                 });
                             }
                         });
+                        $('.advBind').click(function(){
+                            window.location.href = "/admin/adv/add?id=" + $(this).attr("role_id");
+                        });
+
                         if(search == null) {
                             search =  $('input[type=search]');
                             search.before("(楼盘编号、名称，所在城市，所属区域、详细地址)&nbsp;");

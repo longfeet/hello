@@ -1,7 +1,7 @@
 <div id="page-inner">
     <div class="row">
         <div class="col-md-12">
-            <h1 class="page-header">楼盘管理/ <small>待修改楼盘信息审核</small></h1>
+            <h1 class="page-header">楼盘管理/ <small>修改待审核</small></h1>
         </div>
     </div>
     <!-- /. ROW  -->
@@ -11,6 +11,9 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     待审核列表
+                    <a href="/admin/community/checkdelete" class="btn btn-info" style="float:right;margin-top:-0.5rem;margin-right:1rem;">删除审核</a>
+                    <a href="/admin/community/checkedit" class="btn btn-info" style="float:right;margin-top:-0.5rem;margin-right:1rem;">修改审核</a>
+                    <a href="/admin/community/checkadd" class="btn btn-info" style="float:right;margin-top:-0.5rem;margin-right:1rem;">新增审核</a>
                 </div>
                 <div class="panel-body">
                     <div class="table-responsive">

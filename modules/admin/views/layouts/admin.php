@@ -296,9 +296,11 @@
                         </a>
                             <ul class="nav nav-second-level">
                             <?php foreach($menu['childMenus'] as $childMenu) {?>
-                                <li>
-                                    <a href="<?=$childMenu['menu_url']?>"><?=$childMenu['menu_name']?></a>
-                                </li>
+                                <?php if($childMenu['menu_url'] !="/admin/community/checkedit" && $childMenu['menu_url'] !="/admin/community/checkdelete" && $childMenu['menu_url'] !="/admin/adv/checkedit" &&$childMenu['menu_url'] !="/admin/adv/checkdelete") { ?>
+                                    <li>
+                                        <a href="<?=$childMenu['menu_url']?>"><?=$childMenu['menu_name']?></a>
+                                    </li>
+                                <?php }?>
                             <?php }?>
                             </ul>
                         <?php } else {?>

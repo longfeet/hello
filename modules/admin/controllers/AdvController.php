@@ -280,14 +280,14 @@ class AdvController extends \yii\web\Controller
 //GROUP BY adv.id
 //ORDER BY  adv.id desc
 //LIMIT 0,20
-        $str = "";
-        foreach($list as $key=>$value)
-        {
-            foreach($value as $k=>$v)
-                $str =$str. $k.":".$v.";";
-            $str = $str. "<br/>";
-        }
-        exit(json_encode($str));
+//        $str = "";
+//        foreach($list as $key=>$value)
+//        {
+//            foreach($value as $k=>$v)
+//                $str =$str. $k.":".$v.";";
+//            $str = $str. "<br/>";
+//        }
+//        exit(json_encode($str));
 
 
         //将people_num中存放分配的人员名字
@@ -360,10 +360,12 @@ class AdvController extends \yii\web\Controller
      */
     public function actionAdd()
     {
+        $community_id = \Yii::$app->request->get('id', '0');   //选中楼盘id
+
         $company_id = \Yii::$app->session['loginUser']->company_id;
         $models = PModel::find()->where('company_id = ' . $company_id)->all();
         $community = PCommunity::find()->where("company_id=" . $company_id . " and community_status in (0,7)")->all();
-        return $this->render('advAdd', array('list' => $community, 'model' => $models));
+        return $this->render('advAdd', array('list' => $community, 'model' => $models, 'community_id' => $community_id));
     }
 
     /**
