@@ -93,11 +93,11 @@
                         </div>
                         <div class="form-group">
                             <label class="control-label">原图</label>
-                            <img src="<?=$data->community_image1?>" style="float:right;margin-right:63%;width:400px;" />
+                            <label class="control-label"><?php if(isset($data->community_image1)){ ?><img id="community_image" src="<?=$data->community_image1?>" class="smallPic"/><?php } ?></label>
                         </div>
                         <div class="form-group1">
                             <label class="control-label"></label>
-                            <a href="javascript:;" class="btn btn-info" id="editCommunity" style="float:right;width:5rem;text-align:center;margin-right:50%;margin-top:50px;">提&nbsp;交</a>
+                            <label class="control-label"><a href="javascript:;" class="btn btn-info" id="editCommunity" style="float:right;width:5rem;text-align:center;margin-right:50%;margin-top:50px;">提&nbsp;交</a></label>
                         </div>
                     </form>
                 </div>
@@ -125,6 +125,15 @@
     .mydanger {
         color:red;
     }
+    .smallPic{
+        width:200px;
+        height:100px;
+    }
+
+    .bigPic{
+        width:500px;
+        height:250px;
+    }
 </style>
 <!-- /. PAGE INNER  -->
 <script type="text/javascript">
@@ -142,6 +151,16 @@
     });
     var inputs = ['community_no','community_name','community_opentime','community_staytime','community_units','community_households','community_map'];
     $(window).ready(function() {
+        $('#community_image').click(function(){
+            if($(this).hasClass('smallPic')) {
+                $('#community_image').removeClass('smallPic');
+                $('#community_image').addClass('bigPic');
+            } else {
+                $('#community_image').removeClass('bigPic');
+                $('#community_image').addClass('smallPic');
+            }
+        });
+
         $("#editCommunity").click(function(){
             for(var i in inputs) {
                 if ($("input[name="+inputs[i]+"]").val() == "") {

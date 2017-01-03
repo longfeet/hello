@@ -93,7 +93,7 @@
                 </div>
                 <div class="form-group">
                     <label class="control-label">楼盘门头图片：</label>
-                    <img id="community_image" src="<?= $data->community_image1 ?>" class="smallPic"/>
+                    <?php if(isset($data->community_image1)){ ?><img id="community_image" src="<?= $data->community_image1 ?>" class="smallPic"/><?php } ?>
                 </div>
                 <div class="form-group">
                     <label class="control-label">历史图片：</label>

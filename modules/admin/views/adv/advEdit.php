@@ -125,7 +125,7 @@
                         </div>
                         <div class="form-group1">
                             <label class="control-label"></label>
-                            <a href="javascript:;" class="btn btn-info" id="editAdv" style="float:right;width:5rem;text-align:center;margin-right:50%;">提&nbsp;交</a>
+                            <label class="control-label"><a href="javascript:;" class="btn btn-info" id="editAdv" style="float:right;width:5rem;text-align:center;margin-right:50%;">提&nbsp;交</a></label>
                         </div>
                     </form>
                 </div>
