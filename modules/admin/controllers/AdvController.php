@@ -239,10 +239,10 @@ class AdvController extends \yii\web\Controller
             $where[] = " com.community_no = $com_no ";
         }
 
-        if ($check->control_adv == 0)   //添加楼盘信息是否需要审核
-            $where[] = " adv.adv_status in (0,7)";   //审核字段，0为无须审核，7为审核通过。
-        else
-            $where[] = " adv.adv_status in (" . $adv_status . ")";  //1为待审核（增）
+//        if ($check->control_adv == 0)   //添加楼盘信息是否需要审核
+//            $where[] = " adv.adv_status in (0,7)";   //审核字段，0为无须审核，7为审核通过。
+//        else
+            $where[] = " adv.adv_status in (" . $adv_status . ")";  //审核条件
 
         $st_where = array(
             ' adv.id = st.adv_id '
@@ -289,7 +289,7 @@ class AdvController extends \yii\web\Controller
             $list[$key]["people_num"] = $staffNames;
 
             //加工上刊率
-            if(!isset($list[$key]["adv_rate"]))
+            if (!isset($list[$key]["adv_rate"]))
                 $list[$key]["adv_rate"] = 0;
 
             //计算上刊率（销售时间/已安装完成时间到现在时间）
@@ -706,7 +706,7 @@ class AdvController extends \yii\web\Controller
             $list[$key]["people_num"] = $staffNames;
 
             //加工上刊率
-            if(!isset($list[$key]["adv_rate"]))
+            if (!isset($list[$key]["adv_rate"]))
                 $list[$key]["adv_rate"] = 0;
 
             foreach ($value as $k => $v) {

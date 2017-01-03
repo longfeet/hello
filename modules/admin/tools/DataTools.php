@@ -388,7 +388,9 @@ class DataTools
 
                         $num++;
                     } else if ($v == "adv_rate") {
-                        if (isset($val->$columnVals[$k]))  //上刊率为空的，设置成0
+                        if ($val->$columnVals[$k] != "")  //上刊率为空的，设置成0
+                            $array[$v] = $val->$columnVals[$k] ;
+                        else
                             $array[$v] = 0;
                     } else if ($v == "adv_community_id")  //楼盘名称
                     {

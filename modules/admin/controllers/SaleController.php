@@ -56,7 +56,7 @@ class SaleController extends \yii\web\Controller
         $staff = $session['loginUser'];
 
         //请求,排序,展示字段,展示字段的字段名(支持relation字段),主表实例,搜索字段
-        DataTools::getJsonSaleData(\Yii::$app->request, "adv_use_status asc", $this->advColumns, $this->advColumnsVal,
+        DataTools::getJsonSaleData(\Yii::$app->request, "adv_use_status,adv_rate asc", $this->advColumns, $this->advColumnsVal,
             new PAdv(), "adv_name", 'adv_id', $staff);
     }
 
