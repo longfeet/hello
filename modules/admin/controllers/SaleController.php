@@ -27,12 +27,12 @@ class SaleController extends \yii\web\Controller
     /**
      * @var array 显示的数据列
      */
-    public $advColumns = array("id", "adv_community_id", "adv_no", "adv_name", "adv_position", "adv_install_status", "adv_use_status");
+    public $advColumns = array("id", "adv_community_id", "adv_no", "adv_name", "adv_position", "adv_install_status", "adv_use_status","adv_rate");
     /**
      * relation 关联的字段做成数组,支持多relation的深层字段属性(最多三层)
      * @var array
      */
-    public $advColumnsVal = array("id", "adv_community_id", "adv_no", "adv_name", "adv_position", "adv_install_status", "adv_use_status");
+    public $advColumnsVal = array("id", "adv_community_id", "adv_no", "adv_name", "adv_position", "adv_install_status", "adv_use_status","adv_rate");
 
     public $saleColumns = array("id", "community_name", "adv_no", "adv_name", "sales_company", "sales_customer", "sales_starttime", "sales_endtime", "sales_person", "sales_status");
     public $saleColumnsVal = array("id", "community_name", "adv_no", "adv_name", "sales_company", "sales_customer", "sales_starttime", "sales_endtime", "sales_person", "sales_status");
@@ -115,11 +115,41 @@ class SaleController extends \yii\web\Controller
                     $sales->update_time = $date;
                     $sales->save();
 
+                    //计算上刊率（销售时间/已安装完成时间到现在时间）
+                    $time_now = strtotime($date);  //当前时间
+                    $time_start = strtotime($advInfo["adv_starttime"]);   //开始时间
+                    if ($time_now > $time_start)
+                        $time_denominator = round(($time_now - $time_start) / 3600 / 24); //上刊率分母
+                    else
+                        $time_denominator = 1;
+                    if ($time_denominator == 0)
+                        $time_denominator = 1;
+                    //计算销售时间
+                    $sale = PSales::find()->select("sales_starttime,sales_endtime")->where("adv_id = " . $value)->asArray()->all();
+                    $time_numerator = 0;  //上刊率分子
+                    if (count($sale) > 0) {
+                        foreach ($sale as $k => $v) {
+                            $time_sale_starttime = strtotime($v["sales_starttime"]);
+                            $time_sale_endtime = strtotime($v["sales_endtime"]);
+                            if ($time_sale_starttime < $time_sale_endtime && $time_sale_endtime < $time_now)
+                                $time_numerator = $time_numerator + round(($time_sale_endtime - $time_sale_starttime) / 3600 / 24);
+                            else if ($time_sale_starttime < $time_now && $time_now < $time_sale_endtime)
+                                $time_numerator = $time_numerator + round(($time_now - $time_sale_starttime) / 3600 / 24);
+                        }
+                    }
+                    if ($time_denominator == 1)
+                        $time_rate = 0;
+                    else
+                        $time_rate = (round($time_numerator / $time_denominator, 4) * 100);   //上刊率
+                    if ($time_rate != 0)
+                        $time_rate = $time_rate . "%";
+
                     //更新广告位状态
                     $adv = PAdv::find()->where("id=" . $value)->one();
                     if ($adv != null) {
                         $adv->adv_use_status = 2;
                         $adv->adv_sales_status = $sales_status;
+                        $adv->adv_rate = $time_rate;
                         $adv->update_time = $date;
                         $adv->save();
                     }

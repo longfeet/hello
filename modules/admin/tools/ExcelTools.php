@@ -382,7 +382,7 @@ class ExcelTools
             $objPHPExcel->getActiveSheet(0)->setCellValue('F' . $i, $value['adv_install_status']);
             $objPHPExcel->getActiveSheet(0)->setCellValue('G' . $i, $value['adv_sales_status']);
             $objPHPExcel->getActiveSheet(0)->setCellValue('H' . $i, $value['adv_pic_status']);
-            $objPHPExcel->getActiveSheet(0)->setCellValue('I' . $i, $value['time_rate']);
+            $objPHPExcel->getActiveSheet(0)->setCellValue('I' . $i, $value['adv_rate']);
             $objPHPExcel->getActiveSheet(0)->setCellValue('J' . $i, $value['people_num']);
             $num++;
             $i++;

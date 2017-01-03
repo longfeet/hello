@@ -22,6 +22,7 @@
                                 <th>广告位位置</th>
                                 <th>当前状态</th>
                                 <th>使用状态</th>
+                                <th>上刊率</th>
                             </tr>
                             </thead>
                             <tbody>

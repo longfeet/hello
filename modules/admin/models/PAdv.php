@@ -24,6 +24,7 @@ use Yii;
  * @property integer $adv_pic_status
  * @property string $adv_note
  * @property integer $adv_status
+ * @property integer $adv_rate
  * @property string $company_id
  * @property integer $is_delete
  * @property string $creator

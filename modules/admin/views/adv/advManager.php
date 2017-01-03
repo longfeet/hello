@@ -183,7 +183,7 @@ function buildHtml(data){
         var control_html = "";
         if(data.range == "mine")
             control_html= '<div class="advEdit"><a href="/admin/adv/details?id='+item.id+'">详情</a> | <a href="/admin/adv/edit?id='+item.id+'">编辑</a> | <a href="javascript:;" adv_id="'+item.id+'" class="advDelete">删除</a></div>';
-        html += '<tr><td><input type="checkbox" value="'+item.id+'" name="adv_id" />'+(parseInt(key)+1)+'</td><td>'+item.adv_no+'</td><td>'+item.adv_name+'</td><td>'+item.community_name+'</td><td>'+item.people_num+'</td><td>'+install_status[item.adv_install_status]+'</td><td>'+pic_status[item.adv_pic_status]+'</td><td>'+item.time_rate+'</td><td>'+control_html+'</td></tr>';
+        html += '<tr><td><input type="checkbox" value="'+item.id+'" name="adv_id" />'+(parseInt(key)+1)+'</td><td>'+item.adv_no+'</td><td>'+item.adv_name+'</td><td>'+item.community_name+'</td><td>'+item.people_num+'</td><td>'+install_status[item.adv_install_status]+'</td><td>'+pic_status[item.adv_pic_status]+'</td><td>'+item.adv_rate+'</td><td>'+control_html+'</td></tr>';
     }
     document.getElementById("table_content").innerHTML = html;
     buildPage(data.page_data);
