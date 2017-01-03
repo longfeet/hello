@@ -13,8 +13,8 @@
                     广告位列表
                     <!--a href="javascript:;" class="btn btn-info" id="showMap" style="float:right;margin-top:-0.5rem;">楼盘地图</a-->
                     <a href="javascript:;" class="btn btn-info" id="exportExcel" style="float:right;margin-top:-0.5rem;margin-right:1rem;">广告位导出</a>
-                    <a href="javascript:;" class="btn btn-info" id="addAdv" style="float:right;margin-top:-0.5rem;margin-right:1rem;">添加广告位</a>
                     <a href="javascript:;" class="btn btn-info" id="addExcel" style="float:right;margin-top:-0.5rem;margin-right:1rem;">EXCEL上传</a>
+                    <a href="javascript:;" class="btn btn-info" id="addAdv" style="float:right;margin-top:-0.5rem;margin-right:1rem;">添加广告位</a>
                 </div>
 <!--                <div class="panel-heading" id="statusFix">-->
 <!--                    <a href="javascript:;" class="btn btn-info" value="adv_install_status" thisVal="0">安装</a>-->
@@ -53,11 +53,12 @@
                             <tr>
                                 <th width="5%"><input type="checkbox" id="checkAll"/>序号</th>
                                 <th width="10%">广告位编号</th>
-                                <th width="15%">广告名称</th>
+                                <th width="10%">广告名称</th>
                                 <th width="15%">楼盘名称</th>
-                                <th width="20%">人员分配</th>
+                                <th width="15%">人员分配</th>
                                 <th width="10%">安装状态</th>
                                 <th width="10%">显示状态</th>
+                                <th width="10%">上刊率</th>
                                 <th width="25%">编辑</th>
                             </tr>
                             </thead>
@@ -182,7 +183,7 @@ function buildHtml(data){
         var control_html = "";
         if(data.range == "mine")
             control_html= '<div class="advEdit"><a href="/admin/adv/details?id='+item.id+'">详情</a> | <a href="/admin/adv/edit?id='+item.id+'">编辑</a> | <a href="javascript:;" adv_id="'+item.id+'" class="advDelete">删除</a></div>';
-        html += '<tr><td><input type="checkbox" value="'+item.id+'" name="adv_id" />'+(parseInt(key)+1)+'</td><td>'+item.adv_no+'</td><td>'+item.adv_name+'</td><td>'+item.community_name+'</td><td>'+item.people_num+'</td><td>'+install_status[item.adv_install_status]+'</td><td>'+pic_status[item.adv_pic_status]+'</td><td>'+control_html+'</td></tr>';
+        html += '<tr><td><input type="checkbox" value="'+item.id+'" name="adv_id" />'+(parseInt(key)+1)+'</td><td>'+item.adv_no+'</td><td>'+item.adv_name+'</td><td>'+item.community_name+'</td><td>'+item.people_num+'</td><td>'+install_status[item.adv_install_status]+'</td><td>'+pic_status[item.adv_pic_status]+'</td><td>'+item.time_rate+'</td><td>'+control_html+'</td></tr>';
     }
     document.getElementById("table_content").innerHTML = html;
     buildPage(data.page_data);

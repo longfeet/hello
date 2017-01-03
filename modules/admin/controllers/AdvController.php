@@ -8,6 +8,7 @@ use app\modules\admin\models\DataTools;
 use app\modules\admin\models\PCommunity;
 use app\modules\admin\models\PModel;
 use app\modules\admin\models\PImage;
+use app\modules\admin\models\PSales;
 use app\modules\admin\models\PSector;
 
 use app\modules\admin\models\ExcelTools;
@@ -185,6 +186,7 @@ class AdvController extends \yii\web\Controller
     public function actionAjaxmamger()
     {
         $check = \Yii::$app->session['check'];   //待审核信息
+        $now = date("Y-m-d H:i:s");
         $post = \Yii::$app->request->post();
         $adv_status = \Yii::$app->request->post('adv_status', '0,7');  //审核状态
         $page = $post['page'] ? $post['page'] : 1;
@@ -269,31 +271,9 @@ class AdvController extends \yii\web\Controller
         $command = $connection->createCommand($sql);
         $list = $command->queryAll();
 
-        //测试
-//        SELECT adv.*,com.community_name,cpy.company_name,count(st.id) people_num,st.id stid,st.staff_ids staffids
-//FROM p_adv adv
-//LEFT JOIN p_community com ON adv.adv_community_id = com.id
-//LEFT JOIN p_company cpy ON adv.company_id = cpy.id
-//LEFT JOIN p_adv_staff st ON (  adv.id = st.adv_id  )
-//WHERE  1=1  AND  adv.creator IN ( select id from p_staff where company_id = 18 )
-//AND  adv.adv_status in (0,7)
-//GROUP BY adv.id
-//ORDER BY  adv.id desc
-//LIMIT 0,20
-//        $str = "";
-//        foreach($list as $key=>$value)
-//        {
-//            foreach($value as $k=>$v)
-//                $str =$str. $k.":".$v.";";
-//            $str = $str. "<br/>";
-//        }
-//        exit(json_encode($str));
-
-
         //将people_num中存放分配的人员名字
         foreach ($list as $key => $value) {
             $staffNames = "";
-
             //安装状态为：待安装、维修。显示状态为：待上刊，待下刊；的显示安装人员
             if ($value[adv_install_status] == 0 || $value[adv_install_status] == 1 || $value[adv_pic_status] == 1 || $value[adv_pic_status] == 3) {
                 if ($value["people_num"] > 0) {
@@ -307,7 +287,47 @@ class AdvController extends \yii\web\Controller
                     $staffNames = rtrim($staffNames, ',');
             }
             $list[$key]["people_num"] = $staffNames;
+
+            //计算上刊率（销售时间/已安装完成时间到现在时间）
+            $time_now = strtotime($now);  //当前时间
+            $time_start = strtotime($list[$key]["adv_starttime"]);   //当前时间
+            if ($time_now > $time_start)
+                $time_denominator = round(($time_now - $time_start) / 3600 / 24); //上刊率分母
+            else
+                $time_denominator = 1;
+            if ($time_denominator == 0)
+                $time_denominator = 1;
+            //计算销售时间
+            $sale = PSales::find()->select("sales_starttime,sales_endtime")->where("adv_id = " . $list[$key]["id"])->asArray()->all();
+            $time_numerator = 0;  //上刊率分子
+            if (count($sale) > 0) {
+                foreach ($sale as $k => $v) {
+                    $time_sale_starttime = strtotime($v["sales_starttime"]);
+                    $time_sale_endtime = strtotime($v["sales_endtime"]);
+                    if ($time_sale_starttime < $time_sale_endtime && $time_sale_endtime < $time_now)
+                        $time_numerator = $time_numerator + round(($time_sale_endtime - $time_sale_starttime) / 3600 / 24);
+                    else if ($time_sale_starttime < $time_now && $time_now < $time_sale_endtime)
+                        $time_numerator = $time_numerator + round(($time_now - $time_sale_starttime) / 3600 / 24);
+                }
+            }
+            if ($time_denominator == 1)
+                $time_rate = 0;
+            else
+                $time_rate = (round($time_numerator / $time_denominator, 4) * 100);   //上刊率
+            if ($time_rate != 0)
+                $time_rate = $time_rate . "%";
+            $list[$key]["time_rate"] = $time_rate;
         }
+
+        //测试
+//        $str = "";
+//        foreach($list as $key=>$value)
+//        {
+//            foreach($value as $k=>$v)
+//                $str =$str. $k.":".$v.";";
+//            $str = $str. "<br/>";
+//        }
+//        exit(json_encode($str));
 
         $sql = "select count(DISTINCT(adv.id)) allCount from p_adv adv "
             . " LEFT JOIN p_community com ON adv.adv_community_id = com.id "
@@ -451,7 +471,9 @@ class AdvController extends \yii\web\Controller
         $adv->adv_no = $post['adv_no'];
         $adv->adv_community_id = $post['adv_community_id'];
         $adv->adv_name = $post['adv_name'];
-//        $adv->adv_starttime = $post['adv_starttime'];
+        $adv->adv_starttime = $post['adv_starttime'];
+        if (!isset($adv->adv_starttime))    //如果未设置开始时间，则默认当前录入时间为开始时间
+            $adv->adv_starttime = $now;
 //        $adv->adv_endtime = $post['adv_endtime'];
 //        $adv->adv_image = $post['adv_image'];
         $adv->adv_property = $post['adv_property'];
@@ -507,7 +529,9 @@ class AdvController extends \yii\web\Controller
         $adv->adv_no = $post['adv_no'];
         $adv->adv_community_id = $post['adv_community_id'];
         $adv->adv_name = $post['adv_name'];
-//        $adv->adv_starttime = $post['adv_starttime'];
+        $adv->adv_starttime = $post['adv_starttime'];
+        if (!isset($adv->adv_starttime))    //如果未设置开始时间，则默认当前录入时间为开始时间
+            $adv->adv_starttime = $now;
 //        $adv->adv_endtime = $post['adv_endtime'];
 //        $adv->adv_image = $post['adv_image'];
         $adv->adv_property = $post['adv_property'];
@@ -607,6 +631,7 @@ class AdvController extends \yii\web\Controller
     public function actionExportexcel()
     {
         $check = \Yii::$app->session['check'];   //待审核信息
+        $now = date("Y-m-d H:i:s");
         $post = \Yii::$app->request->post();
         $name = $post['name'];
         $adv_no = $post['adv_no'];
@@ -675,6 +700,36 @@ class AdvController extends \yii\web\Controller
                     $staffNames = rtrim($staffNames, ',');
             }
             $list[$key]["people_num"] = $staffNames;
+
+            //计算上刊率（销售时间/已安装完成时间到现在时间）
+            $time_now = strtotime($now);  //当前时间
+            $time_start = strtotime($list[$key]["adv_starttime"]);   //当前时间
+            if ($time_now > $time_start)
+                $time_denominator = round(($time_now - $time_start) / 3600 / 24); //上刊率分母
+            else
+                $time_denominator = 1;
+            if ($time_denominator == 0)
+                $time_denominator = 1;
+            //计算销售时间
+            $sale = PSales::find()->select("sales_starttime,sales_endtime")->where("adv_id = " . $list[$key]["id"])->asArray()->all();
+            $time_numerator = 0;  //上刊率分子
+            if (count($sale) > 0) {
+                foreach ($sale as $k => $v) {
+                    $time_sale_starttime = strtotime($v["sales_starttime"]);
+                    $time_sale_endtime = strtotime($v["sales_endtime"]);
+                    if ($time_sale_starttime < $time_sale_endtime && $time_sale_endtime < $time_now)
+                        $time_numerator = $time_numerator + round(($time_sale_endtime - $time_sale_starttime) / 3600 / 24);
+                    else if ($time_sale_starttime < $time_now && $time_now < $time_sale_endtime)
+                        $time_numerator = $time_numerator + round(($time_now - $time_sale_starttime) / 3600 / 24);
+                }
+            }
+            if ($time_denominator == 1)
+                $time_rate = 0;
+            else
+                $time_rate = (round($time_numerator / $time_denominator, 4) * 100);   //上刊率
+            if ($time_rate != 0)
+                $time_rate = $time_rate . "%";
+            $list[$key]["time_rate"] = $time_rate;
 
             foreach ($value as $k => $v) {
                 //安装状态
@@ -769,13 +824,18 @@ class AdvController extends \yii\web\Controller
 
     public function actionAjaxeditstatus()
     {
+        $now = date("Y-m-d H:i:s");
         $post = \Yii::$app->request->post();
+        $edit_starttime = $post['edit_starttime'];   //是否需要编辑starttime,值不为空，即需要编辑
         $ids = $post['ids'];
         $adv_install_status = $post['adv_install_status'];
         $adv_pic_status = $post['adv_pic_status'];
         $staffs = $post['staffs'];
         $type = $post['type'];
         $set = array();
+        if (isset($edit_starttime) && $edit_starttime == 1 && $adv_install_status == 2)  //只有advFlowInstall传过来的数据（即安装完成）的数据才修改广告位开始时间（adv_starttime）
+            $set[] = " adv_starttime = '" . $now . "'";
+
         if ($adv_install_status > -1) {
             $set[] = 'adv_install_status = ' . $adv_install_status;
 //            switch ($adv_install_status) {
@@ -802,6 +862,9 @@ class AdvController extends \yii\web\Controller
 //            }
         }
         $sql = "UPDATE p_adv SET " . implode(",", $set) . " where id IN (" . implode(",", $ids) . ")";
+
+        //exit(json_encode($sql));
+
         $connection = \Yii::$app->db;
         $command = $connection->createCommand($sql);
         $result = $command->execute();

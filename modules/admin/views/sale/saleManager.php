@@ -242,6 +242,10 @@
                                 }
                             });
                         });
+
+                        search =  $('input[type=search]');
+                        search.before("(楼盘名称)&nbsp;");
+
                     }
                 });
             },

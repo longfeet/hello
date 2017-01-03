@@ -31,13 +31,13 @@
                             <label class="control-label">广告位名称：</label>
                             <input type="text" name="adv_name" class="form-control" value="<?=$data->adv_name?>" />
                         </div>
-<!--                        <div class="form-group">
+                        <div class="form-group">
                             <label class="control-label">广告位开始时间</label>
                             <input type="text" name="adv_starttime" class="form-control" id="selectDate1" value="<?=substr($data->adv_starttime,0,10)?>" />
                         </div>
-                        <div class="form-group">
+<!--                        <div class="form-group">
                             <label class="control-label">广告位结束时间</label>
-                            <input type="text" name="adv_endtime" class="form-control" id="selectDate2" value="<?=substr($data->adv_endtime,0,10)?>" />
+                            <input type="text" name="adv_endtime" class="form-control" id="selectDate2" value="<?//=substr($data->adv_endtime,0,10)?>" />
                         </div>-->
                         <div class="form-group">
                             <label class="control-label">广告位画面：</label>
@@ -45,7 +45,7 @@
                         </div>
                         <div class="form-group">
                             <label class="control-label" style="vertical-align:middle;">原画：</label>
-                            <label class="control-label"><img id="adv_image" src="<?=$data->adv_image?>" class="smallPic" style="float:right;margin-right:63%;padding-bottom: 10px;" /></label>
+                            <label class="control-label"><?php if(isset($data->adv_image)){ ?><img id="adv_image" src="<?=$data->adv_image?>" class="smallPic" style="padding-bottom: 10px;" /><?php } ?></label>
                         </div>
                         <div class="form-group">
                             <label class="control-label">广告位性质：</label>

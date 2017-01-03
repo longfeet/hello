@@ -83,7 +83,7 @@
 
                     <div>
                         <input type="hidden" id="typeValue" value="install"/>
-                        <input type="button" id="editStatus" class="btn btn-info" value="修改"/>
+                        <input type="button" id="editStatusFix" class="btn btn-info" value="修改"/>
                     </div>
                 </div>
             </div>

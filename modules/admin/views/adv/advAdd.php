@@ -30,10 +30,10 @@
                             <label class="control-label">广告位名称</label>
                             <input type="text" class="form-control" name="adv_name" />
                         </div>
-<!--                        <div class="form-group">-->
-<!--                            <label class="control-label">广告位开始时间</label>-->
-<!--                            <input type="text" class="form-control" name="adv_starttime" id="selectDate1" />-->
-<!--                        </div>-->
+                        <div class="form-group">
+                            <label class="control-label">广告位开始时间</label>
+                            <input type="text" class="form-control" name="adv_starttime" id="selectDate1" />
+                        </div>
 <!--                        <div class="form-group">-->
 <!--                            <label class="control-label">广告位结束时间</label>-->
 <!--                            <input type="text" class="form-control" name="adv_endtime" id="selectDate2" />-->

@@ -28,18 +28,18 @@
                             <label class="control-label">广告位名称：</label>
                             <label class="control-label"><?=$data->adv_name?></label>
                         </div>
-<!--                        <div class="form-group">
+                        <div class="form-group">
                             <label class="control-label">广告位开始时间：</label>
                             <label class="control-label"><?=substr($data->adv_starttime,0,10)?></label>
                         </div>
-                        <div class="form-group">
+                        <!--                        <div class="form-group">
                             <label class="control-label">广告位结束时间：</label>
                             <label class="control-label"><?=substr($data->adv_endtime,0,10)?></label>
                         </div>
                         -->
                         <div class="form-group">
                             <label class="control-label">广告位画面：</label>
-                            <label class="control-label"><img id="adv_image" src="<?=$data->adv_image?>" class="smallPic"/></label>
+                            <label class="control-label"><?php if(isset($data->adv_image)){ ?><img id="adv_image" src="<?=$data->adv_image?>" class="smallPic"/><?php } ?></label>
 
                         </div>
                         <div class="form-group">

@@ -331,14 +331,10 @@ class DataTools
         $ar = $data;
         if (isset($seach['value'])) {
             //权限控制
-            if ($staff != '') {
-                if ($staff->staff_level == 1 || $staff->staff_level == 2 || $staff->staff_level == 3)
-                    $ar = $data->where("company_id =" . $staff->company_id . " and adv_install_status=2 and (adv_use_status=0 or adv_use_status=1) and $searchField like \"%" . $seach['value'] . "%\"");
-                else if ($staff->staff_level == 4)
-                    $ar = $data->where("adv_install_status=2 and (adv_use_status=0 or adv_use_status=1) and $searchField like \"%" . $seach['value'] . "%\"");
-            } else {
-                $ar = $data->where("adv_install_status=2 and (adv_use_status=0 or adv_use_status=1) and $searchField like \"%" . $seach['value'] . "%\"");
-            }
+            if ($staff->staff_level == 1 || $staff->staff_level == 2 || $staff->staff_level == 3)
+                $ar = $data->where("company_id =" . $staff->company_id . " and adv_install_status=2 and (adv_use_status=0 or adv_use_status=1) and adv_community_id in (select id from p_community where community_name like \"%" . $seach['value'] . "%\")");
+            else if ($staff->staff_level == 4)
+                $ar = $data->where("adv_install_status=2 and (adv_use_status=0 or adv_use_status=1) and adv_community_id in (select id from p_community where community_name like \"%" . $seach['value'] . "%\")");
         } else {
             //权限控制
             if ($staff != '') {
@@ -423,11 +419,8 @@ class DataTools
                     //$array[$v] = $val->$columnVals[$k];
                 } else {
                     $array[$v] = "";
-                    $bindRoleHtml = "<a href='javascript:;' staff_id='" . $val->id . "' class='btn btn-success btn-xs bindRole'>关联角色</a>";
-                    $editRoleHtml = "<a href='javascript:;' role_id='" . $val->id . "' class='btn btn-success btn-xs roleEditName'>更新权限名</a>";
                     $editHtml = "<a href='javascript:;' role_id='" . $val->id . "' class='btn btn-success btn-xs roleEdit'>编辑</a>";
                     $deleteHtml = '<a href=\'javascript:;\' role_id=\'' . $val->id . '\' class=\'btn btn-danger btn-xs roleDelete\'>删除</a>';
-                    $bindadv = '<a href=\'javascript:;\' adv_id=\'' . $val->id . '\' class=\'btn btn-success btn-xs advBind\'>流程状态</a>';
                     $detailsHtml = '<a href=\'javascript:;\' role_id=\'' . $val->id . '\' class=\'btn btn-info btn-xs roleDetails\'>详情</a>';    //增加了详情页面
                     $nbsp = "&nbsp;&nbsp;";
                     if (strpos($columnVals[$k], '<') === 0) {
@@ -437,16 +430,10 @@ class DataTools
                         foreach ($htmlArray as $element) {
                             if ($element == 'details')
                                 $array[$v] .= $detailsHtml . $nbsp;
-                            if ($element == 'editrole')
-                                $array[$v] .= $editRoleHtml . $nbsp;
                             if ($element == 'edit')
                                 $array[$v] .= $editHtml . $nbsp;
                             if ($element == 'delete')
                                 $array[$v] .= $deleteHtml . $nbsp;
-                            if ($element == 'bindrole')
-                                $array[$v] .= $bindRoleHtml . $nbsp;
-                            if ($element == 'bindadv')
-                                $array[$v] .= $bindadv . $nbsp;
                         }
                     } else {
                         $array[$v] = $detailsHtml . $nbsp . $editHtml . $nbsp . $deleteHtml;
