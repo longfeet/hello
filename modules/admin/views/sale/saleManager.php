@@ -125,6 +125,23 @@
             }
         })
 
+        //点击td选中checkbox
+        $("#dataTables-example").on("click", "tr", function () {
+            var input = $(this).find("input");
+            if ($(input).attr("checked")) {
+                $(input).removeAttr("checked");
+            }
+            else
+            {
+                $("#dataTables-example tr").find("input").each(function () {
+                    $(this).removeAttr("checked");
+                });
+                $(input).attr("checked", true);
+            }
+        });
+
+
+
         //客户公司联动客户联系人
         $('select[name=sales_company]').change(function () {
             var customer_id = $('select[name=sales_company] option:selected').val();
