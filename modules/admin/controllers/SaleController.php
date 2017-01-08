@@ -52,6 +52,7 @@ class SaleController extends \yii\web\Controller
 
     public function actionSalemanagerjson()
     {
+        //$customer
         $session = \Yii::$app->session;
         $staff = $session['loginUser'];
 

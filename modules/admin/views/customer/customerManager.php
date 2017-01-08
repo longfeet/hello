@@ -22,8 +22,7 @@
                                     <th>序号</th>
                                     <th>公司名称</th>
                                     <th>公司地址</th>
-                                    <th>联系人</th>
-                                    <th>联系号码</th>
+                                    <th>添加人</th>
                                     <th>编辑</th>
                                 </tr>
                             </thead>
@@ -421,25 +420,34 @@
                         });
                         //删除（硬删除 ）
                         $('.customerDelete').bind("click", function(){
-                            var customerID = $(this).attr('customer_id');
-                            $.ajax({
-                                "type": "POST",
-                                "contentType": "application/x-www-form-urlencoded",
-                                "url": "/admin/customer/deletecustomer",
-                                "data": {
-                                    'customerID': customerID,
-                                },
-                                "dataType": "json",
-                                "success": function (data) {
-                                    if(data == '-1') {//角色名存在
-                                        alert('非法客户id!');
+                            if(confirm("确定要删除该信息吗？")) {
+                                var customerID = $(this).attr('customer_id');
+                                $.ajax({
+                                    "type": "POST",
+                                    "contentType": "application/x-www-form-urlencoded",
+                                    "url": "/admin/customer/deletecustomer",
+                                    "data": {
+                                        'customerID': customerID,
+                                    },
+                                    "dataType": "json",
+                                    "success": function (data) {
+                                        if (data == '-1') {//角色名存在
+                                            alert('非法客户id!');
+                                        }
+                                        if (data == '1') {
+                                            table.page(table.page()).draw(false);
+                                        }
                                     }
-                                    if(data == '1') {
-                                        table.page(table.page()).draw(false);
-                                    }
-                                }
-                            });
+                                });
+                            }
                         });
+                        //进入销售
+                        $('.customersale').click(function(){
+                            window.location.href = "/admin/sale/manager?id=" + $(this).attr("role_id");
+                            //window.location.href = "/admin/sale/manager?id=" + $(this).attr("role_id");
+                        });
+
+
                     }
                 });
             },

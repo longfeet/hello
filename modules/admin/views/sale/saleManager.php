@@ -126,19 +126,19 @@
         })
 
         //点击td选中checkbox
-        $("#dataTables-example").on("click", "tr", function () {
-            var input = $(this).find("input");
-            if ($(input).attr("checked")) {
-                $(input).removeAttr("checked");
-            }
-            else
-            {
-                $("#dataTables-example tr").find("input").each(function () {
-                    $(this).removeAttr("checked");
-                });
-                $(input).attr("checked", true);
-            }
-        });
+//        $("#dataTables-example").on("click", "tr", function () {
+//            var input = $(this).find("input");
+//            if ($(input).attr("checked")) {
+//                $(input).removeAttr("checked");
+//            }
+//            else
+//            {
+//                $("#dataTables-example tr").find("input").each(function () {
+//                    $(this).removeAttr("checked");
+//                });
+//                $(input).attr("checked", true);
+//            }
+//        });
 
 
 

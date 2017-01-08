@@ -14,13 +14,13 @@ class CustomerController extends \yii\web\Controller
     /**
      * @var array 显示的数据列
      */
-    public $columns = array("id", "customer_company", "customer_address", "customer_contact", "customer_phone", "edit");
+    public $columns = array("id", "customer_company", "customer_address", "creator",  "edit");
 
     /**
      * relation 关联的字段做成数组,支持多relation的深层字段属性
      * @var array
      */
-    public $columnsVal = array("id", "customer_company", "customer_address", "customer_contact", "customer_phone", "<details,edit,delete>");
+    public $columnsVal = array("id", "customer_company", "customer_address", "creator", "<details,edit,delete,bindsale>");
 
     /**
      *

@@ -617,14 +617,25 @@ class DataTools
                     {
                         $array[$v] = $num;
                         $num++;
-                    } else
+                    } else {
                         $array[$v] = $val->$columnVals[$k];
-                    //$array[$v] = $val->$columnVals[$k];
+
+                        //根据id，获得创建者名字
+                        if ($columns[$k] == "creator") {
+                            $staff = PStaff::find()->where("id=" . $val->$columnVals[$k])->one();
+                            if ($staff != null)
+                                $array[$v] = $staff->staff_name;
+                            else
+                                $array[$v] = "";
+                        }
+                        //$array[$v] = $val->$columnVals[$k];
+                    }
                 } else {
                     $array[$v] = "";
                     $detailsHtml = "<a href='javascript:;' " . $name . "_id='" . $val->id . "' class='btn btn-info btn-xs " . $name . "Details'>详情</a>";
                     $editHtml = "<a href='javascript:;' " . $name . "_id='" . $val->id . "' class='btn btn-success btn-xs " . $name . "Edit'>编辑</a>";
                     $deleteHtml = "<a href='javascript:;' " . $name . "_id='" . $val->id . "' class='btn btn-danger btn-xs " . $name . "Delete'>删除</a>";
+                    $bindsale = "<a href='javascript:;' " . $name . "_id='" . $val->id . "' class='btn btn-warning btn-xs " . $name . "sale'>销售预定</a>";
                     $nbsp = "&nbsp;&nbsp;";
                     if (strpos($columnVals[$k], '<') === 0) {
                         $html = substr($columnVals[$k], 1);
@@ -637,6 +648,8 @@ class DataTools
                                 $array[$v] .= $editHtml . $nbsp;
                             if ($element == 'delete')
                                 $array[$v] .= $deleteHtml . $nbsp;
+                            if($element == 'bindsale')
+                                $array[$v] .= $bindsale . $nbsp;
                         }
                     } else {
                         $array[$v] = $editHtml . $nbsp . $deleteHtml;
