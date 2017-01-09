@@ -210,6 +210,17 @@ $(window).ready(function(){
         }
     });
 
+    //点击td选中checkbox
+    $("#dataTables-example").on("click", "tr", function () {
+        $(this).toggleClass("bgRed");
+        if ($(this).hasClass("bgRed")) {
+            //if ($(this).children().first().children().attr("checked")=="checked") {
+            $(this).children().first().children().prop("checked", true);
+        } else {
+            $(this).children().first().children().prop("checked", false);
+        }
+    });
+
     //根据部门动态修改相应人员
     $('select[name=sector]').change(function () {
         var sector_id = $('select[name=sector] option:selected').val();

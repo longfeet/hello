@@ -17,7 +17,7 @@
                         <table class="table table-striped table-bordered table-hover" id="dataTables-example">
                             <thead>
                                 <tr>
-                                    <th><input type="checkbox" id="checkAll"/>序号</th>
+                                    <th>序号</th>
                                     <th>楼盘编号</th>
                                     <th>楼盘名称</th>
                                     <th>楼盘地址</th>

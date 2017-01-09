@@ -267,8 +267,6 @@ $(window).ready(function(){
         }
     })
     
-    
-    
     $("#statusFix a").click(function(e){
         var a = e||window.event;
         a.preventDefault();
@@ -301,6 +299,17 @@ $(window).ready(function(){
             $("#staff").hide();
             $("#sector").hide();
             $("#typeValue").val("pic"); //设置提交按钮的值，从而指定相应adv_staff表中point_status
+        }
+    });
+
+    //点击td选中checkbox
+    $("#dataTables-example").on("click", "tr", function () {
+        $(this).toggleClass("bgRed");
+        if ($(this).hasClass("bgRed")) {
+            //if ($(this).children().first().children().attr("checked")=="checked") {
+            $(this).children().first().children().prop("checked", true);
+        } else {
+            $(this).children().first().children().prop("checked", false);
         }
     });
 

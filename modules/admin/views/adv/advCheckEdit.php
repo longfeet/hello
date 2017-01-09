@@ -182,6 +182,17 @@ $(window).ready(function(){
         
     });
 
+    //点击td选中checkbox
+    $("#dataTables-example").on("click", "tr", function () {
+        $(this).toggleClass("bgRed");
+        if ($(this).hasClass("bgRed")) {
+            //if ($(this).children().first().children().attr("checked")=="checked") {
+            $(this).children().first().children().prop("checked", true);
+        } else {
+            $(this).children().first().children().prop("checked", false);
+        }
+    });
+
     //审核通过
     $("#doPass").click(function(){
         var ids = getCheckValue('adv_id');
