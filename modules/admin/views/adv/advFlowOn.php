@@ -11,7 +11,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     上刊列表
-                    <a href="javascript:;" class="btn btn-info" id="exportExcel" style="float:right;margin-top:-0.5rem;margin-right:1rem;">广告位导出</a>
+                    <a href="javascript:;" class="btn btn-info" id="exportExcel" style="float:right;margin-top:-0.5rem;margin-right:1rem;">上刊信息导出</a>
                 </div>
                 <div class="panel-heading">
                     <form class="form-inline" role="form">

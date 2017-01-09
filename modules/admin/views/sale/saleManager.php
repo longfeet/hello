@@ -1,7 +1,9 @@
 <div id="page-inner">
     <div class="row">
         <div class="col-md-12">
-            <h1 class="page-header">销售管理/ <small>广告位销售</small></h1>
+            <h1 class="page-header">销售管理/
+                <small>广告位销售</small>
+            </h1>
         </div>
     </div>
     <!-- /. ROW  -->
@@ -42,14 +44,16 @@
             <select class="form-control" name="sales_company">
                 <option value="0">==请选择==</option>
                 <?php foreach ($customerList as $customer) { ?>
-                    <option value="<?= $customer->id ?>"><?= $customer->customer_company ?></option>
+                    <option
+                        value="<?= $customer->id ?>" <?php echo $customer_id == $customer->id ? "selected=\"selected\"" : "" ?> ><?= $customer->customer_company ?></option>
                 <?php } ?>
             </select>
         </div>
     </div>
     <div class="row" style="padding-top: 5px;">
         <div class="col-md-1" style="width:120px;height: 35px;line-height:35px;">客户联系人：</div>
-        <div class="col-md-9"><input class="form-control" type="text" name="sales_customer"/></div>
+        <div class="col-md-9"><input class="form-control" type="text" name="sales_customer"
+                                     value="<?= $customer_name ?>"/></div>
     </div>
     <div class="row" style="padding-top: 5px;">
         <div class="col-md-1" style="width:120px;height: 35px;line-height:35px;">开始时间：</div>
@@ -119,28 +123,21 @@
         });
 
         $("#checkAll").click(function () {
-
             for (var key in $("input[name='adv_id']")) {
                 $("input[name='adv_id']")[key].checked = this.checked;
             }
         })
 
         //点击td选中checkbox
-//        $("#dataTables-example").on("click", "tr", function () {
-//            var input = $(this).find("input");
-//            if ($(input).attr("checked")) {
-//                $(input).removeAttr("checked");
-//            }
-//            else
-//            {
-//                $("#dataTables-example tr").find("input").each(function () {
-//                    $(this).removeAttr("checked");
-//                });
-//                $(input).attr("checked", true);
-//            }
-//        });
-
-
+        $("#dataTables-example").on("click", "tr", function () {
+            $(this).toggleClass("bgRed");
+            if ($(this).hasClass("bgRed")) {
+            //if ($(this).children().first().children().attr("checked")=="checked") {
+                $(this).children().first().children().prop("checked", true);
+            } else {
+                $(this).children().first().children().prop("checked", false);
+            }
+        });
 
         //客户公司联动客户联系人
         $('select[name=sales_company]').change(function () {
@@ -261,7 +258,7 @@
                             });
                         });
 
-                        search =  $('input[type=search]');
+                        search = $('input[type=search]');
                         search.before("(楼盘名称)&nbsp;");
 
                     }
@@ -292,31 +289,29 @@
                 alert("请选择客户公司");
             } else if (sales_starttime == "") {
                 alert("请选开始时间");
-            } else if(sales_endtime == "")
-            {
+            } else if (sales_endtime == "") {
                 alert("请选到期时间");
             }
-            else
-            {
-                $.ajax( {
+            else {
+                $.ajax({
                     "type": "POST",
                     "contentType": "application/x-www-form-urlencoded",
                     "url": "/admin/sale/dosale",
                     "dataType": "json",
                     "data": {
-                        ids:ids,
-                        sales_company:sales_company,
-                        sales_customer:sales_customer,
-                        sales_starttime:sales_starttime,
-                        sales_endtime:sales_endtime,
-                        sales_person:sales_person,
-                        sales_status:sales_status,
-                        sales_note:sales_note
+                        ids: ids,
+                        sales_company: sales_company,
+                        sales_customer: sales_customer,
+                        sales_starttime: sales_starttime,
+                        sales_endtime: sales_endtime,
+                        sales_person: sales_person,
+                        sales_status: sales_status,
+                        sales_note: sales_note
                     }, //以json格式传递
-                    "success": function(data) {
-                        if(data > 0){
+                    "success": function (data) {
+                        if (data > 0) {
                             window.location.reload();
-                        }else{
+                        } else {
                             alert("数据录入失败！");
                         }
                     }

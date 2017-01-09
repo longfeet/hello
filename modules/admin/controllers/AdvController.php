@@ -668,6 +668,7 @@ class AdvController extends \yii\web\Controller
         );
         if (!empty($value)) {
             $where[] = " adv." . $value . " in ( " . $thisVal . " ) ";
+            $where[] = " st.staff_ids != \"\"";   //导出安装、维修、上刊、下刊时，只出安排了人员的。
             if ($value == 'adv_install_status') {
                 $st_where[] = " st.type = 'install' ";
             } else {

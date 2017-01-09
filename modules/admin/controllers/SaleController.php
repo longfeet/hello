@@ -42,17 +42,25 @@ class SaleController extends \yii\web\Controller
         $session = \Yii::$app->session;
         $staff = $session['loginUser'];
 
+        $customer_id=\Yii::$app->request->get('id', '0');    //从客户管理页面传过来的id，锁定客户
+        $customer_name = "";
+        if($customer_id!=0)
+        {
+            $customer =PCustomer::find()->where("id=".$customer_id)->one();
+            $customer_name = $customer->customer_contact;
+        }
+
+
         $column = DataTools::getDataTablesColumns($this->advColumns);
         $jsonDataUrl = '/admin/sale/salemanagerjson';
 
         $customerList = PCustomer::find()->where("company_id=" . $staff->company_id)->all();
 
-        return $this->render('saleManager', array("columns" => $column, 'jsonurl' => $jsonDataUrl, 'customerList' => $customerList, 'staff' => $staff));
+        return $this->render('saleManager', array("columns" => $column, 'jsonurl' => $jsonDataUrl, 'customerList' => $customerList, 'staff' => $staff,"customer_id"=>$customer_id,"customer_name"=>$customer_name));
     }
 
     public function actionSalemanagerjson()
     {
-        //$customer
         $session = \Yii::$app->session;
         $staff = $session['loginUser'];
 

@@ -443,7 +443,7 @@
                         });
                         //进入销售
                         $('.customersale').click(function(){
-                            window.location.href = "/admin/sale/manager?id=" + $(this).attr("role_id");
+                            window.location.href = "/admin/sale/manager?id=" + $(this).attr("customer_id");
                             //window.location.href = "/admin/sale/manager?id=" + $(this).attr("role_id");
                         });
 

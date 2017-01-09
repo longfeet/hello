@@ -389,7 +389,7 @@ class DataTools
                         $num++;
                     } else if ($v == "adv_rate") {
                         if ($val->$columnVals[$k] != "")  //上刊率为空的，设置成0
-                            $array[$v] = $val->$columnVals[$k] ;
+                            $array[$v] = $val->$columnVals[$k];
                         else
                             $array[$v] = 0;
                     } else if ($v == "adv_community_id")  //楼盘名称
@@ -535,6 +535,8 @@ class DataTools
                             $array[$v] = "置换";
                         else
                             $array[$v] = "";
+                    } else if ($v == "sales_starttime" || $v == "sales_endtime") {
+                        $array[$v] = date('Y-m-d', strtotime($val->$columnVals[$k]));
                     } else
                         $array[$v] = $val->$columnVals[$k];
                     //$array[$v] = $val->$columnVals[$k];
@@ -648,7 +650,7 @@ class DataTools
                                 $array[$v] .= $editHtml . $nbsp;
                             if ($element == 'delete')
                                 $array[$v] .= $deleteHtml . $nbsp;
-                            if($element == 'bindsale')
+                            if ($element == 'bindsale')
                                 $array[$v] .= $bindsale . $nbsp;
                         }
                     } else {
