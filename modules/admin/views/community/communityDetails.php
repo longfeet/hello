@@ -17,90 +17,81 @@
                 <div class="panel-body">
                     <form role="form" id="communityForm" method="post" action="/admin/community/doedit">
                         <input name="id" type="hidden" value="<?= $data->id ?>"/>
-                        <div class="form-group">
-                            <label class="control-label">楼盘编号：</label>
-                            <label class="control-label"><?= $data->community_no ?></label>
+                        <div class="form-group row">
+                            <label class="control-label col-md-1">楼盘编号：</label>
+                            <label class="control-label col-md-4" style="font-weight:normal;"><?= $data->community_no ?></label>
+                            <label class="control-label col-md-1">楼盘名称：</label>
+                            <label class="control-label col-md-4" style="font-weight:normal;"><?= $data->community_name ?></label>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label">楼盘名称：</label>
-                            <label class="control-label"><?= $data->community_name ?></label>
+                        <div class="form-group row">
+                            <label class="control-label col-md-1">所在城市：</label>
+                            <label class="control-label col-md-4" style="font-weight:normal;"><?= $data->community_city ?></label>
+                            <label class="control-label col-md-1">所属区域：</label>
+                            <label class="control-label col-md-4" style="font-weight:normal;"><?= $data->community_area ?></label>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label">所在城市：</label>
-                            <label class="control-label"><?= $data->community_city ?></label>
+                        <div class="form-group row">
+                            <label class="control-label col-md-1">楼盘详细地址：</label>
+                            <label class="control-label col-md-4" style="font-weight:normal;"><?= $data->community_position ?></label>
+                            <label class="control-label col-md-1">楼盘类型：</label>
+                            <label class="control-label col-md-4" style="font-weight:normal;"><?= $data->community_category ?></label>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label">所属区域：</label>
-                            <label class="control-label"><?= $data->community_area ?></label>
+                        <div class="form-group row">
+                            <label class="control-label col-md-1">楼盘均价：</label>
+                            <label class="control-label col-md-4" style="font-weight:normal;"><?= $data->community_price ?></label>
+                            <label class="control-label col-md-1">楼盘所在商圈：</label>
+                            <label class="control-label col-md-4" style="font-weight:normal;"><?= $data->community_cbd ?></label>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label">楼盘详细地址：</label>
-                            <label class="control-label"><?= $data->community_position ?></label>
+                        <div class="form-group row">
+                            <label class="control-label col-md-1">交通特征：</label>
+                            <label class="control-label col-md-4" style="font-weight:normal;"><?= $data->community_traffic ?></label>
+                            <label class="control-label col-md-1">周边配套：</label>
+                            <label class="control-label col-md-4" style="font-weight:normal;"><?= $data->community_facility ?></label>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label">楼盘类型：</label>
-                            <label class="control-label"><?= $data->community_category ?></label>
+                        <div class="form-group row">
+                            <label class="control-label col-md-1">楼盘性质：</label>
+                            <?php echo $data->community_nature == "0" ? "<label class='control-label col-md-4' style='font-weight:normal;'>新建楼盘</label>" : "" ?>
+                            <?php echo $data->community_nature == "1" ? "<label class='control-label col-md-4' style='font-weight:normal;'>老楼盘</label>" : "" ?>
+                            <?php echo $data->community_nature == "2" ? "<label class='control-label col-md-4' style='font-weight:normal;'>改造楼盘</label>" : "" ?>
+                            <label class="control-label col-md-1">楼盘开盘时间：</label>
+                            <label class="control-label col-md-4" style='font-weight:normal;'><?= substr($data->community_opentime, 0, 10) ?></label>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label">楼盘均价：</label>
-                            <label class="control-label"><?= $data->community_price ?></label>
+                        <div class="form-group row">
+                            <label class="control-label col-md-1">楼盘入住时间：</label>
+                            <label class="control-label col-md-4" style="font-weight:normal;"><?= substr($data->community_staytime, 0, 10) ?></label>
+                            <label class="control-label col-md-1">楼盘户数：</label>
+                            <label class="control-label col-md-4" style="font-weight:normal;"><?= $data->community_units ?></label>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label">楼盘所在商圈：</label>
-                            <label class="control-label"><?= $data->community_cbd ?></label>
+                        <div class="form-group row">
+                            <label class="control-label col-md-1">楼盘入住人数：</label>
+                            <label class="control-label col-md-4" style="font-weight:normal;"><?= $data->community_households ?></label>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label">交通特征：</label>
-                            <label class="control-label"><?= $data->community_traffic ?></label>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">周边配套：</label>
-                            <label class="control-label"><?= $data->community_facility ?></label>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">楼盘性质：</label>
-                            <?php echo $data->community_nature == "0" ? "<label class='control-label'>新建楼盘</label>" : "" ?>
-                            <?php echo $data->community_nature == "1" ? "<label class='control-label'>老楼盘</label>" : "" ?>
-                            <?php echo $data->community_nature == "2" ? "<label class='control-label'>改造楼盘</label>" : "" ?>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">楼盘开盘时间：</label>
-                            <label class="control-label"><?= substr($data->community_opentime, 0, 10) ?></label>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">楼盘入住时间：</label>
-                            <label class="control-label"><?= substr($data->community_staytime, 0, 10) ?></label>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">楼盘户数：</label>
-                            <label class="control-label"><?= $data->community_units ?></label>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">楼盘入住人数：</label>
-                            <label class="control-label"><?= $data->community_households ?></label>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">楼盘坐标：</label>
-                            <label class="control-label"><?= $data->community_longitudex ?>
-                                ,<?= $data->community_latitudey ?></label>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label"></label>
-                            <label class="control-label">
-                                <div id="map" style="width:50rem;height:50rem;">
+                        <div class="form-group row">
+                            <label class="control-label col-md-1">楼盘门头图片：</label>
+                            <label class="control-label col-md-4">
+                                <?php if(isset($data->community_image1)){ ?><img id="community_image" src="<?= $data->community_image1 ?>" class="smallPic"/><?php } ?>
                             </label>
                         </div>
+                        <div class="form-group row">
+                            <label class="control-label col-md-1">楼盘坐标：</label>
+                            <label class="control-label col-md-4" style="font-weight:normal;"><?= $data->community_longitudex ?>
+                                ,<?= $data->community_latitudey ?></label>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-md-1"></label>
+                            <label class="control-label col-md-6">
+                                <div id="map" style="width:50rem;height:50rem;"></div>
+                            </label>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-md-1">历史图片：</label>
+                            <label class="control-label col-md-4" style='font-weight:normal;'><a href="javascript:;" community_id="<?= $data->id ?>" class="showDetails">查看</a></label>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-md-1"></label>
+                            <label class="control-label col-md-8"><div id="details"></div></label>
+                        </div>
+                    </form>
                 </div>
-                <div class="form-group">
-                    <label class="control-label">楼盘门头图片：</label>
-                    <?php if(isset($data->community_image1)){ ?><img id="community_image" src="<?= $data->community_image1 ?>" class="smallPic"/><?php } ?>
-                </div>
-                <div class="form-group">
-                    <label class="control-label">历史图片：</label>
-                    <label class="control-label"><a href="javascript:;" community_id="<?= $data->id ?>" class="showDetails">查看</a></label>
-                    <div id="details"></div>
-                </div>
-                </form>
             </div>
         </div>
         <!--End Advanced Tables -->

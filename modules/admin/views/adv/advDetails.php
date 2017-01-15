@@ -14,82 +14,73 @@
                 </div>
                 <div class="panel-body">
                     <form role="form" id="editForm" action="/admin/adv/doedit" method="POST">
-                        <div class="form-group">
-                            <label class="control-label">广告位编号：</label>
-                            <label class="control-label"><?=$data->adv_no?></label>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">所属楼盘：</label>
+                        <div class="form-group row">
+                            <label class="control-label col-md-1">广告位编号：</label>
+                            <label class="control-label col-md-4" style="font-weight:normal;"><?=$data->adv_no?></label>
+                            <label class="control-label col-md-1">所属楼盘：</label>
                             <?php foreach($list as $key=>$value){?>
-                                <?php echo $data->adv_community_id == $value->id?"<label class='control-label'>".$value->community_name."</label>":""?>
+                                <?php echo $data->adv_community_id == $value->id?"<label class='control-label col-md-4' style='font-weight:normal;'>".$value->community_name."</label>":""?>
                             <?php }?>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label">广告位名称：</label>
-                            <label class="control-label"><?=$data->adv_name?></label>
+                        <div class="form-group row">
+                            <label class="control-label col-md-1">广告位名称：</label>
+                            <label class="control-label col-md-4" style="font-weight:normal;"><?=$data->adv_name?></label>
+                            <label class="control-label col-md-1">开始时间：</label>
+                            <label class="control-label col-md-4" style="font-weight:normal;"><?=substr($data->adv_starttime,0,10)?></label>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label">广告位开始时间：</label>
-                            <label class="control-label"><?=substr($data->adv_starttime,0,10)?></label>
-                        </div>
+
                         <!--                        <div class="form-group">
                             <label class="control-label">广告位结束时间：</label>
                             <label class="control-label"><?=substr($data->adv_endtime,0,10)?></label>
                         </div>
                         -->
-                        <div class="form-group">
-                            <label class="control-label">广告位画面：</label>
-                            <label class="control-label"><?php if(isset($data->adv_image)){ ?><img id="adv_image" src="<?=$data->adv_image?>" class="smallPic"/><?php } ?></label>
-
+                        <div class="form-group row">
+                            <label class="control-label col-md-1">广告位画面：</label>
+                            <label class="control-label col-md-4" style="font-weight:normal;"><?php if(isset($data->adv_image)){ ?><img id="adv_image" src="<?=$data->adv_image?>" class="smallPic"/><?php } ?></label>
+                            <label class="control-label col-md-1">广告位性质：</label>
+                            <?php echo $data->adv_property == "0"?"<label class='control-label col-md-4' style='font-weight:normal;'>电梯广告</label>":""?>
+                            <?php echo $data->adv_property == "1"?"<label class='control-label col-md-4' style='font-weight:normal;'>道闸广告</label>":""?>
+                            <?php echo $data->adv_property == "2"?"<label class='control-label col-md-4' style='font-weight:normal;'>道杆广告</label>":""?>
+                            <?php echo $data->adv_property == "3"?"<label class='control-label col-md-4' style='font-weight:normal;'>灯箱</label>":""?>
+                            <?php echo $data->adv_property == "4"?"<label class='control-label col-md-4' style='font-weight:normal;'>行人门禁</label>":""?>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label">广告位性质：</label>
-                            <?php echo $data->adv_property == "0"?"<label class='control-label'>电梯广告</label>":""?>
-                            <?php echo $data->adv_property == "1"?"<label class='control-label'>道闸广告</label>":""?>
-                            <?php echo $data->adv_property == "2"?"<label class='control-label'>道杆广告</label>":""?>
-                            <?php echo $data->adv_property == "3"?"<label class='control-label'>灯箱</label>":""?>
-                            <?php echo $data->adv_property == "4"?"<label class='control-label'>行人门禁</label>":""?>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">广告位详细地址：</label>
-                            <label class="control-label"><?=$data->adv_position?></label>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">设备型号：</label>
+                        <div class="form-group row">
+                            <label class="control-label col-md-1">详细地址：</label>
+                            <label class="control-label col-md-4" style="font-weight:normal;"><?=$data->adv_position?></label>
+                            <label class="control-label col-md-1">设备型号：</label>
                             <?php foreach($model as $key=>$value) {?>
-                                <?php echo $data->model_id == $value->id?"<label class='control-label'>".$value->model_name."</label>":""?>
+                                <?php echo $data->model_id == $value->id?"<label class='control-label col-md-4' style='font-weight:normal;'>".$value->model_name."</label>":""?>
                             <?php }?>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label">当前状态：</label>
-                            <?php echo $data->adv_install_status == "0"?"<label class='control-label'>未安装</label>":""?>
-                            <?php echo $data->adv_install_status == "1"?"<label class='control-label'>待维修(损坏)</label>":""?>
-                            <?php echo $data->adv_install_status == "2"?"<label class='control-label'>正常使用</label>":""?>
+                        <div class="form-group row">
+                            <label class="control-label col-md-1">当前状态：</label>
+                            <?php echo $data->adv_install_status == "0"?"<label class='control-label col-md-4' style='font-weight:normal;'>未安装</label>":""?>
+                            <?php echo $data->adv_install_status == "1"?"<label class='control-label col-md-4' style='font-weight:normal;'>待维修(损坏)</label>":""?>
+                            <?php echo $data->adv_install_status == "2"?"<label class='control-label col-md-4' style='font-weight:normal;'>正常使用</label>":""?>
+                            <label class="control-label col-md-1">使用状态：</label>
+                            <?php echo $data->adv_use_status == "0"?"<label class='control-label col-md-4' style='font-weight:normal;'>新增</label>":""?>
+                            <?php echo $data->adv_use_status == "1"?"<label class='control-label col-md-4' style='font-weight:normal;'>未使用</label>":""?>
+                            <?php echo $data->adv_use_status == "2"?"<label class='control-label col-md-4' style='font-weight:normal;'>已使用</label>":""?>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label">使用状态：</label>
-                            <?php echo $data->adv_use_status == "0"?"<label class='control-label'>新增</label>":""?>
-                            <?php echo $data->adv_use_status == "1"?"<label class='control-label'>未使用</label>":""?>
-                            <?php echo $data->adv_use_status == "2"?"<label class='control-label'>已使用</label>":""?>
+                        <div class="form-group row">
+                            <label class="control-label col-md-1">销售状态：</label>
+                            <?php echo $data->adv_sales_status == "0"?"<label class='control-label col-md-4' style='font-weight:normal;'>销售</label>":""?>
+                            <?php echo $data->adv_sales_status == "1"?"<label class='control-label col-md-4' style='font-weight:normal;'>赠送</label>":""?>
+                            <?php echo $data->adv_sales_status == "2"?"<label class='control-label col-md-4' style='font-weight:normal;'>置换</label>":""?>
+                            <label class="control-label col-md-1">画面状态：</label>
+                            <?php echo $data->adv_pic_status == "0"?"<label class='control-label col-md-4' style='font-weight:normal;'>预定</label>":""?>
+                            <?php echo $data->adv_pic_status == "1"?"<label class='control-label col-md-4' style='font-weight:normal;'>待上刊</label>":""?>
+                            <?php echo $data->adv_pic_status == "2"?"<label class='control-label col-md-4' style='font-weight:normal;'>已上刊</label>":""?>
+                            <?php echo $data->adv_pic_status == "3"?"<label class='control-label col-md-4' style='font-weight:normal;'>待下刊</label>":""?>
+                            <?php echo $data->adv_pic_status == "4"?"<label class='control-label col-md-4' style='font-weight:normal;'>已下刊</label>":""?>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label">销售状态：</label>
-                            <?php echo $data->adv_sales_status == "0"?"<label class='control-label'>销售</label>":""?>
-                            <?php echo $data->adv_sales_status == "1"?"<label class='control-label'>赠送</label>":""?>
-                            <?php echo $data->adv_sales_status == "2"?"<label class='control-label'>置换</label>":""?>
+                        <div class="form-group row">
+                            <label class="control-label col-md-1">历史图片：</label>
+                            <label class="control-label col-md-4" style="font-weight:normal;"><a href="javascript:;" adv_id="<?= $data->id ?>" class="showDetails">查看</a></label>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label">画面状态：</label>
-                            <?php echo $data->adv_pic_status == "0"?"<label class='control-label'>预定</label>":""?>
-                            <?php echo $data->adv_pic_status == "1"?"<label class='control-label'>待上刊</label>":""?>
-                            <?php echo $data->adv_pic_status == "2"?"<label class='control-label'>已上刊</label>":""?>
-                            <?php echo $data->adv_pic_status == "3"?"<label class='control-label'>待下刊</label>":""?>
-                            <?php echo $data->adv_pic_status == "4"?"<label class='control-label'>已下刊</label>":""?>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">历史图片：</label>
-                            <label class="control-label"><a href="javascript:;" adv_id="<?= $data->id ?>" class="showDetails">查看</a></label>
-                            <div id="details"></div>
+                        <div class="form-group row">
+                            <label class="control-label col-md-1"></label>
+                            <label class="control-label col-md-4""><div id="details"></div></label>
                         </div>
                     </form>
                 </div>

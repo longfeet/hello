@@ -27,12 +27,12 @@ class SaleController extends \yii\web\Controller
     /**
      * @var array 显示的数据列
      */
-    public $advColumns = array("id", "adv_community_id", "adv_no", "adv_name", "adv_position", "adv_install_status", "adv_use_status","adv_rate");
+    public $advColumns = array("id", "adv_community_id", "adv_no", "adv_name", "adv_position", "adv_install_status", "adv_use_status", "adv_rest_rate", "adv_rate");
     /**
      * relation 关联的字段做成数组,支持多relation的深层字段属性(最多三层)
      * @var array
      */
-    public $advColumnsVal = array("id", "adv_community_id", "adv_no", "adv_name", "adv_position", "adv_install_status", "adv_use_status","adv_rate");
+    public $advColumnsVal = array("id", "adv_community_id", "adv_no", "adv_name", "adv_position", "adv_install_status", "adv_use_status", "adv_rest_rate", "adv_rate");
 
     public $saleColumns = array("id", "community_name", "adv_no", "adv_name", "sales_company", "sales_customer", "sales_starttime", "sales_endtime", "sales_person", "sales_status");
     public $saleColumnsVal = array("id", "community_name", "adv_no", "adv_name", "sales_company", "sales_customer", "sales_starttime", "sales_endtime", "sales_person", "sales_status");
@@ -42,11 +42,10 @@ class SaleController extends \yii\web\Controller
         $session = \Yii::$app->session;
         $staff = $session['loginUser'];
 
-        $customer_id=\Yii::$app->request->get('id', '0');    //从客户管理页面传过来的id，锁定客户
+        $customer_id = \Yii::$app->request->get('id', '0');    //从客户管理页面传过来的id，锁定客户
         $customer_name = "";
-        if($customer_id!=0)
-        {
-            $customer =PCustomer::find()->where("id=".$customer_id)->one();
+        if ($customer_id != 0) {
+            $customer = PCustomer::find()->where("id=" . $customer_id)->one();
             $customer_name = $customer->customer_contact;
         }
 
@@ -56,7 +55,7 @@ class SaleController extends \yii\web\Controller
 
         $customerList = PCustomer::find()->where("company_id=" . $staff->company_id)->all();
 
-        return $this->render('saleManager', array("columns" => $column, 'jsonurl' => $jsonDataUrl, 'customerList' => $customerList, 'staff' => $staff,"customer_id"=>$customer_id,"customer_name"=>$customer_name));
+        return $this->render('saleManager', array("columns" => $column, 'jsonurl' => $jsonDataUrl, 'customerList' => $customerList, 'staff' => $staff, "customer_id" => $customer_id, "customer_name" => $customer_name));
     }
 
     public function actionSalemanagerjson()
@@ -126,7 +125,7 @@ class SaleController extends \yii\web\Controller
 
                     //计算上刊率（销售时间/已安装完成时间到现在时间）
                     $time_now = strtotime($date);  //当前时间
-                    $time_start = strtotime($advInfo["adv_starttime"]);   //开始时间
+                    $time_start = strtotime($advInfo["adv_starttime"]);   //广告位开始时间（即广告位安装完成日）
                     if ($time_now > $time_start)
                         $time_denominator = round(($time_now - $time_start) / 3600 / 24); //上刊率分母
                     else
@@ -150,8 +149,54 @@ class SaleController extends \yii\web\Controller
                         $time_rate = 0;
                     else
                         $time_rate = (round($time_numerator / $time_denominator, 4) * 100);   //上刊率
-                    if ($time_rate != 0)
-                        $time_rate = $time_rate . "%";
+                    if ($time_rate != 0) {
+                        if ($time_rate > 100)
+                            $time_rate = "100%";
+                        else
+                            $time_rate = $time_rate . "%";
+                    }
+
+                    //计算空刊率：1-（1年内广告位销售天数/365）
+                    $date_year_ago = date('Y-m-d', strtotime("-1 year"));   //1年前
+                    $time_year_ago = strtotime($date_year_ago);
+                    if ($time_now > $time_start) {
+                        if ($time_start > $time_year_ago)    //广告位使用时间不足1年
+                        {
+                            $rest_denominator = round(($time_now - $time_start) / 3600 / 24);   //空刊率分母
+                            $time_year_ago = $time_start;
+                        } else {
+                            $rest_denominator = round(($time_now - $time_year_ago) / 3600 / 24);
+                        }
+                    } else {
+                        $rest_denominator = 1;
+                    }
+
+                    if ($rest_denominator == 0)
+                        $rest_denominator = 1;
+
+                    $rest_numerator = 0;  //空刊率分子
+                    if (count($sale) > 0) {
+                        foreach ($sale as $k => $v) {
+                            $time_sale_starttime = strtotime($v["sales_starttime"]);
+                            $time_sale_endtime = strtotime($v["sales_endtime"]);
+                            if ($time_sale_starttime < $time_year_ago && $time_sale_endtime > $time_year_ago && $time_sale_endtime < $time_now)
+                                $rest_numerator = $rest_numerator + round(($time_sale_endtime - $time_year_ago) / 3600 / 24);
+                            else if ($time_sale_starttime < $time_year_ago && $time_sale_endtime > $time_now)
+                                $rest_numerator = $rest_numerator + round(($time_now - $time_year_ago) / 3600 / 24);
+                            else if ($time_sale_starttime > $time_year_ago && $time_sale_starttime < $time_now && $time_sale_endtime < $time_now)
+                                $rest_numerator = $rest_numerator + round(($time_sale_endtime - $time_sale_starttime) / 3600 / 24);
+                            else if ($time_sale_starttime > $time_year_ago && $time_sale_starttime < $time_now && $time_sale_endtime > $time_now)
+                                $rest_numerator = $rest_numerator + round(($time_now - $time_sale_starttime) / 3600 / 24);
+                        }
+                    }
+
+                    if ($rest_denominator == 1)
+                        $rest_rate = 0;
+                    else {
+                        $rest_rate = (1 - round($rest_numerator / $rest_denominator, 4)) * 100;   //1年广告位空刊率
+                    }
+                    if ($rest_rate != 0)
+                        $rest_rate = $rest_rate . "%";
 
                     //更新广告位状态
                     $adv = PAdv::find()->where("id=" . $value)->one();
@@ -159,6 +204,7 @@ class SaleController extends \yii\web\Controller
                         $adv->adv_use_status = 2;
                         $adv->adv_sales_status = $sales_status;
                         $adv->adv_rate = $time_rate;
+                        $adv->adv_rest_rate = $rest_rate;
                         $adv->update_time = $date;
                         $adv->save();
                     }
@@ -211,7 +257,7 @@ class SaleController extends \yii\web\Controller
         $staff = $session['loginUser'];
 
         //请求,排序,展示字段,展示字段的字段名(支持relation字段),主表实例,搜索字段
-        DataTools::getJsonSaleSearchData(\Yii::$app->request, "sales_starttime desc", $this->saleColumns, $this->saleColumnsVal,new PSales(), $staff);
+        DataTools::getJsonSaleSearchData(\Yii::$app->request, "sales_starttime desc", $this->saleColumns, $this->saleColumnsVal, new PSales(), $staff);
     }
 
 }

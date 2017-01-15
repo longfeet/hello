@@ -291,36 +291,9 @@ class AdvController extends \yii\web\Controller
             //加工上刊率
             if (!isset($list[$key]["adv_rate"]))
                 $list[$key]["adv_rate"] = 0;
-
-            //计算上刊率（销售时间/已安装完成时间到现在时间）
-//            $time_now = strtotime($now);  //当前时间
-//            $time_start = strtotime($list[$key]["adv_starttime"]);   //当前时间
-//            if ($time_now > $time_start)
-//                $time_denominator = round(($time_now - $time_start) / 3600 / 24); //上刊率分母
-//            else
-//                $time_denominator = 1;
-//            if ($time_denominator == 0)
-//                $time_denominator = 1;
-//            //计算销售时间
-//            $sale = PSales::find()->select("sales_starttime,sales_endtime")->where("adv_id = " . $list[$key]["id"])->asArray()->all();
-//            $time_numerator = 0;  //上刊率分子
-//            if (count($sale) > 0) {
-//                foreach ($sale as $k => $v) {
-//                    $time_sale_starttime = strtotime($v["sales_starttime"]);
-//                    $time_sale_endtime = strtotime($v["sales_endtime"]);
-//                    if ($time_sale_starttime < $time_sale_endtime && $time_sale_endtime < $time_now)
-//                        $time_numerator = $time_numerator + round(($time_sale_endtime - $time_sale_starttime) / 3600 / 24);
-//                    else if ($time_sale_starttime < $time_now && $time_now < $time_sale_endtime)
-//                        $time_numerator = $time_numerator + round(($time_now - $time_sale_starttime) / 3600 / 24);
-//                }
-//            }
-//            if ($time_denominator == 1)
-//                $time_rate = 0;
-//            else
-//                $time_rate = (round($time_numerator / $time_denominator, 4) * 100);   //上刊率
-//            if ($time_rate != 0)
-//                $time_rate = $time_rate . "%";
-//            $list[$key]["time_rate"] = $time_rate;
+            //加工空刊率
+            if (!isset($list[$key]["adv_rest_rate"]))
+                $list[$key]["adv_rest_rate"] = "100%";
         }
 
         //测试
@@ -709,6 +682,9 @@ class AdvController extends \yii\web\Controller
             //加工上刊率
             if (!isset($list[$key]["adv_rate"]))
                 $list[$key]["adv_rate"] = 0;
+            //加工空刊率
+            if (!isset($list[$key]["adv_rest_rate"]))
+                $list[$key]["adv_rest_rate"] = "100%";
 
             foreach ($value as $k => $v) {
                 //安装状态

@@ -356,6 +356,7 @@ class ExcelTools
         $objPHPExcel->getActiveSheet()->getStyle('H1')->getFont()->setBold(true);
         $objPHPExcel->getActiveSheet()->getStyle('I1')->getFont()->setBold(true);
         $objPHPExcel->getActiveSheet()->getStyle('J1')->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('k1')->getFont()->setBold(true);
         // 表头
         $objPHPExcel->setActiveSheetIndex(0)
             ->setCellValue('A1', '序号')
@@ -366,8 +367,9 @@ class ExcelTools
             ->setCellValue('F1', '安装状态')
             ->setCellValue('G1', '销售状态')
             ->setCellValue('H1', '画面状态')
-            ->setCellValue('I1', '上刊率')
-            ->setCellValue('J1', '人员分配');
+            ->setCellValue('I1', '年空刊率')
+            ->setCellValue('J1', '上刊率')
+            ->setCellValue('K1', '人员分配');
 
         // 内容
         $num=1;   //序号
@@ -382,8 +384,9 @@ class ExcelTools
             $objPHPExcel->getActiveSheet(0)->setCellValue('F' . $i, $value['adv_install_status']);
             $objPHPExcel->getActiveSheet(0)->setCellValue('G' . $i, $value['adv_sales_status']);
             $objPHPExcel->getActiveSheet(0)->setCellValue('H' . $i, $value['adv_pic_status']);
-            $objPHPExcel->getActiveSheet(0)->setCellValue('I' . $i, $value['adv_rate']);
-            $objPHPExcel->getActiveSheet(0)->setCellValue('J' . $i, $value['people_num']);
+            $objPHPExcel->getActiveSheet(0)->setCellValue('I' . $i, $value['adv_rest_rate']);
+            $objPHPExcel->getActiveSheet(0)->setCellValue('J' . $i, $value['adv_rate']);
+            $objPHPExcel->getActiveSheet(0)->setCellValue('K' . $i, $value['people_num']);
             $num++;
             $i++;
         }
