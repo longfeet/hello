@@ -397,7 +397,7 @@ class DataTools
                             $array[$v] = $val->$columnVals[$k];
                         else
                             $array[$v] = "100%";
-                    } else if ($v == "adv_community_id")  //楼盘名称
+                    }else if ($v == "adv_community_id")  //楼盘名称
                     {
                         $community = PCommunity::find()->where("id=" . $val->$columnVals[$k])->one();
                         if ($community != null)
