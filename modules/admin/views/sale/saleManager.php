@@ -24,8 +24,7 @@
                                 <th>广告位位置</th>
                                 <th>当前状态</th>
                                 <th>使用状态</th>
-                                <th>年空刊率</th>
-                                <th>上刊率</th>
+                                <th>年上刊率</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -105,8 +104,13 @@
     .mydanger {
         color: red;
     }
+
+    .bgRed{
+        background-color:red;
+    }
 </style>
 <script type="text/javascript">
+    var search = null;
     $(document).ready(function () {
         $('#sales_starttime').datepicker({
             dateFormat: "yy-mm-dd",
@@ -133,7 +137,6 @@
         $("#dataTables-example").on("click", "tr", function () {
             $(this).toggleClass("bgRed");
             if ($(this).hasClass("bgRed")) {
-            //if ($(this).children().first().children().attr("checked")=="checked") {
                 $(this).children().first().children().prop("checked", true);
             } else {
                 $(this).children().first().children().prop("checked", false);
@@ -259,8 +262,10 @@
                             });
                         });
 
-                        search = $('input[type=search]');
-                        search.before("(楼盘名称)&nbsp;");
+                        if(search == null) {
+                            search = $('input[type=search]');
+                            search.before("(楼盘名称)&nbsp;");
+                        }
 
                     }
                 });

@@ -52,6 +52,11 @@
 <link rel="stylesheet" href="/assets/adminTemplate/js/jstree/dist/themes/default-dark/style.min.css">
 <!-- JsTree Js-->
 <script src="/assets/adminTemplate/js/jstree/dist/jstree.min.js"></script>
+<style type="text/css">
+    .bgRed{
+        background-color:red;
+    }
+</style>
 <script type="text/javascript">
 var search = null;
 

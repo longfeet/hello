@@ -27,12 +27,12 @@ class SaleController extends \yii\web\Controller
     /**
      * @var array 显示的数据列
      */
-    public $advColumns = array("id", "adv_community_id", "adv_no", "adv_name", "adv_position", "adv_install_status", "adv_use_status", "adv_rest_rate", "adv_rate");
+    public $advColumns = array("id", "adv_community_id", "adv_no", "adv_name", "adv_position", "adv_install_status", "adv_use_status", "adv_rest_rate");
     /**
      * relation 关联的字段做成数组,支持多relation的深层字段属性(最多三层)
      * @var array
      */
-    public $advColumnsVal = array("id", "adv_community_id", "adv_no", "adv_name", "adv_position", "adv_install_status", "adv_use_status", "adv_rest_rate", "adv_rate");
+    public $advColumnsVal = array("id", "adv_community_id", "adv_no", "adv_name", "adv_position", "adv_install_status", "adv_use_status", "adv_rest_rate");
 
     public $saleColumns = array("id", "community_name", "adv_no", "adv_name", "sales_company", "sales_customer", "sales_starttime", "sales_endtime", "sales_person", "sales_status");
     public $saleColumnsVal = array("id", "community_name", "adv_no", "adv_name", "sales_company", "sales_customer", "sales_starttime", "sales_endtime", "sales_person", "sales_status");
@@ -156,7 +156,7 @@ class SaleController extends \yii\web\Controller
                             $time_rate = $time_rate . "%";
                     }
 
-                    //计算空刊率：1-（1年内广告位销售天数/365）
+                    //计算年上刊率：1年内广告位销售天数/365
                     $date_year_ago = date('Y-m-d', strtotime("-1 year"));   //1年前
                     $time_year_ago = strtotime($date_year_ago);
                     if ($time_now > $time_start) {
@@ -193,7 +193,7 @@ class SaleController extends \yii\web\Controller
                     if ($rest_denominator == 1)
                         $rest_rate = 0;
                     else {
-                        $rest_rate = (1 - round($rest_numerator / $rest_denominator, 4)) * 100;   //1年广告位空刊率
+                        $rest_rate =  round($rest_numerator / $rest_denominator, 4) * 100;   //1年广告位上刊率
                     }
                     if ($rest_rate != 0)
                         $rest_rate = $rest_rate . "%";

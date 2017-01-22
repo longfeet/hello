@@ -393,10 +393,10 @@ class DataTools
                         else
                             $array[$v] = 0;
                     }else if ($v == "adv_rest_rate") {
-                        if ($val->$columnVals[$k] != "")  //空刊率为空的，设置成0
+                        if ($val->$columnVals[$k] != "")  //上刊率为空的，设置成0
                             $array[$v] = $val->$columnVals[$k];
                         else
-                            $array[$v] = "100%";
+                            $array[$v] = "0";
                     }else if ($v == "adv_community_id")  //楼盘名称
                     {
                         $community = PCommunity::find()->where("id=" . $val->$columnVals[$k])->one();

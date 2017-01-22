@@ -51,6 +51,7 @@
     }
 </style>
 <script type="text/javascript">
+    var search = null;
     $(document).ready(function () {
 
         var table = $('#dataTables-example').dataTable({
@@ -70,8 +71,10 @@
                     "success": function (data) {
                         fnCallback(data);
 
-                        search =  $('input[type=search]');
-                        search.before("(楼盘名称、客户公司、销售人员)&nbsp;");
+                        if(search == null) {
+                            search = $('input[type=search]');
+                            search.before("(楼盘名称、客户公司、销售人员)&nbsp;");
+                        }
                     }
                 });
             },

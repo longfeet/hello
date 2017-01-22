@@ -293,7 +293,7 @@ class AdvController extends \yii\web\Controller
                 $list[$key]["adv_rate"] = 0;
             //加工空刊率
             if (!isset($list[$key]["adv_rest_rate"]))
-                $list[$key]["adv_rest_rate"] = "100%";
+                $list[$key]["adv_rest_rate"] = "0";
         }
 
         //测试
