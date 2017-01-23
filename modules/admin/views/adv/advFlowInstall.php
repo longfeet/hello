@@ -218,7 +218,7 @@
         });
 
         //点击td选中checkbox
-        $("#dataTables-example").on("click", "tr", function () {
+        $("#dataTables-example").on("click", "tbody tr", function () {
             $(this).toggleClass("bgRed");
             if ($(this).hasClass("bgRed")) {
                 //if ($(this).children().first().children().attr("checked")=="checked") {

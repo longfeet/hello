@@ -62,6 +62,7 @@ var search = null;
 
 //全选
 $("#checkAll").click(function(){
+    $("#dataTables-example tbody tr").toggleClass("bgRed");
     for(var key in $("input[name='community_id']")){
         $("input[name='community_id']")[key].checked = this.checked;
     }
@@ -110,7 +111,7 @@ $(window).ready(function(){
     ).api();
 
     //点击td选中checkbox
-    $("#dataTables-example").on("click", "tr", function () {
+    $("#dataTables-example").on("click", "tbody tr", function () {
         $(this).toggleClass("bgRed");
         if ($(this).hasClass("bgRed")) {
             //if ($(this).children().first().children().attr("checked")=="checked") {

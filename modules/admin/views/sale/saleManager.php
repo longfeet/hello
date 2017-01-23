@@ -128,13 +128,14 @@
         });
 
         $("#checkAll").click(function () {
+            $("#dataTables-example tbody tr").toggleClass("bgRed");
             for (var key in $("input[name='adv_id']")) {
                 $("input[name='adv_id']")[key].checked = this.checked;
             }
         })
 
         //点击td选中checkbox
-        $("#dataTables-example").on("click", "tr", function () {
+        $("#dataTables-example").on("click", "tbody tr", function () {
             $(this).toggleClass("bgRed");
             if ($(this).hasClass("bgRed")) {
                 $(this).children().first().children().prop("checked", true);
