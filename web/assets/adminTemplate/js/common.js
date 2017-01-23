@@ -8,7 +8,7 @@ $("#fix_status").hide();
 $("#staff").hide();
 $("#sector").hide();
 $("#checkAll").click(function(){
-        
+    $("#dataTables-example tbody tr").toggleClass("bgRed");
     for(var key in $("input[name='adv_id']")){
         $("input[name='adv_id']")[key].checked = this.checked;
     }
