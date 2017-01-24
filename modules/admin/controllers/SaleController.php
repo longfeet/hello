@@ -55,7 +55,7 @@ class SaleController extends \yii\web\Controller
 
         $customerList = PCustomer::find()->where("company_id=" . $staff->company_id)->all();
 
-        return $this->render('saleManager', array("columns" => $column, 'jsonurl' => $jsonDataUrl, 'customerList' => $customerList, 'staff' => $staff, "customer_id" => $customer_id, "customer_name" => $customer_name));
+        return $this->render('saleManagerOld', array("columns" => $column, 'jsonurl' => $jsonDataUrl, 'customerList' => $customerList, 'staff' => $staff, "customer_id" => $customer_id, "customer_name" => $customer_name));
     }
 
     public function actionSalemanagerjson()
@@ -66,6 +66,107 @@ class SaleController extends \yii\web\Controller
         //请求,排序,展示字段,展示字段的字段名(支持relation字段),主表实例,搜索字段
         DataTools::getJsonSaleData(\Yii::$app->request, "adv_use_status,adv_rate asc", $this->advColumns, $this->advColumnsVal,
             new PAdv(), "adv_name", 'adv_id', $staff);
+    }
+
+    public function actionSalemanager()
+    {
+        $session = \Yii::$app->session;
+        $staff = $session['loginUser'];
+
+        $customer_id = \Yii::$app->request->get('id', '0');    //从客户管理页面传过来的id，锁定客户
+        $customer_name = "";
+        if ($customer_id != 0) {
+            $customer = PCustomer::find()->where("id=" . $customer_id)->one();
+            $customer_name = $customer->customer_contact;
+        }
+        $customerList = PCustomer::find()->where("company_id=" . $staff->company_id)->all();
+
+        return $this->render('saleManager', array('customerList' => $customerList, 'staff' => $staff, "customer_id" => $customer_id, "customer_name" => $customer_name));
+    }
+
+    public function actionAjaxmamger()
+    {
+        $session = \Yii::$app->session;
+        $staff = $session['loginUser'];
+        $now = date("Y-m-d H:i:s");
+        $post = \Yii::$app->request->post();
+        $page = $post['page'] ? $post['page'] : 1;
+        $count = 20;
+        $community_name = $post['community_name'];
+        $adv_property = $post['adv_property'];
+        $where = array(
+            ' 1=1 '
+        );
+
+        //权限控制
+        if ($staff->staff_level == 1 || $staff->staff_level == 2 || $staff->staff_level == 3)
+            $where[] = " adv.company_id =" . $staff->company_id . " and adv.adv_install_status=2 and (adv.adv_use_status=0 or adv.adv_use_status=1)";
+        else if ($staff->staff_level == 4)
+            $where[] = " adv.adv_install_status=2 and (adv.adv_use_status=0 or adv.adv_use_status=1)";
+
+        //搜索条件
+        //待添加
+        if (!empty($community_name)) {
+            $where[] = " com.community_name like '%$community_name%' ";
+        }
+        if (!empty($adv_property) && $adv_property != -1) {
+            $where[] = " adv.adv_property = " . $adv_property;
+        }
+
+        //审核条件
+        $where[] = " adv.adv_status in (0,7)";  //审核条件，0为无须审核，7为审核通过。
+
+        $limit = (($page - 1) * $count) . ",$count ";
+        $sql = "SELECT adv.*,com.community_name,cpy.company_name FROM p_adv adv "
+            . " LEFT JOIN p_community com ON adv.adv_community_id = com.id "
+            . " LEFT JOIN p_company cpy ON adv.company_id = cpy.id "
+            . " WHERE " . implode(" AND ", $where)
+            . " GROUP BY adv.id "
+            . " ORDER BY  adv.adv_use_status,adv.adv_rest_rate asc"
+            . " LIMIT " . $limit;
+        //exit(json_encode($sql));
+
+        $connection = \Yii::$app->db;
+        $command = $connection->createCommand($sql);
+        $list = $command->queryAll();
+
+        foreach ($list as $key => $value) {
+            //加工上刊率
+            if (!isset($list[$key]["adv_rate"]))
+                $list[$key]["adv_rate"] = 0;
+            //加工空刊率
+            if (!isset($list[$key]["adv_rest_rate"]))
+                $list[$key]["adv_rest_rate"] = "0";
+        }
+
+        //测试
+//        $str = "";
+//        foreach($list as $key=>$value)
+//        {
+//            foreach($value as $k=>$v)
+//                $str =$str. $k.":".$v.";";
+//            $str = $str. "<br/>";
+//        }
+//        exit(json_encode($str));
+
+        $sql = "select count(DISTINCT(adv.id)) allCount from p_adv adv "
+            . " LEFT JOIN p_community com ON adv.adv_community_id = com.id "
+            . " LEFT JOIN p_company cpy ON adv.company_id = cpy.id "
+            . " where " . implode("AND", $where)
+            . " ORDER BY  adv.id desc";
+
+        $connection = \Yii::$app->db;
+        $command = $connection->createCommand($sql);
+        $allCount = $command->queryOne();
+        //提供分页数据
+        $page_data = array(
+            'page' => (int)$page,
+            'count' => $count,
+            'allCount' => (int)$allCount['allCount'],
+            'allPage' => ceil($allCount['allCount'] / $count),
+            'sql' => $sql
+        );
+        exit(json_encode(array('list_data' => $list, 'page_data' => $page_data)));
     }
 
     /**
@@ -193,7 +294,7 @@ class SaleController extends \yii\web\Controller
                     if ($rest_denominator == 1)
                         $rest_rate = 0;
                     else {
-                        $rest_rate =  round($rest_numerator / $rest_denominator, 4) * 100;   //1年广告位上刊率
+                        $rest_rate = round($rest_numerator / $rest_denominator, 4) * 100;   //1年广告位上刊率
                     }
                     if ($rest_rate != 0)
                         $rest_rate = $rest_rate . "%";

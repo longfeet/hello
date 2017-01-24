@@ -11,24 +11,6 @@
         <div class="col-md-12">
             <!-- Advanced Tables -->
             <div class="panel panel-default">
-                <div class="panel-heading">
-                    <form class="form-inline" role="form">
-                        <div class="form-group">
-                            <input type="email" class="form-control" id="community_name" placeholder="楼盘名称">
-                        </div>
-                        <div class="form-group">
-                            <select name="adv_property" id="adv_property" class="form-control">
-                                <option value="-1">广告位类型</option>
-                                <option value="0">电梯</option>
-                                <option value="1">道闸</option>
-                                <option value="2">道杆</option>
-                                <option value="3">灯箱</option>
-                                <option value="4">行人门禁</option>
-                            </select>
-                        </div>
-                        <button type="button" id="searchBtn" class="btn btn-default">搜索</button>
-                    </form>
-                </div>
 
                 <div class="panel-body">
                     <div class="table-responsive">
@@ -38,18 +20,16 @@
                                 <th><input type="checkbox" id="checkAll"/>序号</th>
                                 <th>楼盘名称</th>
                                 <th>广告位编号</th>
-                                <th>广告位类型</th>
+                                <th>广告位名称</th>
                                 <th>广告位位置</th>
                                 <th>当前状态</th>
                                 <th>使用状态</th>
                                 <th>年上刊率</th>
                             </tr>
                             </thead>
-                            <tbody id="table_content">
+                            <tbody>
                             </tbody>
                         </table>
-                        <div class="dataTables_paginate paging_simple_numbers" id="fenyeHtml">
-                        </div>
                     </div>
                 </div>
             </div>
@@ -57,6 +37,7 @@
         </div>
     </div>
     <!-- /. ROW  -->
+
     <div class="row">
         <div class="col-md-1" style="width:120px;height: 35px;line-height:35px;">客户公司：</div>
         <div class="col-md-9">
@@ -108,97 +89,29 @@
         </div>
     </div>
 
+
 </div>
 <!-- /. PAGE INNER  -->
-
 <script src="/assets/artDialog/dist/dialog.js"></script>
 <script src="/assets/datepicker/jquery.ui.datepicker.js"></script>
 <script src="/assets/datepicker/jquery-ui.js"></script>
 <link rel="stylesheet" href="/css/jquery-ui.css">
 <link href="/assets/artDialog/css/ui-dialog.css" rel="stylesheet"/>
-
-<script src="/assets/adminTemplate/js/common.js"></script>
+<!-- JsTree Styles-->
+<link rel="stylesheet" href="/assets/adminTemplate/js/jstree/dist/themes/default/style.min.css">
+<link rel="stylesheet" href="/assets/adminTemplate/js/jstree/dist/themes/default-dark/style.min.css">
 <style type="text/css">
+    .mydanger {
+        color: red;
+    }
+
     .bgRed{
         background-color:red;
     }
 </style>
 <script type="text/javascript">
-    var install_status = ['未安装', '待维修', '正常使用', '安装中', '维修中'];
-    var use_status = ['新增', '未使用', '已使用'];
-    var adv_property = ['电梯广告','道闸广告','道杆广告','灯箱','行人门禁'];
-
-    var status_search = {};
-    function getIdVlaue(name) {
-        return document.getElementById(name).value;
-    }
-
-    function jsonPost(data, cb) {
-        $.ajax({
-            "type": "POST",
-            "contentType": "application/x-www-form-urlencoded",
-            "url": "/admin/sale/ajaxmamger",
-            "dataType": "json",
-            "async": false,      //ajax异步
-            "data": data, //以json格式传递
-            "success": cb
-        });
-    }
-
-    function getList(page) {
-        document.getElementById("table_content").innerHTML = '';
-        page = page || 1;
-        var data = {
-            community_name: getIdVlaue("community_name"),
-            adv_property: getIdVlaue("adv_property"),
-            page: page
-        }
-
-        data = Object.assign(data, status_search);
-        jsonPost(data, buildHtml);
-        console.log(data);
-    }
-
-    function buildHtml(data) {
-        console.log(data);
-        var html = '';
-        for (var key in data.list_data) {
-            var item = data.list_data[key];
-
-            html += '<tr><td><input type="checkbox" value="' + item.id + '" name="adv_id" />' + (parseInt(key) + 1) + '</td><td>' + item.community_name + '</td><td>' + item.adv_no + '</td><td>' + adv_property[item.adv_property] + '</td><td>' + item.adv_position + '</td><td>' + install_status[item.adv_install_status] + '</td><td>' + use_status[item.adv_use_status] + '</td><td>' + item.adv_rest_rate + '</td></tr>';
-        }
-        document.getElementById("table_content").innerHTML = html;
-        buildPage(data.page_data);
-    }
-
-    document.getElementById("searchBtn").addEventListener('click', function () {
-        getList();
-    });
-
-    function buildPage(page_data) {
-        var html = ' <ul class="pagination"> ';
-        var num_html = '';
-        var prev_html = '<li class="paginate_button previous "><a value="' + (page_data.page - 1) + '">前一页</a></li>';
-        var next_html = '<li class="paginate_button next"><a value="' + (page_data.page + 1) + '">后一页</a></li>';
-        for (var i = 1; i <= page_data.allPage; i++) {
-            var active = '';
-            if (i == page_data.page) {
-                active = 'active';
-            }
-            num_html += '<li class="paginate_button ' + active + '" ><a value="' + i + '">' + i + '</a></li>';
-        }
-        if (page_data.page == 1) {
-            prev_html = '<li class="paginate_button previous disabled"><a value="-1">前一页</a></li>'
-        }
-        if (page_data.page == page_data.allPage) {
-            next_html = '<li class="paginate_button next disabled"><a value="-1">后一页</a></li>'
-        }
-        document.getElementById("fenyeHtml").innerHTML = html + prev_html + num_html + next_html + '</ul>';
-    }
-
-    $(window).ready(function () {
-        getList();
-
+    var search = null;
+    $(document).ready(function () {
         $('#sales_starttime').datepicker({
             dateFormat: "yy-mm-dd",
             monthNamesShort: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
@@ -214,24 +127,20 @@
             changeYear: true
         });
 
+        $("#checkAll").click(function () {
+            $("#dataTables-example tbody tr").toggleClass("bgRed");
+            for (var key in $("input[name='adv_id']")) {
+                $("input[name='adv_id']")[key].checked = this.checked;
+            }
+        })
+
         //点击td选中checkbox
         $("#dataTables-example").on("click", "tbody tr", function () {
             $(this).toggleClass("bgRed");
             if ($(this).hasClass("bgRed")) {
-                //if ($(this).children().first().children().attr("checked")=="checked") {
                 $(this).children().first().children().prop("checked", true);
             } else {
                 $(this).children().first().children().prop("checked", false);
-            }
-        });
-
-        $("#fenyeHtml").on('click', 'a', function (e) {
-            var a = e || window.event;
-            a.preventDefault();
-            a.stopPropagation();
-            var page = $(this).attr("value");
-            if (page > 0) {
-                getList(page);
             }
         });
 
@@ -253,6 +162,117 @@
                 $("input[name='sales_customer']").val("");
             }
         })
+
+        var table = $('#dataTables-example').dataTable({
+            "ordering": false,
+            "language": {
+                "url": "/assets/adminTemplate/js/dataTables/zh-cn.txt"
+            },
+            "aLengthMenu": [10, 20, 50, 100],
+            "serverSide": true,
+            "fnServerData": function (sSource, aoData, fnCallback) {
+                $.ajax({
+                    "type": "GET",
+                    "contentType": "application/json",
+                    "url": "<?=$jsonurl?>",
+                    "dataType": "json",
+                    "data": aoData, //以json格式传递
+                    "success": function (data) {
+                        fnCallback(data);
+
+                        //详情
+                        $('.customerDetails').bind("click", function () {
+                            var customerID = $(this).attr('customer_id');
+                            $.ajax({
+                                "type": "GET",
+                                "url": "/admin/customer/getcustomerinfo",
+                                "data": {'customerID': customerID},
+                                "dataType": "json",
+                                "success": function (data) {
+                                    if (data != null && data.customer_company != null) {
+                                        $('#showCompany').html(data.customer_company);
+                                        $('#showAddress').html(data.customer_address);
+                                        $('#showContact').html(data.customer_contact);
+                                        $('#showPhone').html(data.customer_phone);
+                                        $('#showEmail').html(data.customer_email);
+                                        $('#showIndustry').html(data.customer_industry);
+                                    } else {
+                                        alert("获取人员信息失败,请刷新页面重试!");
+                                    }
+                                }
+                            });
+                            detailsDialog.show();
+                        });
+                        //更新
+                        $('.customerEdit').bind("click", function () {
+                            var companyEdit = $('input[name=companyEdit]');
+                            var addressEdit = $('input[name=addressEdit]');
+                            var contactEdit = $('input[name=contactEdit]');
+                            var phoneEdit = $('input[name=phoneEdit]');
+                            var emailEdit = $('input[name=emailEdit]');
+                            var industryEdit = $('input[name=industryEdit]');
+                            if (companyEdit.hasClass('alert-danger') || addressEdit.hasClass('alert-danger') || contactEdit.hasClass('alert-danger') || industryEdit.hasClass('alert-danger')) {
+                                $('#editInfo').hide();
+                                companyEdit.removeClass('alert-danger');
+                                addressEdit.removeClass('alert-danger');
+                                contactEdit.removeClass('alert-danger');
+                                industryEdit.removeClass('alert-danger');
+                            }
+                            var customerID = $(this).attr('customer_id');
+
+                            $.ajax({
+                                "type": "GET",
+                                "url": "/admin/customer/getcustomerinfo",
+                                "data": {'customerID': customerID},
+                                "dataType": "json",
+                                "success": function (data) {
+                                    if (data != null && data.customer_company != null) {
+                                        companyEdit.val(data.customer_company);
+                                        addressEdit.val(data.customer_address);
+                                        contactEdit.val(data.customer_contact);
+                                        phoneEdit.val(data.customer_phone);
+                                        emailEdit.val(data.customer_email);
+                                        industryEdit.val(data.customer_industry);
+                                        $('input[name=customerID]').val(customerID);
+                                    } else {
+                                        alert("获取人员信息失败,请刷新页面重试!");
+                                    }
+                                }
+                            });
+                            editDialog.show();
+                        });
+                        //删除（硬删除 ）
+                        $('.customerDelete').bind("click", function () {
+                            var customerID = $(this).attr('customer_id');
+                            $.ajax({
+                                "type": "POST",
+                                "contentType": "application/x-www-form-urlencoded",
+                                "url": "/admin/customer/deletecustomer",
+                                "data": {
+                                    'customerID': customerID,
+                                },
+                                "dataType": "json",
+                                "success": function (data) {
+                                    if (data == '-1') {//角色名存在
+                                        alert('非法客户id!');
+                                    }
+                                    if (data == '1') {
+                                        table.page(table.page()).draw(false);
+                                    }
+                                }
+                            });
+                        });
+
+                        if(search == null) {
+                            search = $('input[type=search]');
+                            search.before("(楼盘名称)&nbsp;");
+                        }
+
+                    }
+                });
+            },
+            'columns': <?=$columns?>
+        }).api();
 
         //提交
         $("#saleSubmit").click(function () {
@@ -306,5 +326,20 @@
             }
         })
 
+        //获得选中的广告位（adv）的id
+        function getCheckValue(nameId) {
+            var arr = [];
+            for (var i = 0; i < $("input[name='" + nameId + "']").length; i++) {
+                if ($("input[name='" + nameId + "']")[i].checked) {
+                    arr.push($("input[name='" + nameId + "']")[i].value);
+                }
+            }
+            return arr;
+        }
     });
+
+    function mybind(func, fn) {
+        $(func).bind("touchstart", fn);
+        $(func).bind("click", fn);
+    }
 </script>
