@@ -105,12 +105,11 @@ class SaleController extends \yii\web\Controller
             $where[] = " adv.adv_install_status=2 and (adv.adv_use_status=0 or adv.adv_use_status=1)";
 
         //搜索条件
-        //待添加
         if (!empty($community_name)) {
             $where[] = " com.community_name like '%$community_name%' ";
         }
-        if (!empty($adv_property) && $adv_property != -1) {
-            $where[] = " adv.adv_property = " . $adv_property;
+        if ($adv_property != -1) {
+            $where[] = " adv.adv_property = " . $adv_property . " ";
         }
 
         //审核条件
