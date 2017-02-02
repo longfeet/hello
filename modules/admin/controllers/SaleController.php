@@ -94,6 +94,7 @@ class SaleController extends \yii\web\Controller
         $count = 20;
         $community_name = $post['community_name'];
         $adv_property = $post['adv_property'];
+        $adv_rest_day = $post['adv_rest_day'];
         $where = array(
             ' 1=1 '
         );
@@ -110,6 +111,15 @@ class SaleController extends \yii\web\Controller
         }
         if ($adv_property != -1) {
             $where[] = " adv.adv_property = " . $adv_property . " ";
+        }
+        if ($adv_rest_day != -1) {
+            if ($adv_rest_day == "1") {
+                $where[] = " adv.adv_rest_day < 91 ";
+            } else if ($adv_rest_day == 2) {
+                $where[] = " adv.adv_rest_day > 90 and adv.adv_rest_day<181 ";
+            } else if ($adv_rest_day == 3) {
+                $where[] = " adv.adv_rest_day >180  ";
+            }
         }
 
         //审核条件
@@ -358,6 +368,56 @@ class SaleController extends \yii\web\Controller
 
         //请求,排序,展示字段,展示字段的字段名(支持relation字段),主表实例,搜索字段
         DataTools::getJsonSaleSearchData(\Yii::$app->request, "sales_starttime desc", $this->saleColumns, $this->saleColumnsVal, new PSales(), $staff);
+    }
+
+    /*
+     * 数据同步（建议shell自动执行）
+     * 1.计算空刊日：1-3个月（90天）、3-6个月（90-180天）、半年以上（>180天）
+     * 2.将已超过销售日期的广告牌状态恢复为待销售。
+     */
+    public function actionSalesync()
+    {
+        $session = \Yii::$app->session;
+        $staff = $session['loginUser'];
+
+        $date = date('Y-m-d H:i:s');
+        $time_now = strtotime($date);  //当前时间
+        $advList = PAdv::find()->where("company_id=" . $staff->company_id)->select("id,adv_starttime")->all();
+
+        //遍历所有广告位信息
+        foreach ($advList as $key => $value) {
+            $adv_rest_day = 0;  //空刊日
+            $saleList = PSales::find()->where("adv_id=" . $value["id"])->select("sales_starttime,sales_endtime")->orderBy("create_time desc")->one();  //获得该广告位销售信息
+            $adv_starttime = strtotime($value["adv_starttime"]);  //广告位安装时间
+            if ($saleList != "") {
+                //有销售记录，当前时间-销售时间（分3中情况讨论）
+                $sale_starttime = strtotime($saleList["sales_starttime"]);
+                $sales_endtime = strtotime($saleList["sales_endtime"]);
+
+                if ($sales_endtime < $time_now) {
+                    $rest_time = $time_now - $sales_endtime;
+                } else if ($sale_starttime < $time_now && $sales_endtime > $time_now) {
+                    $rest_time = 0;
+                } else {
+                    $rest_time = $time_now - $adv_starttime;
+                }
+
+            } else {
+                //无销售记录：当前时间-广告位上刊时间
+                $rest_time = $time_now - $adv_starttime;
+            }
+            $adv_rest_day = round($rest_time / (60 * 60 * 24));  //空刊日
+
+            //更新广告位空刊日
+            $adv = PAdv::find()->where("id=" . $value["id"])->one();
+            if ($adv != null) {
+                $adv->adv_rest_day = $adv_rest_day;
+                $adv->update_time = $date;
+                $adv->save();
+            }
+        }
+
+        return $this->render('saleSync');
     }
 
 }

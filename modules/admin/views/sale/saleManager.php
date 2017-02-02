@@ -26,6 +26,14 @@
                                 <option value="4">行人门禁</option>
                             </select>
                         </div>
+                        <div class="form-group">
+                            <select name="adv_rest_day" id="adv_rest_day" class="form-control">
+                                <option value="-1">空刊时间</option>
+                                <option value="1">1-3个月</option>
+                                <option value="2">3-6个月</option>
+                                <option value="3">半年</option>
+                            </select>
+                        </div>
                         <button type="button" id="searchBtn" class="btn btn-default">搜索</button>
                     </form>
                 </div>
@@ -43,6 +51,7 @@
                                 <th>当前状态</th>
                                 <th>使用状态</th>
                                 <th>年上刊率</th>
+                                <th>空刊时间</th>
                             </tr>
                             </thead>
                             <tbody id="table_content">
@@ -119,14 +128,14 @@
 
 <script src="/assets/adminTemplate/js/common.js"></script>
 <style type="text/css">
-    .bgRed{
-        background-color:red;
+    .bgRed {
+        background-color: red;
     }
 </style>
 <script type="text/javascript">
     var install_status = ['未安装', '待维修', '正常使用', '安装中', '维修中'];
     var use_status = ['新增', '未使用', '已使用'];
-    var adv_property = ['电梯广告','道闸广告','道杆广告','灯箱','行人门禁'];
+    var adv_property = ['电梯广告', '道闸广告', '道杆广告', '灯箱', '行人门禁'];
 
     var status_search = {};
     function getIdVlaue(name) {
@@ -151,6 +160,7 @@
         var data = {
             community_name: getIdVlaue("community_name"),
             adv_property: getIdVlaue("adv_property"),
+            adv_rest_day: getIdVlaue("adv_rest_day"),
             page: page
         }
 
@@ -165,7 +175,16 @@
         for (var key in data.list_data) {
             var item = data.list_data[key];
 
-            html += '<tr><td><input type="checkbox" value="' + item.id + '" name="adv_id" />' + (parseInt(key) + 1) + '</td><td>' + item.community_name + '</td><td>' + item.adv_no + '</td><td>' + adv_property[item.adv_property] + '</td><td>' + item.adv_position + '</td><td>' + install_status[item.adv_install_status] + '</td><td>' + use_status[item.adv_use_status] + '</td><td>' + item.adv_rest_rate + '</td></tr>';
+            //加工空看时间
+            var rest_time = "";
+            if (item.adv_rest_day < 91)
+                rest_time = "1-3个月";
+            else if (item.adv_rest_day > 90 && item.adv_rest_day < 181)
+                rest_time = "3-6个月";
+            else
+                rest_time = "半年以上";
+
+            html += '<tr><td><input type="checkbox" value="' + item.id + '" name="adv_id" />' + (parseInt(key) + 1) + '</td><td>' + item.community_name + '</td><td>' + item.adv_no + '</td><td>' + adv_property[item.adv_property] + '</td><td>' + item.adv_position + '</td><td>' + install_status[item.adv_install_status] + '</td><td>' + use_status[item.adv_use_status] + '</td><td>' + item.adv_rest_rate + '</td><td>' + rest_time + '</td></tr>';
         }
         document.getElementById("table_content").innerHTML = html;
         buildPage(data.page_data);
