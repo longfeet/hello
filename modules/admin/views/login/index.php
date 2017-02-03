@@ -71,6 +71,12 @@ $(window).ready(function() {
             }
         });
     });
+
+    $("body").keydown(function() {
+        if (event.keyCode == "13") {//keyCode=13是回车键
+            $("#sub").click();
+        }
+    });
 });
     </script>
 </head>
@@ -83,7 +89,7 @@ $(window).ready(function() {
     <input type="password" placeholder="密码" name="password" />
     <label class="text-danger errorinfo" style="display:none;margin-bottom:10px;"></label>
     <div class="submit">
-        <input type="submit" name="submit" value="登录" />
+        <input type="submit" name="submit" id="sub" value="登录" />
     </div>
     <div class="login-social-link">
         <!--<a href="index.html" class="facebook">
