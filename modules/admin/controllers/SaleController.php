@@ -386,6 +386,7 @@ class SaleController extends \yii\web\Controller
 
         //遍历所有广告位信息
         foreach ($advList as $key => $value) {
+            $is_expired = false;  //销售是否过期
             $adv_rest_day = 0;  //空刊日
             $saleList = PSales::find()->where("adv_id=" . $value["id"])->select("sales_starttime,sales_endtime")->orderBy("create_time desc")->one();  //获得该广告位销售信息
             $adv_starttime = strtotime($value["adv_starttime"]);  //广告位安装时间
@@ -396,6 +397,10 @@ class SaleController extends \yii\web\Controller
 
                 if ($sales_endtime < $time_now) {
                     $rest_time = $time_now - $sales_endtime;
+
+                    //已过销售时间，广告位重新变成：adv_use_status未使用,
+                    $is_expired = true;
+
                 } else if ($sale_starttime < $time_now && $sales_endtime > $time_now) {
                     $rest_time = 0;
                 } else {
@@ -413,6 +418,10 @@ class SaleController extends \yii\web\Controller
             if ($adv != null) {
                 $adv->adv_rest_day = $adv_rest_day;
                 $adv->update_time = $date;
+                if($is_expired)
+                {
+                    $adv->adv_use_status = 1;
+                }
                 $adv->save();
             }
         }
