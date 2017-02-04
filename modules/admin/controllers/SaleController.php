@@ -131,7 +131,7 @@ class SaleController extends \yii\web\Controller
             . " LEFT JOIN p_company cpy ON adv.company_id = cpy.id "
             . " WHERE " . implode(" AND ", $where)
             . " GROUP BY adv.id "
-            . " ORDER BY  adv.adv_use_status,adv.adv_rest_rate asc"
+            . " ORDER BY  adv.adv_use_status,adv.adv_rest_day asc"
             . " LIMIT " . $limit;
         //exit(json_encode($sql));
 
@@ -284,7 +284,7 @@ class SaleController extends \yii\web\Controller
                     if ($rest_denominator == 0)
                         $rest_denominator = 1;
 
-                    $rest_numerator = 0;  //空刊率分子
+                    $rest_numerator = 0;  //空刊率分子(现在用作上刊率分子)
                     if (count($sale) > 0) {
                         foreach ($sale as $k => $v) {
                             $time_sale_starttime = strtotime($v["sales_starttime"]);
