@@ -17,6 +17,19 @@
                             <input type="email" class="form-control" id="community_name" placeholder="楼盘名称">
                         </div>
                         <div class="form-group">
+                            <input type="email" class="form-control" id="community_category" placeholder="楼盘性质">
+                        </div>
+                        <div class="form-group">
+                            <input type="email" class="form-control" id="community_city" placeholder="所在城市">
+                        </div>
+                        <div class="form-group">
+                            <input type="email" class="form-control" id="community_area" placeholder="所属区域">
+                        </div>
+                        <div class="form-group">
+                            <input type="email" class="form-control" id="community_cbd" placeholder="所在商圈">
+                        </div>
+                        <br/><br/>
+                        <div class="form-group">
                             <select name="adv_property" id="adv_property" class="form-control">
                                 <option value="-1">广告位类型</option>
                                 <option value="0">电梯</option>
@@ -159,6 +172,10 @@
         page = page || 1;
         var data = {
             community_name: getIdVlaue("community_name"),
+            community_category: getIdVlaue("community_category"),
+            community_city: getIdVlaue("community_city"),
+            community_area: getIdVlaue("community_area"),
+            community_cbd: getIdVlaue("community_cbd"),
             adv_property: getIdVlaue("adv_property"),
             adv_rest_day: getIdVlaue("adv_rest_day"),
             page: page

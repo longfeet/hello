@@ -93,6 +93,10 @@ class SaleController extends \yii\web\Controller
         $page = $post['page'] ? $post['page'] : 1;
         $count = 20;
         $community_name = $post['community_name'];
+        $community_category = $post['community_category'];
+        $community_city = $post['community_city'];
+        $community_area = $post['community_area'];
+        $community_cbd = $post['community_cbd'];
         $adv_property = $post['adv_property'];
         $adv_rest_day = $post['adv_rest_day'];
         $where = array(
@@ -108,6 +112,18 @@ class SaleController extends \yii\web\Controller
         //搜索条件
         if (!empty($community_name)) {
             $where[] = " com.community_name like '%$community_name%' ";
+        }
+        if (!empty($community_category)) {
+            $where[] = " com.community_category like '%$community_category%' ";
+        }
+        if (!empty($community_city)) {
+            $where[] = " com.community_city like '%$community_city%' ";
+        }
+        if (!empty($community_area)) {
+            $where[] = " com.community_area like '%$community_area%' ";
+        }
+        if (!empty($community_cbd)) {
+            $where[] = " com.community_cbd like '%$community_cbd%' ";
         }
         if ($adv_property != -1) {
             $where[] = " adv.adv_property = " . $adv_property . " ";
