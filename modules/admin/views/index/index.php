@@ -101,14 +101,14 @@
         </div>
         <?php
         }
-        if(in_array("/admin/sale/manager", $list)){
+        if(in_array("/admin/sale/salemanager", $list)){
         ?>
         <div class="col-md-3 col-sm-12 col-xs-12">
             <div class="panel panel-primary text-center no-boder bg-color-brown">
                 <div class="picSale">
                 </div>
                 <div class="panel-footer back-footer-brown" style="background-color:#DF6DB7;">
-                    <a href="/admin/sale/manager" style="color: #FFFFFF;text-decoration:none;">销售管理</a>
+                    <a href="/admin/sale/salemanager" style="color: #FFFFFF;text-decoration:none;">销售管理</a>
                 </div>
             </div>
         </div>
