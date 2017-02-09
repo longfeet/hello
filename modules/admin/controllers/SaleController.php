@@ -147,7 +147,7 @@ class SaleController extends \yii\web\Controller
             . " LEFT JOIN p_company cpy ON adv.company_id = cpy.id "
             . " WHERE " . implode(" AND ", $where)
             . " GROUP BY adv.id "
-            . " ORDER BY  adv.adv_use_status,adv.adv_rest_day asc"
+            . " ORDER BY  adv.adv_use_status asc,adv.adv_rest_day desc"
             . " LIMIT " . $limit;
         //exit(json_encode($sql));
 
