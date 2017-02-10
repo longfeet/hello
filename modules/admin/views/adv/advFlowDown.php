@@ -135,8 +135,12 @@ function getList(page){
         com_no:getIdVlaue("community_no"),
         page:page
     }
-    
-    data = Object.assign(data, status_search);
+
+    for (var p in status_search){
+        if(status_search.hasOwnProperty(p) && (!data.hasOwnProperty(p) ))
+            data[p]=status_search[p];
+    }
+    //data = Object.assign(data, status_search);
     jsonPost(data,buildHtml);
     console.log(data);
 }
