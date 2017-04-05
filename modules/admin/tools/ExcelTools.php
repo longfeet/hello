@@ -25,7 +25,7 @@ class ExcelTools
         $user_id = \Yii::$app->session['loginUser']->id;
 
         $sql = 'insert into p_community values ';
-        $array = array('A', 'C', 'V', 'G', 'H', 'W', 'AB', '<1>', 'AA', 'AE', 'O', 'P', 'AH', 'BQ', 'Z', 'AG', '<null>', '<null>', '<null>', 'AK', '<0>', '<company>', '<0>', '<userid>', '<now>', '<userid>', '<now>');
+        $array = array('A', 'C', 'I','J','V', 'G', 'H', 'W', 'AB', '<1>', 'AA', 'AE', 'O', 'P', 'AH', 'BQ', 'Z', 'AG', '<null>', '<null>', '<null>', 'AK', '<0>', '<company>', '<0>', '<userid>', '<now>', '<userid>', '<now>');
         foreach ($excel as $key => $value) {
             if ($key > 2) {
                 if ($value['A'] == '') {
